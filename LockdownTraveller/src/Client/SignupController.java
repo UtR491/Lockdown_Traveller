@@ -22,7 +22,7 @@ public class SignupController implements Initializable {
     @FXML
     private DatePicker dobDatePicker;
     @FXML
-    private ComboBox stationComboBox, genderComboBox;
+    private ComboBox<String> stationComboBox, genderComboBox;
     @FXML
     private PasswordField confirmPasswordField, passwordField;
     @FXML
