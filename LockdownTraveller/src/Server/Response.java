@@ -15,5 +15,4 @@ public abstract class Response implements Serializable {
             e.printStackTrace();
         }
     }
-
 }

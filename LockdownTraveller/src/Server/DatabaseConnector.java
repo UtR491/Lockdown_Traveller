@@ -234,7 +234,7 @@ public class DatabaseConnector {
         
     }
 
-    public void getConnection() {
+    private void getConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Properties properties = new Properties();
@@ -246,5 +246,22 @@ public class DatabaseConnector {
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public LoginResponse loginRequest(String query) {
+        try {
+            ResultSet userId = connection.createStatement().executeQuery(query);
+            if (!userId.next()) {
+                return new LoginResponse(null);
+            } else {
+                do {
+                    return new LoginResponse(userId.getString("User_ID"));
+                } while (userId.next());
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        System.out.println("Returning the last null");
+        return null;
     }
 }

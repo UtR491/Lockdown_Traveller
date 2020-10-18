@@ -12,9 +12,8 @@ public class Server {
         DatabaseConnector db = null;
 
         try {
-            serverSocket = new ServerSocket(1234);
+            serverSocket = new ServerSocket(12000);
             db = new DatabaseConnector();
-            db.getConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }

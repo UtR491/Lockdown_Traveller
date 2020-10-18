@@ -6,9 +6,7 @@ public class DisplayTrainsRequest implements Serializable {
     private String sDate;
     private String dest;
 
-
-
-    DisplayTrainsRequest(String source, String dest, String sDate) {
+    DisplayTrainsRequest(String source, String sDate, String dest) {
         this.source = source;
         this.dest = dest;
         this.sDate = sDate;

@@ -11,12 +11,11 @@ public class BookingRequestHandler extends Handler{
     BookingRequest bookingRequest = null;
     ObjectOutputStream oos = null;
     public BookingRequestHandler(DatabaseConnector db, BookingRequest bookingRequest, ObjectOutputStream oos) {
-
             this.bookingRequest = bookingRequest;
             this.db = db;
             this.oos = oos;
-
     }
+
 @Override
     public void sendQuery() {
         try {
