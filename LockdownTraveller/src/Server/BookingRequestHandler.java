@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 import Client.BookingRequest;
 
-public class BookingRequestHandler {
+public class BookingRequestHandler extends Handler{
     DatabaseConnector db = null;
     BookingRequest bookingRequest = null;
     ObjectOutputStream oos = null;
@@ -16,6 +16,7 @@ public class BookingRequestHandler {
             this.oos = oos;
     }
 
+@Override
     public void sendQuery() {
         try {
             System.out.println("inside the gottaDo function");

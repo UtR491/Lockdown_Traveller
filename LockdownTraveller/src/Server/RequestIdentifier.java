@@ -7,6 +7,7 @@ import java.net.Socket;
 import Client.BookingRequest;
 import Client.LoginRequest;
 import Client.RegisterRequest;
+import Client.DisplayTrainsRequest;
 
 public class RequestIdentifier implements Runnable{
     Socket socket;
@@ -45,6 +46,21 @@ public class RequestIdentifier implements Runnable{
                 System.out.println("Booking Request");
                 BookingRequestHandler brh = new BookingRequestHandler(db, (BookingRequest) request, oos);
                 brh.sendQuery();
+            }
+           else if (request instanceof DisplayTrainsRequest) {
+                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db, (DisplayTrainsRequest) request, oos);
+                try {
+                    dtrh.sendQuery();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (request instanceof CancelBookingRequest) {
+                CancelBookingRequestHandler c = new CancelBookingRequestHandler(db, (CancelBookingRequest) request, oos);
+                try {
+                    c.sendQuery();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
             }
             else if (request instanceof RegisterRequest){
                 System.out.println("Register Request");

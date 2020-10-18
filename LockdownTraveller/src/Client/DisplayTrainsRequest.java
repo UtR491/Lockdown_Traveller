@@ -8,8 +8,8 @@ public class DisplayTrainsRequest implements Serializable {
 
     DisplayTrainsRequest(String source, String sDate, String dest) {
         this.source = source;
-        this.sDate = sDate;
         this.dest = dest;
+        this.sDate = sDate;
     }
 
     public String getSource() {
