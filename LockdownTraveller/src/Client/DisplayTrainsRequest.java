@@ -1,7 +1,7 @@
 package Client;
 import java.io.Serializable;
 
-public class DisplayTrainsRequest implements Serializable {
+public class DisplayTrainsRequest extends Request implements Serializable {
     private String source;
     private String sDate;
     private String dest;
