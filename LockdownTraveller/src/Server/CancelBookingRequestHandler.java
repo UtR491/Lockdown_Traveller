@@ -19,7 +19,8 @@ public class CancelBookingRequestHandler extends Handler
         System.out.println("Inside Handler's get response method");
         String PNR=cb.getPNR();
         String query="update booking_info set Booking_Status='Cancelled' where PNR=\""+PNR+"\"";
-        db.CancelTrains(query,oos);
+        CancelBookingResponse cb= db.CancelBooking(query);
+       Response.SendResponse(oos,cb);
 
     }
 }
