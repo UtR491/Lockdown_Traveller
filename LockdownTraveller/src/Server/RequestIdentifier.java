@@ -39,6 +39,21 @@ public class RequestIdentifier implements Runnable{
                 BookingRequestHandler brh = new BookingRequestHandler(db, (BookingRequest) request, oos);
                 brh.gottaDoWhatYouGottaDo();
             }
+           else if (request instanceof DisplayTrainsRequest) {
+                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db, (DisplayTrainsRequest) request, oos);
+                try {
+                    dtrh.sendQuery();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (request instanceof CancelBookingRequest) {
+                CancelBookingRequestHandler c = new CancelBookingRequestHandler(db, (CancelBookingRequest) request, oos);
+                try {
+                    c.sendQuery();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+            }
             else if (request instanceof RegisterRequest){
                 RegisterRequestHandler registerRequestHandler= new RegisterRequestHandler (db, (RegisterRequest) request, oos);
             }
