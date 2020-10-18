@@ -9,10 +9,23 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class SignupController implements Initializable {
+    static int number;
+
+    private static String getRandomNumberString() {
+
+        Random rnd = new Random();
+        number = rnd.nextInt(999999);
+        return String.format("%06d", number);
+    }
+    ObjectInputStream objectInputStream=null;
+    ObjectOutputStream objectOutputStream=null;
     @FXML
     private TextField lastNameField, firstNameField, emailField, mobileField, usernameField;
     @FXML
@@ -29,6 +42,9 @@ public class SignupController implements Initializable {
     private Button signupButton, signinButton;
 
     public void signup(ActionEvent actionEvent) {
+        RegisterRequest registerRequest=new RegisterRequest(firstNameField.getText(), emailField.getText(),
+                lastNameField.getText(), mobileField.getText(), "", 0, usernameField.getText(), passwordField.getText(),number);
+        RegisterRequest.SendRequest(objectOutputStream,registerRequest);
 
     }
 
@@ -62,4 +78,9 @@ public class SignupController implements Initializable {
         else
             passwordMismatchLabel.setText("Passwords don't match!");
     }
+    public void initData (ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
+        this.objectOutputStream=objectOutputStream;
+        this.objectInputStream=objectInputStream;
+    }
+
 }

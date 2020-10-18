@@ -11,13 +11,11 @@ public class BookingRequestHandler {
     BookingRequest bookingRequest = null;
     ObjectOutputStream oos = null;
     public BookingRequestHandler(DatabaseConnector db, BookingRequest bookingRequest, ObjectOutputStream oos) {
-        try {
+
             this.bookingRequest = bookingRequest;
             this.db = db;
             this.oos = oos;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void gottaDoWhatYouGottaDo() {
@@ -74,10 +72,9 @@ public class BookingRequestHandler {
                     + "values ('" + trainId + "', 'xxxxxxxxxx', '" + convertedDate + "', 'station', 'stationNo', '" + coach + "xx')";
             System.out.println("getting the booking response object from calling bookingRequest function in db connector");
             BookingResponse br =  db.bookingRequest(query1, query2, query3, query4, numSeat, availableSeat, query5, bookingIds, preference, age, gender);
+            BookingResponse.SendResponse(oos,br);
 
-            System.out.println("Creating a new thread to send the response");
-            oos.writeObject(br);
-            oos.flush();
+
 
             System.out.println(query1);
         } catch (Exception e) {

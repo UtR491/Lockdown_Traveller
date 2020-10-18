@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import Client.BookingRequest;
+import Client.RegisterRequest;
 
 public class RequestIdentifier implements Runnable{
     Socket socket;
@@ -37,6 +38,9 @@ public class RequestIdentifier implements Runnable{
             if(request instanceof BookingRequest) {
                 BookingRequestHandler brh = new BookingRequestHandler(db, (BookingRequest) request, oos);
                 brh.gottaDoWhatYouGottaDo();
+            }
+            else if (request instanceof RegisterRequest){
+                RegisterRequestHandler registerRequestHandler= new RegisterRequestHandler (db, (RegisterRequest) request, oos);
             }
         }
     }

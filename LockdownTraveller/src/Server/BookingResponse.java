@@ -2,7 +2,7 @@ package Server;
 
 import java.io.Serializable;
 
-public class BookingResponse implements Serializable {
+public class BookingResponse extends Response implements Serializable {
 
     long[] bookingIds;
     String[] seatsAlloted;

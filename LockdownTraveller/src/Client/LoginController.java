@@ -15,10 +15,14 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
+    ObjectInputStream objectInputStream=null;
+    ObjectOutputStream objectOutputStream=null;
 
     @FXML
     private Label noAccountLabel, signinLabel;
@@ -34,9 +38,14 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+
     }
 
     public void login(ActionEvent actionEvent) {
+        LoginRequest loginRequest=new LoginRequest(usernameField.getText(), passwordField.getText());
+        LoginRequest.SendRequest(objectOutputStream,loginRequest);
+
+
     }
 
     public void switchToSignup(ActionEvent actionEvent) {
@@ -49,5 +58,14 @@ public class LoginController implements Initializable {
             e.printStackTrace();
         }
         stage.setScene(signupScene);
+
     }
-}
+
+    public void initData (ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
+        this.objectOutputStream=objectOutputStream;
+        this.objectInputStream=objectInputStream;
+    }
+
+    }
+
+

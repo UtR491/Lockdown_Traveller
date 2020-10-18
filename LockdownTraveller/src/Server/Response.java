@@ -1,19 +1,19 @@
-package Client;
+package Server;
+
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-public abstract class Request implements Serializable {
 
-    public static void SendRequest(ObjectOutputStream oos, Request o) {
+public abstract class Response implements Serializable {
+    public static void SendResponse(ObjectOutputStream oos, Response server) {
         try {
-            oos.writeObject(o);
+            oos.writeObject(server);
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
 }
