@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
+
 import Client.BookingRequest;
 import Client.LoginRequest;
 import Client.RegisterRequest;
 import Client.DisplayTrainsRequest;
+import Client.CancelBookingRequest;
 
 public class RequestIdentifier implements Runnable{
     Socket socket;

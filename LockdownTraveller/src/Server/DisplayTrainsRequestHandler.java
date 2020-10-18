@@ -1,5 +1,7 @@
+package Server;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import Client.DisplayTrainsRequest;
 
 public class DisplayTrainsRequestHandler extends Handler {
     DatabaseConnector db;

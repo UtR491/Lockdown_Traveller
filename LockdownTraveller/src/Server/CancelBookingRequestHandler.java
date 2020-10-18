@@ -1,6 +1,8 @@
+package Server;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.SQLException;
+import Client.CancelBookingRequest;
 
 public class CancelBookingRequestHandler extends Handler
 {
@@ -19,7 +21,7 @@ public class CancelBookingRequestHandler extends Handler
         System.out.println("Inside Handler's get response method");
         String PNR=cb.getPNR();
         String query="update booking_info set Booking_Status='Cancelled' where PNR=\""+PNR+"\"";
-        db.CancelTrains(query,oos);
-
+        CancelBookingResponse cancelBookingResponse = db.CancelBooking(query,oos);
+        CancelBookingResponse.SendResponse(oos, cancelBookingResponse);
     }
 }

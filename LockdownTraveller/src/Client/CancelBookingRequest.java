@@ -1,3 +1,4 @@
+package Client;
 import java.io.*;
 
 public class CancelBookingRequest extends Request implements Serializable {

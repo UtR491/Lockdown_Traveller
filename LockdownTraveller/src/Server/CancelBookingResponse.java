@@ -1,3 +1,4 @@
+package Server;
 import java.io.Serializable;
 
 public class CancelBookingResponse extends Response implements Serializable {

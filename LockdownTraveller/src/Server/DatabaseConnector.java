@@ -1,8 +1,9 @@
 package Server;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.sql.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -224,14 +225,13 @@ public class DatabaseConnector {
          return new DisplayTrainsResponse(Train_ID,Train_Name,Source,Departure,Destination,Arrival,First_AC,Second_AC,Third_AC,Sleeper,Date,i);
 
     }
-    CancelBookingReponse CancelBooking(String query,ObjectOutputStream oos) throws SQLException, IOException {
+    public CancelBookingResponse CancelBooking(String query,ObjectOutputStream oos) throws SQLException, IOException {
         PreparedStatement preparedStatement=connection.prepareStatement(query);
         int result=preparedStatement.executeUpdate();
         String response = null;
         if(result==0){response="No bookings found under the given PNR.Failed to cancel the booking";}
         else if(result>0){response="Booking cancelled succesfully";}
         return new CancelBookingResponse(response);
-        
     }
 
     private void getConnection() {
