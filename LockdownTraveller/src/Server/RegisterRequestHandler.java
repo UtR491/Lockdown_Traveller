@@ -15,7 +15,8 @@ public class RegisterRequestHandler {
         this.registerRequest=registerRequest;
         this.oos=oos;
     }
-    public void formQuery(){
+    @Override
+    public void sendQuery(){
     }
 
 }
