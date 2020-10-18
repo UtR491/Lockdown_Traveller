@@ -37,7 +37,7 @@ public class RequestIdentifier implements Runnable{
             }
             if(request instanceof BookingRequest) {
                 BookingRequestHandler brh = new BookingRequestHandler(db, (BookingRequest) request, oos);
-                brh.gottaDoWhatYouGottaDo();
+                brh.sendQuery();
             }
            else if (request instanceof DisplayTrainsRequest) {
                 DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db, (DisplayTrainsRequest) request, oos);
