@@ -12,11 +12,10 @@ public class RegisterRequestHandler {
 
     public RegisterRequestHandler(DatabaseConnector db, RegisterRequest registerRequest, ObjectOutputStream oos) {
         this.db=db;
-                this.registerRequest=registerRequest;
-                this.oos=oos;
+        this.registerRequest=registerRequest;
+        this.oos=oos;
     }
     public void formQuery(){
-
     }
 
 }

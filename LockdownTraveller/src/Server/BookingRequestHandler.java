@@ -11,14 +11,12 @@ public class BookingRequestHandler {
     BookingRequest bookingRequest = null;
     ObjectOutputStream oos = null;
     public BookingRequestHandler(DatabaseConnector db, BookingRequest bookingRequest, ObjectOutputStream oos) {
-
             this.bookingRequest = bookingRequest;
             this.db = db;
             this.oos = oos;
-
     }
 
-    public void gottaDoWhatYouGottaDo() {
+    public void sendQuery() {
         try {
             System.out.println("inside the gottaDo function");
             String trainId = bookingRequest.getTrainId();

@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import Client.BookingRequest;
+import Client.LoginRequest;
 import Client.RegisterRequest;
 
 public class RequestIdentifier implements Runnable{
@@ -35,11 +36,18 @@ public class RequestIdentifier implements Runnable{
             } catch(ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            if(request instanceof BookingRequest) {
+            if(request instanceof LoginRequest) {
+                System.out.println("Login Request");
+                LoginRequestHandler loginRequestHandler = new LoginRequestHandler(db, (LoginRequest) request, oos);
+                loginRequestHandler.sendQuery();
+            }
+            else if(request instanceof BookingRequest) {
+                System.out.println("Booking Request");
                 BookingRequestHandler brh = new BookingRequestHandler(db, (BookingRequest) request, oos);
-                brh.gottaDoWhatYouGottaDo();
+                brh.sendQuery();
             }
             else if (request instanceof RegisterRequest){
+                System.out.println("Register Request");
                 RegisterRequestHandler registerRequestHandler= new RegisterRequestHandler (db, (RegisterRequest) request, oos);
             }
         }
