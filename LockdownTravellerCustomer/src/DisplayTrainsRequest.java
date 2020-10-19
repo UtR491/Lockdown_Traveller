@@ -1,4 +1,3 @@
-package Client;
 import java.io.Serializable;
 
 public class DisplayTrainsRequest extends Request implements Serializable {

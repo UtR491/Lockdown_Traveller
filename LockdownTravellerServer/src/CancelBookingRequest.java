@@ -1,5 +1,4 @@
-package Client;
-import java.io.*;
+import java.io.Serializable;
 
 public class CancelBookingRequest extends Request implements Serializable {
     private String PNR;

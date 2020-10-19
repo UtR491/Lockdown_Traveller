@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="signinPane" prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.LoginController">
+<AnchorPane fx:id="signinPane" prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LoginController">
    <TextField fx:id="usernameField" layoutX="136.0" layoutY="128.0" prefHeight="26.0" prefWidth="281.0" promptText="Username / Email" />
    <PasswordField fx:id="passwordField" layoutX="135.0" layoutY="174.0" prefHeight="26.0" prefWidth="281.0" promptText="Password" />
    <Button fx:id="loginButton" layoutX="248.0" layoutY="240.0" mnemonicParsing="false" onAction="#login" text="Login" />

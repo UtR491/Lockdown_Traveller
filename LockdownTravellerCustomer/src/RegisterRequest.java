@@ -1,5 +1,3 @@
-package Client;
-
 import java.io.Serializable;
 
 public class RegisterRequest extends Request implements Serializable {
