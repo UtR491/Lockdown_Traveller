@@ -7,12 +7,5 @@ import java.io.Serializable;
 
 
 public abstract class Response implements Serializable {
-    public static void SendResponse(ObjectOutputStream oos, Response server) {
-        try {
-            oos.writeObject(server);
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

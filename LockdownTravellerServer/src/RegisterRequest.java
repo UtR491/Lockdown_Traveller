@@ -5,15 +5,15 @@ import java.io.Serializable;
 public class RegisterRequest extends Request implements Serializable {
 
 
-    private String firstName;
-    private String lastName;
-    private String emailID;
-    private String gender;
-    private String phone_number;
-    private int age;
-    private String username;
-    private String password;
-    private int userID;
+    private final String firstName;
+    private final String lastName;
+    private final String emailID;
+    private final String gender;
+    private final String phone_number;
+    private final int age;
+    private final String username;
+    private final String password;
+    private final int userID;
 
 
 

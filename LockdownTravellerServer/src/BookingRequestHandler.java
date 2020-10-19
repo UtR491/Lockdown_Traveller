@@ -68,7 +68,7 @@ public class BookingRequestHandler extends Handler{
                     + "values ('" + trainId + "', 'xxxxxxxxxx', '" + convertedDate + "', 'station', 'stationNo', '" + coach + "xx')";
             System.out.println("getting the booking response object from calling bookingRequest function in db connector");
             BookingResponse br =  db.bookingRequest(query1, query2, query3, query4, numSeat, availableSeat, query5, bookingIds, preference, age, gender);
-            BookingResponse.SendResponse(oos,br);
+            Server.SendResponse(oos,br);
 
 
 

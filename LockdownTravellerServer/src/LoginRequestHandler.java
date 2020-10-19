@@ -1,5 +1,8 @@
 
+import com.sun.tools.javac.Main;
+
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 public class LoginRequestHandler {
     DatabaseConnector db = null;
@@ -21,6 +24,6 @@ public class LoginRequestHandler {
         System.out.println("Sending the loginquery to database connector");
         LoginResponse loginResponse = db.loginRequest(query);
         System.out.println("Sending the login response to client");
-        LoginResponse.SendResponse(oos, loginResponse);
+        Server.SendResponse(oos, loginResponse);
     }
 }
