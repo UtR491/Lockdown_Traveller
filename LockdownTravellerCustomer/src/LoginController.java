@@ -40,7 +40,7 @@ public class LoginController implements Initializable {
         System.out.println("Creating a login request object in thread " + Thread.currentThread());
         LoginRequest loginRequest=new LoginRequest(usernameField.getText(), passwordField.getText());
         System.out.println("Sending the object in thread " + Thread.currentThread());
-        LoginRequest.SendRequest(objectOutputStream,loginRequest);
+        Main.SendRequest(objectOutputStream,loginRequest);
 
         try {
             System.out.println("Waiting for response");

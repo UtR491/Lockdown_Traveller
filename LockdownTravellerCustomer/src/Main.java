@@ -41,4 +41,22 @@ public class Main extends Application {
 
         primaryStage.show();
     }
+
+    public static void SendRequest(ObjectOutputStream oos, Request o) {
+        try {
+            oos.writeObject(o);
+            oos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void SendResponse(ObjectOutputStream oos, Response response) {
+        try {
+            oos.writeObject(response);
+            oos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

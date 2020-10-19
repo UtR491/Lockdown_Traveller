@@ -42,7 +42,7 @@ public class SignupController implements Initializable {
     public void signup(ActionEvent actionEvent) {
         RegisterRequest registerRequest=new RegisterRequest(firstNameField.getText(), emailField.getText(),
                 lastNameField.getText(), mobileField.getText(), "", 0, usernameField.getText(), passwordField.getText(),number);
-        RegisterRequest.SendRequest(objectOutputStream,registerRequest);
+        Main.SendRequest(objectOutputStream,registerRequest);
 
     }
 
