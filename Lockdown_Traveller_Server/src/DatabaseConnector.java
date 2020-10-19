@@ -1,4 +1,4 @@
-package Server;
+
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.*;
@@ -225,7 +225,7 @@ public class DatabaseConnector {
          return new DisplayTrainsResponse(Train_ID,Train_Name,Source,Departure,Destination,Arrival,First_AC,Second_AC,Third_AC,Sleeper,Date,i);
 
     }
-    public CancelBookingResponse CancelBooking(String query,ObjectOutputStream oos) throws SQLException, IOException {
+    public CancelBookingResponse CancelBooking(String query, ObjectOutputStream oos) throws SQLException, IOException {
         PreparedStatement preparedStatement=connection.prepareStatement(query);
         int result=preparedStatement.executeUpdate();
         String response = null;

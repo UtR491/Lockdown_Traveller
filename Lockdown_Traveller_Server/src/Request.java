@@ -1,18 +1,17 @@
-
-
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+public abstract class Request implements Serializable {
 
-public abstract class Response implements Serializable {
-    public static void SendResponse(ObjectOutputStream oos, Response server) {
+    public static void SendRequest(ObjectOutputStream oos, Request o) {
         try {
-            oos.writeObject(server);
+            oos.writeObject(o);
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 }

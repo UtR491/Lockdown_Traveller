@@ -1,14 +1,11 @@
-package Server;
-
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
-import Client.BookingRequest;
 
 public class BookingRequestHandler extends Handler{
     DatabaseConnector db = null;
-    BookingRequest bookingRequest = null;
+     BookingRequest bookingRequest = null;
     ObjectOutputStream oos = null;
     public BookingRequestHandler(DatabaseConnector db, BookingRequest bookingRequest, ObjectOutputStream oos) {
             this.bookingRequest = bookingRequest;

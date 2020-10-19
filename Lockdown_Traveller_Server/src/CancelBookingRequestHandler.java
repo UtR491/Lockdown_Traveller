@@ -1,8 +1,7 @@
-package Server;
+
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.SQLException;
-import Client.CancelBookingRequest;
 
 public class CancelBookingRequestHandler extends Handler
 {

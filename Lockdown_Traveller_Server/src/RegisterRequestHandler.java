@@ -1,11 +1,6 @@
-package Server;
-
-import Client.BookingRequest;
-import Client.RegisterRequest;
-
 import java.io.ObjectOutputStream;
 
-public class RegisterRequestHandler {
+public class RegisterRequestHandler extends Handler {
     DatabaseConnector db = null;
     RegisterRequest registerRequest = null;
     ObjectOutputStream oos = null;
