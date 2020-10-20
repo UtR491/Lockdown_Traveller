@@ -1,8 +1,4 @@
-
-import com.sun.tools.javac.Main;
-
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 public class LoginRequestHandler {
     DatabaseConnector db = null;

@@ -62,6 +62,10 @@ public class RequestIdentifier implements Runnable{
                 System.out.println("Register Request");
                 RegisterRequestHandler registerRequestHandler= new RegisterRequestHandler (db, (RegisterRequest) request, oos);
             }
+            else if (request instanceof AdminLoginRequest) {
+                AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos);
+                adminLoginRequestHandler.formQuery();
+            }
         }
     }
 }

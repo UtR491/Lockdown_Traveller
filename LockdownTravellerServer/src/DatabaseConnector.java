@@ -1,5 +1,7 @@
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.sql.*;
 import java.time.DayOfWeek;
@@ -238,12 +240,11 @@ public class DatabaseConnector {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Properties properties = new Properties();
-            properties.put("user", "utkarsh");
-            properties.put("password", "Hello@123");
+            properties.load(new InputStreamReader(new FileInputStream("./src/db.properties")));
             connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/lockdown_traveller", properties);
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (ClassNotFoundException | SQLException | IOException e) {
             e.printStackTrace();
         }
     }

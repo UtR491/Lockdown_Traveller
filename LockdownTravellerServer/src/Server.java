@@ -43,13 +43,4 @@ public class Server {
             e.printStackTrace();
         }
     }
-    public static void SendRequest(ObjectOutputStream oos, Request o) {
-        try {
-            oos.writeObject(o);
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }
