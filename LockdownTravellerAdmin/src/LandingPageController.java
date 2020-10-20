@@ -15,7 +15,8 @@ public class LandingPageController {
             addTrainsHyperlink,
             removeTrainsHyperlink,
             modifySeatsHyperlink,
-            cancelTrainsHyperlink;
+            cancelTrainsHyperlink,
+            rerouteTrainHyperlink;
 
     public void maintainCustomer(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MaintainCustomer.fxml"));
@@ -100,5 +101,18 @@ public class LandingPageController {
         }
         stage.setScene(newScene);
         stage.setTitle("Cancel Train");
+    }
+
+    public void rerouteTrain(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("RerouteTrain.fxml"));
+        Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
+        Scene newScene = null;
+        try {
+            newScene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.setScene(newScene);
+        stage.setTitle("Reroute Train");
     }
 }
