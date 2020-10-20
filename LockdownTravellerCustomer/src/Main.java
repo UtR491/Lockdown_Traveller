@@ -50,13 +50,5 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
-    public static void SendResponse(ObjectOutputStream oos, Response response) {
-        try {
-            oos.writeObject(response);
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 }
