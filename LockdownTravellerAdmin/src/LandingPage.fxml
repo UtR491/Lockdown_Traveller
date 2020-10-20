@@ -18,6 +18,6 @@
       <Hyperlink fx:id="removeTrainsHyperlink" layoutX="37.0" layoutY="235.0" onAction="#removeTrains" prefHeight="24.0" prefWidth="497.0" text="Remove trains." />
       <Hyperlink fx:id="modifySeatsHyperlink" layoutX="37.0" layoutY="275.0" onAction="#modifySeats" prefHeight="24.0" prefWidth="497.0" text="Modify seats and coaches in the train." />
       <Hyperlink fx:id="cancelTrainsHyperlink" layoutX="37.0" layoutY="315.0" onAction="#cancelTrains" prefHeight="24.0" prefWidth="497.0" text="Cancel trains." />
-      <Hyperlink fx:id="rerouteTrainHyperlink" layoutX="37.0" layoutY="315.0" onAction="#rerouteTrain" prefHeight="24.0" prefWidth="497.0" text="Reroute a train." />
+      <Hyperlink fx:id="rerouteTrainHyperlink" layoutX="37.0" layoutY="355.0" onAction="#rerouteTrain" prefHeight="24.0" prefWidth="497.0" text="Reroute a train." />
    </children>
 </AnchorPane>

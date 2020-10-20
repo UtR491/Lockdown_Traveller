@@ -79,7 +79,7 @@ public class LandingPageController {
         stage.setTitle("Remove Train");
     }
     public void modifySeats(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ModifySeat.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ModifySeats.fxml"));
         Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
         Scene newScene = null;
         try {

@@ -51,7 +51,9 @@ public class Main extends Application {
 
     public static Response ReceiveResponse() {
         try {
+            System.out.println("Inside recieve response to read the object");
             Object response = inputStream.readObject();
+            System.out.println("Object read");
             return (Response) response;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
