@@ -10,8 +10,8 @@ import java.net.Socket;
 
 public class Main extends Application {
     Socket socket=null;
-    ObjectOutputStream outputStream=null;
-    ObjectInputStream inputStream = null;
+    static ObjectOutputStream outputStream=null;
+    static ObjectInputStream inputStream = null;
     public static void main(String[] args) {
         launch(args);
     }
@@ -32,13 +32,32 @@ public class Main extends Application {
         primaryStage.setTitle("Sign In");
         try{
             primaryStage.setScene(new Scene(loader.load()));
-            LoginController login=loader.getController();
             System.out.println("Sending ois and oos in thread" + Thread.currentThread());
-            login.initData(outputStream,inputStream);
         } catch (IOException e){
             e.printStackTrace();
         }
 
         primaryStage.show();
+    }
+
+    public static void SendRequest(Request o) {
+        try {
+            outputStream.writeObject(o);
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Response ReceiveResponse() {
+        try {
+            System.out.println("Inside recieve response to read the object");
+            Object response = inputStream.readObject();
+            System.out.println("Object read");
+            return (Response) response;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
