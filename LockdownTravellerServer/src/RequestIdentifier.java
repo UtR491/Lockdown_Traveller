@@ -66,6 +66,33 @@ public class RequestIdentifier implements Runnable{
                 AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos);
                 adminLoginRequestHandler.formQuery();
             }
+            else if(request instanceof RemoveTrainsRequest)
+            {
+                RemoveTrainsRequestHandler removeTrainsRequestHandler=new RemoveTrainsRequestHandler((RemoveTrainsRequest)request,oos);
+                try {
+                    removeTrainsRequestHandler.sendQuery();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(request instanceof CancelTrainsRequest)
+            {
+                CancelTrainsRequestHandler cancelTrainsRequestHandler=new CancelTrainsRequestHandler((CancelTrainsRequest)request,oos);
+                try {
+                    cancelTrainsRequestHandler.sendQuery();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(request instanceof AddTrainsRequest)
+            {
+                AddTrainsRequestHandler addTrainsRequestHandler=new AddTrainsRequestHandler((AddTrainsRequest)request,oos);
+                try {
+                    addTrainsRequestHandler.sendQuery();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

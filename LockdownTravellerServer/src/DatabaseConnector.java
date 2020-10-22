@@ -1,9 +1,10 @@
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class DatabaseConnector {
         ResultSet conflict;
         ResultSet stationsOnRoute;
         ResultSet seatInCoach;
-        String inClause = "(";
+        StringBuilder inClause = new StringBuilder("(");
         List<String> route = new ArrayList<>();
         boolean first = true;
         int firstStationNo = 1;
@@ -35,10 +36,10 @@ public class DatabaseConnector {
                     firstStationNo = stationsOnRoute.getInt("Station_No");
                 }
                 System.out.println(stationsOnRoute.getString("Station"));
-                inClause += "'" + stationsOnRoute.getString("Station") + "', ";
+                inClause.append("'").append(stationsOnRoute.getString("Station")).append("', ");
                 route.add(String.valueOf(stationsOnRoute.getString("Station")));
             }
-            inClause = inClause + "'')";
+            inClause.append("'')");
 
             query1 = query1 + "and Station in " + inClause + ";";
             System.out.println(query1);
@@ -131,7 +132,7 @@ public class DatabaseConnector {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         return dayOfWeek.getValue();
     }
-    DisplayTrainsResponse DisplayTrains (String query1,String query2,String query3,String query4,String query5,String query6,String sDate,String source,String dest) throws IOException {
+    DisplayTrainsResponse DisplayTrains (String query1,String query2,String query3,String query4,String query5,String query6,String query7,String sDate,String source,String dest) throws IOException {
         char[] Days_Running = null;
         ResultSet result = null;
         int required_day = DatabaseConnector.DayToDate(sDate);
@@ -167,57 +168,98 @@ public class DatabaseConnector {
             if (value == '1') {
                 try {
                     assert false;
-                    Train_ID[i]=result.getString("Train_ID");
-                    Train_Name[i]=result.getString("Train_Name");
-                    Source=source;
-                    Departure[i]=result.getString("Departure");
-                    Destination=dest;
-                    Arrival[i]=result.getString("Arrival");
-                    Date=sDate;
+                    String q6=query7.replaceFirst("xxxxx",result.getString("Train_ID"));
+                    preparedStatement=connection.prepareStatement(q6);
+                    ResultSet resultSet1=preparedStatement.executeQuery();
+                    resultSet1.next();
+                    int compare1=0,compare2=0,counter=0;
 
-
-                    String q = query2.replaceFirst("xxxxx", Train_ID[i]);
-                    preparedStatement=connection.prepareStatement(q);
-                    ResultSet resultSet=preparedStatement.executeQuery();
-
-                    String q2=query3.replaceFirst("xxxxx",Train_ID[i]);
-                    preparedStatement=connection.prepareStatement(q2);
-                    ResultSet SL_Seats=preparedStatement.executeQuery();
-                    resultSet.next();
-                    SL_Seats.next();
-                    int available_seats = 0;
-                    if(resultSet.getString("Sleeper_Seats")!=null) {
-                         available_seats=Integer.parseInt(resultSet.getString("Sleeper_Seats"))-Integer.parseInt(SL_Seats.getString(1));
+                    SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        java.util.Date date=sdf.parse(sDate);
+                        if(resultSet1.getString("Added_Till")!=null)
+                        {
+                            java.util.Date date1= sdf.parse(resultSet1.getString("Added_Till"));
+                            compare1= date.compareTo(date1);
+                            if(compare1<0)
+                            {
+                                if(resultSet1.getString("Cancelled_Till")!=null)
+                                {
+                                    java.util.Date date2= sdf.parse(resultSet1.getString("Cancelled_Till"));
+                                    compare2=date.compareTo(date2);
+                                    if(compare2>0)
+                                    {
+                                        counter=1;
+                                    }
+                                }
+                                else counter=1;
+                            }
+                        }
+                        else counter=1;
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                    Sleeper[i]=String.valueOf(available_seats);
+                    if (counter==1) {
+                        Train_ID[i] = result.getString("Train_ID");
+                        Train_Name[i] = result.getString("Train_Name");
+                        Source = source;
+                        Departure[i] = result.getString("Departure");
+                        Destination = dest;
+                        Arrival[i] = result.getString("Arrival");
+                        Date = sDate;
 
 
-                    String q3=query4.replaceFirst("xxxxx",Train_ID[i]);
+                        String q = query2.replaceFirst("xxxxx", Train_ID[i]);
+                        preparedStatement = connection.prepareStatement(q);
+                        ResultSet resultSet = preparedStatement.executeQuery();
 
-                    preparedStatement=connection.prepareStatement(q3);
-                    ResultSet AC1_Seats=preparedStatement.executeQuery();
-                    AC1_Seats.next();
-                    if(resultSet.getString("FirstAC_Seats")!=null)available_seats=Integer.parseInt(resultSet.getString("FirstAC_Seats"))-Integer.parseInt(AC1_Seats.getString(1));
-                    First_AC[i]=String.valueOf(available_seats);
-
-                    String q4=query5.replaceFirst("xxxxx",Train_ID[i]);
-                    preparedStatement=connection.prepareStatement(q4);
-                    ResultSet AC2_Seats=preparedStatement.executeQuery();
-                    AC2_Seats.next();
-                    if(resultSet.getString("SecondAC_Seats")!=null)available_seats=Integer.parseInt(resultSet.getString("SecondAC_Seats"))-Integer.parseInt(AC2_Seats.getString(1));
-                    Second_AC[i]=String.valueOf(available_seats);
-
-
-                    String q5=query6.replaceFirst("xxxxx",Train_ID[i]);
-                    preparedStatement=connection.prepareStatement(q5);
-                    ResultSet AC3_Seats=preparedStatement.executeQuery();
-                    AC3_Seats.next();
-                    if(resultSet.getString("ThirdAC_Seats")!=null)available_seats=Integer.parseInt(resultSet.getString("ThirdAC_Seats"))-Integer.parseInt(AC3_Seats.getString(1));
-                    Third_AC[i]=String.valueOf(available_seats);
-
-                    i++;
+                        String q2 = query3.replaceFirst("xxxxx", Train_ID[i]);
+                        preparedStatement = connection.prepareStatement(q2);
+                        ResultSet SL_Seats = preparedStatement.executeQuery();
+                        resultSet.next();
+                        SL_Seats.next();
+                        int available_seats = 0;
+                        if (resultSet.getString("Sleeper_Seats") != null) {
+                            available_seats = Integer.parseInt(resultSet.getString("Sleeper_Seats")) - Integer.parseInt(SL_Seats.getString(1));
+                            Sleeper[i] = String.valueOf(available_seats*Integer.parseInt(resultSet.getString("Sleeper_Coaches")));
+                        }
+                        else Sleeper[i]=String.valueOf(available_seats);
 
 
+
+                        String q3 = query4.replaceFirst("xxxxx", Train_ID[i]);
+
+                        preparedStatement = connection.prepareStatement(q3);
+                        ResultSet AC1_Seats = preparedStatement.executeQuery();
+                        AC1_Seats.next();
+                        if (resultSet.getString("FirstAC_Seats") != null) {
+                            available_seats = Integer.parseInt(resultSet.getString("FirstAC_Seats")) - Integer.parseInt(AC1_Seats.getString(1));
+                            First_AC[i] = String.valueOf(available_seats * Integer.parseInt(resultSet.getString("FirstAC_Coaches")));
+                        }
+                        else First_AC[i] = String.valueOf(available_seats);
+
+                        String q4 = query5.replaceFirst("xxxxx", Train_ID[i]);
+                        preparedStatement = connection.prepareStatement(q4);
+                        ResultSet AC2_Seats = preparedStatement.executeQuery();
+                        AC2_Seats.next();
+                        if (resultSet.getString("SecondAC_Seats") != null) {
+                            available_seats = Integer.parseInt(resultSet.getString("SecondAC_Seats")) - Integer.parseInt(AC2_Seats.getString(1));
+                            Second_AC[i] = String.valueOf(available_seats * Integer.parseInt(resultSet.getString("SecondAC_Coaches")));
+                        }
+                        else Second_AC[i] = String.valueOf(available_seats);
+
+
+                        String q5 = query6.replaceFirst("xxxxx", Train_ID[i]);
+                        preparedStatement = connection.prepareStatement(q5);
+                        ResultSet AC3_Seats = preparedStatement.executeQuery();
+                        AC3_Seats.next();
+                        if (resultSet.getString("ThirdAC_Seats") != null) {
+                            available_seats = Integer.parseInt(resultSet.getString("ThirdAC_Seats")) - Integer.parseInt(AC3_Seats.getString(1));
+                            Third_AC[i] = String.valueOf(available_seats * Integer.parseInt(resultSet.getString("ThirdAC_Coaches")));
+                        }
+                        else Third_AC[i] = String.valueOf(available_seats);
+                        i++;
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -264,5 +306,64 @@ public class DatabaseConnector {
         }
         System.out.println("Returning the last null");
         return null;
+    }
+    public RemoveTrainsResponse removeTrainsRequest(String query1,String query2,String query3)
+    {
+        int cancelStatus=0;
+        try {
+            PreparedStatement preparedStatement=connection.prepareStatement(query1);
+             cancelStatus=preparedStatement.executeUpdate();
+             if(cancelStatus!=0)
+             {
+                 preparedStatement=connection.prepareStatement(query2);
+                 ResultSet resultSet=preparedStatement.executeQuery();
+                 while (resultSet.next())
+                 {
+                     String q=query2.replaceFirst("xxxxx",resultSet.getString("User_ID"));
+                     preparedStatement=connection.prepareStatement(q);
+                     cancelStatus=preparedStatement.executeUpdate();
+                 }
+             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new RemoveTrainsResponse(cancelStatus);
+    }
+    public CancelTrainsResponse cancelTrains(String query1,String query2,String query3)
+    {
+        String reponse=null;
+        try {
+            PreparedStatement preparedStatement=connection.prepareStatement(query1);
+            int c=preparedStatement.executeUpdate();
+            if(c!=0){
+                preparedStatement=connection.prepareStatement(query2);
+                ResultSet resultSet=preparedStatement.executeQuery();
+                while (resultSet.next())
+                {
+                    String q=query3.replaceFirst("xxxxx",resultSet.getString("User_ID"));
+                    preparedStatement=connection.prepareStatement(q);
+                    c=preparedStatement.executeUpdate();
+                }
+            }
+            if(c!=0){reponse="Train Cancelled Succesfully";}
+            else {reponse="Could not find train";}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new CancelTrainsResponse(reponse);
+    }
+    public AddTrainsResponse addTrains(String query)
+    {
+        String reponse=null;
+        try {
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            int c=preparedStatement.executeUpdate();
+            if(c!=0){reponse="Train added succesfully";}
+            else{reponse="Error occured";}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new AddTrainsResponse(reponse);
+
     }
 }
