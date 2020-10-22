@@ -21,8 +21,9 @@ public class RequestIdentifier implements Runnable{
     @Override
     public void run() {
         while(socket.isConnected()) {
-            Object request = null;
-                request = Server.ReceiveRequest();
+            Object request = Server.ReceiveRequest();
+            if(request == null)
+                break;
 
             if(request instanceof LoginRequest) {
                 System.out.println("Login Request");
@@ -58,6 +59,11 @@ public class RequestIdentifier implements Runnable{
                 System.out.println("Admin login request");
                 AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos, db);
                 adminLoginRequestHandler.sendQuery();
+            }
+            else if (request instanceof MaintainTrainsRequest) {
+                System.out.println("Maintain trains request");
+                MaintainTrainsRequestHandler maintainTrainsRequestHandler = new MaintainTrainsRequestHandler(db.getConnection(), (MaintainTrainsRequest) request);
+                maintainTrainsRequestHandler.sendQuery();
             }
         }
     }
