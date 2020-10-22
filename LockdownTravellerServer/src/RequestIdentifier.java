@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class RequestIdentifier implements Runnable{
@@ -10,7 +11,7 @@ public class RequestIdentifier implements Runnable{
     DatabaseConnector db;
     ObjectOutputStream oos;
     ObjectInputStream ois;
-    public RequestIdentifier(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, DatabaseConnector db) {
+    public RequestIdentifier(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, DatabaseConnector db, Connection connection) {
         this.socket = socket;
         this.oos = oos;
         this.ois = ois;
@@ -21,21 +22,11 @@ public class RequestIdentifier implements Runnable{
     public void run() {
         while(socket.isConnected()) {
             Object request = null;
-            try {
-                request = ois.readObject();
-            } catch (IOException e) {
-                try {
-                    socket.close();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                break;
-            } catch(ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+                request = Server.ReceiveRequest();
+
             if(request instanceof LoginRequest) {
                 System.out.println("Login Request");
-                LoginRequestHandler loginRequestHandler = new LoginRequestHandler(db, (LoginRequest) request, oos);
+                LoginRequestHandler loginRequestHandler = new LoginRequestHandler(db.getConnection(), (LoginRequest) request);
                 loginRequestHandler.sendQuery();
             }
             else if(request instanceof BookingRequest) {
