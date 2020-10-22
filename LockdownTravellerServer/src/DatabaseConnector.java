@@ -375,4 +375,87 @@ public class DatabaseConnector {
         return new AddTrainsResponse(reponse);
 
     }
+    public AddSeatsResponse addSeats(String query1,String query2,int numOfSeats)
+    {
+        String response=null;
+        PreparedStatement preparedStatement= null;
+        int c=0,seats=0;
+        try {
+            preparedStatement = connection.prepareStatement(query1);
+            ResultSet resultSet=preparedStatement.executeQuery();
+             seats=numOfSeats+resultSet.getInt(1);
+            String q=query2.replaceFirst("xx", String.valueOf(seats));
+            preparedStatement=connection.prepareStatement(q);
+             c=preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if(c!=0){response="Total number of seats after addition are"+ seats;}
+        else {response="Could not add seats,Please try again";}
+        return new AddSeatsResponse(response);
+
+    }
+    public RemoveSeatsResponse removeSeats(String query1,String query2,int numOfSeats)
+    {
+        String response=null;
+        PreparedStatement preparedStatement= null;
+        int c=0,seats=0;
+        try {
+            preparedStatement = connection.prepareStatement(query1);
+            ResultSet resultSet=preparedStatement.executeQuery();
+            seats=resultSet.getInt(1)-numOfSeats;
+            if(seats>=0)
+            {String q=query2.replaceFirst("xx", String.valueOf(seats));
+            preparedStatement=connection.prepareStatement(q);
+            c=preparedStatement.executeUpdate();}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if(c!=0){response="Total number of seats after removal are"+ seats;}
+        else {response="Could not remove seats,Please try again";}
+        return new RemoveSeatsResponse(response);
+    }
+    public AddCoachesResponse addCoaches(String query1,String query2,int numOfCoaches)
+    {
+        String response=null;
+        PreparedStatement preparedStatement= null;
+        int c=0,coaches=0;
+        try {
+            preparedStatement = connection.prepareStatement(query1);
+            ResultSet resultSet=preparedStatement.executeQuery();
+            coaches=numOfCoaches+resultSet.getInt(1);
+            String q=query2.replaceFirst("xx", String.valueOf(coaches));
+            preparedStatement=connection.prepareStatement(q);
+            c=preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if(c!=0){response="Total number of seats after addition are"+ coaches;}
+        else {response="Could not add seats,Please try again";}
+        return new AddCoachesResponse(response);
+    }
+
+    public RemoveCoachesResponse removeCoaches(String query1, String query2, int numOfCoaches) {
+        String response=null;
+        PreparedStatement preparedStatement= null;
+        int c=0,coaches=0;
+        try {
+            preparedStatement = connection.prepareStatement(query1);
+            ResultSet resultSet=preparedStatement.executeQuery();
+            coaches=resultSet.getInt(1)-numOfCoaches;
+            if(coaches>=0)
+            {String q=query2.replaceFirst("xx", String.valueOf(coaches));
+                preparedStatement=connection.prepareStatement(q);
+                c=preparedStatement.executeUpdate();}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if(c!=0){response="Total number of coaches after removal are"+ coaches;}
+        else {response="Could not remove coaches,Please try again";}
+        return new RemoveCoachesResponse(response);
+    }
 }

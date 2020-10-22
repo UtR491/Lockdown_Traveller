@@ -20,9 +20,9 @@ public class CancelTrainsRequestHandler  extends Handler{
         DateTimeFormatter dtf= DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtf2=  DateTimeFormatter.ofPattern("yyyy-MM-dd");
         date= LocalDate.parse(date,dtf).format(dtf2);
-        String query1="alter table basic_train_info(Cancelled_Till) add value(\""+date+"\")";
-        String query2="select User_ID from User";
-        String query3="insert into notifications values(\""+"xxxxx"+"\",\""+"As of 11:59 PM today the train number"+Train_ID+"has been cancelled untill\""+date+"\""+"\",1)";
+        String query1="alter table basic_train_info(Cancelled_Till) add value(\""+date+"\");";
+        String query2="select User_ID from User;";
+        String query3="insert into notifications values(\""+"xxxxx"+"\",\""+"As of 11:59 PM today the train number"+Train_ID+"has been cancelled untill\""+date+"\""+"\",1);";
         DatabaseConnector db=new DatabaseConnector();
         CancelTrainsResponse cancelTrainsResponse=db.cancelTrains(query1,query2,query3);
         Server.SendResponse(oos,cancelTrainsResponse);

@@ -62,11 +62,7 @@ public class RequestIdentifier implements Runnable{
             else if(request instanceof RemoveTrainsRequest)
             {
                 RemoveTrainsRequestHandler removeTrainsRequestHandler=new RemoveTrainsRequestHandler((RemoveTrainsRequest)request,oos);
-                try {
-                    removeTrainsRequestHandler.sendQuery();
-                } catch (IOException | SQLException e) {
-                    e.printStackTrace();
-                }
+                removeTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof CancelTrainsRequest)
             {
@@ -82,6 +78,34 @@ public class RequestIdentifier implements Runnable{
                 AddTrainsRequestHandler addTrainsRequestHandler=new AddTrainsRequestHandler((AddTrainsRequest)request,oos);
                 try {
                     addTrainsRequestHandler.sendQuery();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(request instanceof AddSeatsRequest)
+            {
+                AddSeatsRequestHandler addSeatsRequestHandler=new AddSeatsRequestHandler((AddSeatsRequest)request,oos);
+                addSeatsRequestHandler.sendQuery();
+            }
+            else if(request instanceof RemoveSeatsRequest)
+            {
+                RemoveSeatsRequestHandler removeSeatsRequestHandler=new RemoveSeatsRequestHandler((RemoveSeatsRequest)request,oos);
+                removeSeatsRequestHandler.sendQuery();
+            }
+            else if(request instanceof AddCoachesRequest)
+            {
+                AddCoachesRequestHandler addCoachesRequestHandler=new AddCoachesRequestHandler((AddCoachesRequest)request,oos);
+                try {
+                    addCoachesRequestHandler.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(request instanceof RemoveCoachesRequest)
+            {
+                RemoveCoachesRequestHandler removeCoachesRequestHandler=new RemoveCoachesRequestHandler((RemoveCoachesRequest)request,oos);
+                try {
+                    removeCoachesRequestHandler.sendQuery();
                 } catch (IOException | SQLException e) {
                     e.printStackTrace();
                 }

@@ -45,11 +45,9 @@ public class DisplayTrainsRequestHandler extends Handler {
         String query4="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like '1A%'));";
         String query5="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like '2A%'));";
         String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like '3A%'));";
-        String query7="select Added_Till,Cancelled_Till from basic_train_info where Train_ID=\""+"xxxxx"+"\"";
+        String query7="select Added_Till,Cancelled_Till from basic_train_info where Train_ID=\""+"xxxxx"+"\";";
         DisplayTrainsResponse displayTrainsResponse=db.DisplayTrains(query1,query2,query3,query4,query5,query6,query7,sDate,source,dest);
         Server.SendResponse(oos,displayTrainsResponse);
-
-
     }
     }
 

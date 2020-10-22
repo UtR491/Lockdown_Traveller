@@ -27,7 +27,7 @@ public class AddTrainsRequestHandler extends Handler {
                 +"\",\""+ addTrainsRequest.getThirdAC_Seats()+"\","+addTrainsRequest.getSleeper_Seats()+"\","+
                 addTrainsRequest.getFirstAC_Fare()+"\","+addTrainsRequest.getSecondAC_Fare()+"\","+
                 addTrainsRequest.getThirdAC_Fare()+"\","+addTrainsRequest.getSleeper_Fare()+"\","+
-                date+"\",null";
+                date+"\",null;";
         DatabaseConnector db=new DatabaseConnector();
         AddTrainsResponse addTrainsResponse=db.addTrains(query1);
         Server.SendResponse(oos,addTrainsResponse);
