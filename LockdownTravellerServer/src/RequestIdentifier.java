@@ -22,18 +22,8 @@ public class RequestIdentifier implements Runnable{
     public void run() {
         while(socket.isConnected()) {
             Object request = null;
-            try {
-                request = ois.readObject();
-            } catch (IOException e) {
-                try {
-                    socket.close();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                break;
-            } catch(ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+                request = Server.ReceiveRequest();
+
             if(request instanceof LoginRequest) {
                 System.out.println("Login Request");
                 LoginRequestHandler loginRequestHandler = new LoginRequestHandler(db.getConnection(), (LoginRequest) request);
