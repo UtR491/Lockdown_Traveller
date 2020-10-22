@@ -6,6 +6,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+    static ObjectOutputStream objectOutputStream = null;
+    static ObjectInputStream objectInputStream = null;
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket;
@@ -23,11 +25,11 @@ public class Server {
                 assert serverSocket != null;
                 System.out.println("Waiting for a customer");
                 socket = serverSocket.accept();
-                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                objectInputStream = new ObjectInputStream(socket.getInputStream());
                 System.out.println("customer connected now creating database connection");
                 System.out.println("database connected now going to request identifier.");
-                Thread t = new Thread(new RequestIdentifier(socket, oos, ois, db));
+                Thread t = new Thread(new RequestIdentifier(socket, objectOutputStream, objectInputStream, db, db.getConnection()));
                 t.start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -35,12 +37,28 @@ public class Server {
 
         }
     }
-    public static void SendResponse(ObjectOutputStream oos, Response response) {
+    public static void SendResponse(Response response) {
+        try {
+            objectOutputStream.writeObject(response);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void SendResponse (ObjectOutputStream oos, Response response) {
         try {
             oos.writeObject(response);
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public static Object ReceiveRequest() {
+        try {
+            return objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
