@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="LandingPageController"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LandingPageController">
+   <children>
+      <Label layoutX="212.0" layoutY="24.0" text="Hello Admin">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Hyperlink fx:id="maintainCustomerHyperlink" layoutX="37.0" layoutY="75.0" onAction="#maintainCustomer" prefHeight="24.0" prefWidth="497.0" text="Maintain customer information." />
+      <Hyperlink fx:id="maintainTrainsHyperlink" layoutX="37.0" layoutY="115.0" onAction="#maintainTrains" prefHeight="24.0" prefWidth="497.0" text="Maintain train information." />
+      <Hyperlink fx:id="maintainSeatsHyperlink" layoutX="37.0" layoutY="155.0" onAction="#maintainSeats" prefHeight="24.0" prefWidth="497.0" text="Maintain current seats in the train." />
+      <Hyperlink fx:id="addTrainsHyperlink" layoutX="37.0" layoutY="195.0" onAction="#addTrains" prefHeight="24.0" prefWidth="497.0" text="Add trains." />
+      <Hyperlink fx:id="removeTrainsHyperlink" layoutX="37.0" layoutY="235.0" onAction="#removeTrains" prefHeight="24.0" prefWidth="497.0" text="Remove trains." />
+      <Hyperlink fx:id="modifySeatsHyperlink" layoutX="37.0" layoutY="275.0" onAction="#modifySeats" prefHeight="24.0" prefWidth="497.0" text="Modify seats and coaches in the train." />
+      <Hyperlink fx:id="cancelTrainsHyperlink" layoutX="37.0" layoutY="315.0" onAction="#cancelTrains" prefHeight="24.0" prefWidth="497.0" text="Cancel trains." />
+      <Hyperlink fx:id="rerouteTrainHyperlink" layoutX="37.0" layoutY="355.0" onAction="#rerouteTrain" prefHeight="24.0" prefWidth="497.0" text="Reroute a train." />
+   </children>
 </AnchorPane>

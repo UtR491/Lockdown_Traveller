@@ -15,7 +15,7 @@ public class DatabaseConnector {
     private Connection connection = null;
 
     public DatabaseConnector() {
-        getConnection();
+        createConnection();
     }
 
     public BookingResponse bookingRequest(String query1, String query2, String query3, String query4,
@@ -278,7 +278,7 @@ public class DatabaseConnector {
         return new CancelBookingResponse(response);
     }
 
-    private void getConnection() {
+    private void createConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Properties properties = new Properties();
@@ -291,20 +291,29 @@ public class DatabaseConnector {
         }
     }
 
-    public LoginResponse loginRequest(String query) {
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public AdminLoginResponse adminLoginRequest(String query) {
         try {
-            ResultSet userId = connection.createStatement().executeQuery(query);
-            if (!userId.next()) {
-                return new LoginResponse(null);
+            System.out.println("Prepared statement");
+            PreparedStatement validateLogin = connection.prepareStatement(query);
+            System.out.println("going to execute");
+            ResultSet adminCredentials = validateLogin.executeQuery();
+            if (!adminCredentials.next()) {
+                System.out.println("fail");
+                return new AdminLoginResponse("failure");
             } else {
                 do {
-                    return new LoginResponse(userId.getString("User_ID"));
-                } while (userId.next());
+                    System.out.println("success");
+                    return new AdminLoginResponse("success");
+                } while (adminCredentials.next());
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        System.out.println("Returning the last null");
+        System.out.println("null");
         return null;
     }
     public RemoveTrainsResponse removeTrainsRequest(String query1,String query2,String query3)
