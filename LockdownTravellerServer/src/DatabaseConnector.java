@@ -218,7 +218,7 @@ public class DatabaseConnector {
                     i++;
 
 
-                } catch (SQLException e) {u
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
