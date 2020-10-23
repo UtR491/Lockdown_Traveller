@@ -5,8 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    static ObjectOutputStream oos = null;
-    static ObjectInputStream ois = null;
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket;
