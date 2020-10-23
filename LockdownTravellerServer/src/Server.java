@@ -6,8 +6,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    static ObjectOutputStream objectOutputStream = null;
-    static ObjectInputStream objectInputStream = null;
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket;
@@ -25,11 +23,9 @@ public class Server {
                 assert serverSocket != null;
                 System.out.println("Waiting for a customer");
                 socket = serverSocket.accept();
-                objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                objectInputStream = new ObjectInputStream(socket.getInputStream());
                 System.out.println("customer connected now creating database connection");
                 System.out.println("database connected now going to request identifier.");
-                Thread t = new Thread(new RequestIdentifier(socket, objectOutputStream, objectInputStream, db, db.getConnection()));
+                Thread t = new Thread(new RequestIdentifier(socket, db, db.getConnection()));
                 t.start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -37,28 +33,21 @@ public class Server {
 
         }
     }
-    public static void SendResponse(Response response) {
-        try {
-            objectOutputStream.writeObject(response);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public static void SendResponse (ObjectOutputStream oos, Response response) {
         try {
+            System.out.println("Sending the object now " + response);
             oos.writeObject(response);
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public static Object ReceiveRequest() {
+    public static Object ReceiveRequest(ObjectInputStream objectInputStream) {
         try {
             return objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 }

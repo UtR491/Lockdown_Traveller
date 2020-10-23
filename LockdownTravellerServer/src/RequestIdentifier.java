@@ -9,24 +9,30 @@ import java.sql.SQLException;
 public class RequestIdentifier implements Runnable{
     Socket socket;
     DatabaseConnector db;
-    ObjectOutputStream oos;
-    ObjectInputStream ois;
-    public RequestIdentifier(Socket socket, ObjectOutputStream oos, ObjectInputStream ois, DatabaseConnector db, Connection connection) {
+    public RequestIdentifier(Socket socket, DatabaseConnector db, Connection connection) {
         this.socket = socket;
-        this.oos = oos;
-        this.ois = ois;
         this.db = db;
     }
 
     @Override
     public void run() {
+
+        ObjectInputStream ois = null;
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         while(socket.isConnected()) {
-            Object request;
-                request = Server.ReceiveRequest();
+            Object request = Server.ReceiveRequest(ois);
+            if(request == null)
+                break;
 
             if(request instanceof LoginRequest) {
                 System.out.println("Login Request");
-                LoginRequestHandler loginRequestHandler = new LoginRequestHandler(db.getConnection(), (LoginRequest) request);
+                LoginRequestHandler loginRequestHandler = new LoginRequestHandler(oos, db.getConnection(), (LoginRequest) request);
                 loginRequestHandler.sendQuery();
             }
             else if(request instanceof BookingRequest) {
@@ -55,6 +61,11 @@ public class RequestIdentifier implements Runnable{
                 System.out.println("Admin login request");
                 AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos, db);
                 adminLoginRequestHandler.sendQuery();
+            }
+            else if (request instanceof MaintainTrainsRequest) {
+                System.out.println("Maintain trains request");
+                MaintainTrainsRequestHandler maintainTrainsRequestHandler = new MaintainTrainsRequestHandler(oos, db.getConnection(), (MaintainTrainsRequest) request);
+                maintainTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof RemoveTrainsRequest)
             {
