@@ -37,6 +37,7 @@ public class Server {
 
         }
     }
+
     public static void SendResponse(Response response) {
         try {
             objectOutputStream.writeObject(response);
