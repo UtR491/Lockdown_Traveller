@@ -1,3 +1,4 @@
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -7,11 +8,11 @@ import java.time.format.DateTimeFormatter;
 public class AddTrainsRequestHandler extends Handler {
     private AddTrainsRequest addTrainsRequest;
     Connection connection;
-
-
-    public AddTrainsRequestHandler(Connection connection, AddTrainsRequest addTrainsRequest) {
+    ObjectOutputStream oos;
+    public AddTrainsRequestHandler(Connection connection, AddTrainsRequest addTrainsRequest,ObjectOutputStream oos) {
        this.connection=connection;
        this.addTrainsRequest=addTrainsRequest;
+       this.oos=oos;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class AddTrainsRequestHandler extends Handler {
                 addTrainsRequest.getThirdAC_Fare()+"\","+addTrainsRequest.getSleeper_Fare()+"\","+
                 date+"\",null;";
         AddTrainsResponse addTrainsResponse=addTrains(query1);
-        Server.SendResponse(addTrainsResponse);
+        Server.SendResponse(oos,addTrainsResponse);
     }
     public AddTrainsResponse addTrains(String query)
     {

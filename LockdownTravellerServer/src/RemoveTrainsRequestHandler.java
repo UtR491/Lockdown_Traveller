@@ -1,3 +1,4 @@
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,11 +8,12 @@ import java.util.ArrayList;
 public class RemoveTrainsRequestHandler extends Handler {
     RemoveTrainsRequest removeTrainsRequest;
     Connection connection;
+    ObjectOutputStream oos;
 
-
-    public RemoveTrainsRequestHandler(Connection connection, RemoveTrainsRequest removeTrainsRequest) {
+    public RemoveTrainsRequestHandler(Connection connection, RemoveTrainsRequest removeTrainsRequest,ObjectOutputStream oos) {
         this.connection=connection;
         this.removeTrainsRequest=removeTrainsRequest;
+        this.oos=oos;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class RemoveTrainsRequestHandler extends Handler {
                 r = "Train removed successfully";
             }
             RemoveTrainsResponse removeTrainsResponse1 = new RemoveTrainsResponse(r);
-            Server.SendResponse(removeTrainsResponse1);
+            Server.SendResponse(oos,removeTrainsResponse1);
         }
     }
     public RemoveTrainsResponse removeTrainsRequest(String query1,String query2,String query3,String train_ID)

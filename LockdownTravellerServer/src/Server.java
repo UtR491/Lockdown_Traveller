@@ -1,4 +1,6 @@
 
+import sun.plugin2.liveconnect.ArgumentHelper;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -33,6 +35,18 @@ public class Server {
 
         }
     }
+
+
+    public static void SendResponse(Response response) {
+        try {
+            ObjectOutputStream objectOutputStream = null;
+            objectOutputStream.writeObject(response);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void SendResponse (ObjectOutputStream oos, Response response) {
         try {
             System.out.println("Sending the object now " + response);

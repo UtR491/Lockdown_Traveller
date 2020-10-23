@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -7,15 +7,16 @@ public class CancelBookingRequestHandler extends Handler
 {
     Connection connection;
     CancelBookingRequest cb;
-
-    CancelBookingRequestHandler(Connection connection,CancelBookingRequest cb)
+    ObjectOutputStream oos;
+    CancelBookingRequestHandler(Connection connection,CancelBookingRequest cb,ObjectOutputStream oos)
     {
         this.connection=connection;
         this.cb=cb;
+        this.oos=oos;
     }
 
     @Override
-    void sendQuery() throws IOException, SQLException {
+    void sendQuery() throws  SQLException {
         System.out.println("Inside Handler's get response method");
         String PNR=cb.getPNR();
         String query="update booking_info set Booking_Status='Cancelled' where PNR=\""+PNR+"\"";

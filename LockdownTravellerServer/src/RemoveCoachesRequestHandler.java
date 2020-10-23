@@ -1,3 +1,4 @@
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -5,9 +6,11 @@ import java.sql.SQLException;
 public class RemoveCoachesRequestHandler extends Handler {
     RemoveCoachesRequest removeCoachesRequest;
     Connection connection;
-    public RemoveCoachesRequestHandler(Connection connection, RemoveCoachesRequest removeCoachesRequest) {
+    ObjectOutputStream oos;
+    public RemoveCoachesRequestHandler(Connection connection, RemoveCoachesRequest removeCoachesRequest, ObjectOutputStream oos) {
         this.connection=connection;
         this.removeCoachesRequest=removeCoachesRequest;
+        this.oos=oos;
     }
 
     @Override
@@ -17,7 +20,7 @@ public class RemoveCoachesRequestHandler extends Handler {
         int numOfCoaches=removeCoachesRequest.getNumOfCoaches();
         String query1="update basic_train_info set ?=?-? where Train_ID=?;";
         RemoveCoachesResponse removeCoachesResponse=removeCoaches(query1,numOfCoaches,Train_ID,coach);
-        Server.SendResponse(removeCoachesResponse);
+        Server.SendResponse(oos,removeCoachesResponse);
     }
 
 

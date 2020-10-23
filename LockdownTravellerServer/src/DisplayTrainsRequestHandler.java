@@ -1,3 +1,4 @@
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,10 +12,12 @@ import java.time.format.DateTimeFormatter;
 public class DisplayTrainsRequestHandler extends Handler {
     Connection connection;
     DisplayTrainsRequest displayTrainsRequest;
-    DisplayTrainsRequestHandler(Connection connection, DisplayTrainsRequest displayTrainsRequest)
+    ObjectOutputStream oos;
+    DisplayTrainsRequestHandler(Connection connection, DisplayTrainsRequest displayTrainsRequest,ObjectOutputStream oos)
     {
         this.connection=connection;
         this.displayTrainsRequest=displayTrainsRequest;
+        this.oos=oos;
     }
 
     @Override
@@ -50,7 +53,7 @@ public class DisplayTrainsRequestHandler extends Handler {
         String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
         String query7="select Added_Till,Cancelled_Till from basic_train_info where Train_ID=?;";
         DisplayTrainsResponse displayTrainsResponse=DisplayTrains(query1,query2,query3,query4,query5,query6,query7,sDate,source,dest);
-        Server.SendResponse(displayTrainsResponse);
+        Server.SendResponse(oos,displayTrainsResponse);
     }
     private static int DayToDate(String sDate) {
         String[] date = sDate.split("/");

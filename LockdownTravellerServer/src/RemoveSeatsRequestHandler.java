@@ -1,3 +1,4 @@
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -5,10 +6,11 @@ import java.sql.SQLException;
 public class RemoveSeatsRequestHandler extends Handler {
     RemoveSeatsRequest removeSeatsRequest;
    Connection connection;
-
-    public RemoveSeatsRequestHandler(Connection connection, RemoveSeatsRequest removeSeatsRequest) {
+    ObjectOutputStream oos;
+    public RemoveSeatsRequestHandler(Connection connection, RemoveSeatsRequest removeSeatsRequest,ObjectOutputStream oos) {
         this.connection=connection;
         this.removeSeatsRequest=removeSeatsRequest;
+        this.oos=oos;
     }
 
     @Override
@@ -18,7 +20,7 @@ public class RemoveSeatsRequestHandler extends Handler {
         int numOfSeats=removeSeatsRequest.getNumOfSeats();
         String query1="update basic_train_info set ?=?-? where Train_ID=?;";
         RemoveSeatsResponse removeSeatsResponse=removeSeats(query1,numOfSeats,Train_ID,coach);
-        Server.SendResponse(removeSeatsResponse);
+        Server.SendResponse(oos,removeSeatsResponse);
     }
     public RemoveSeatsResponse removeSeats(String query1,int numOfSeats,String Train_ID,String coach)
     {
