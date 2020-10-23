@@ -1,20 +1,21 @@
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class AddTrainsRequestHandler extends Handler {
     private AddTrainsRequest addTrainsRequest;
-    private ObjectOutputStream oos;
-    AddTrainsRequestHandler(AddTrainsRequest addTrainsRequest,ObjectOutputStream oos)
-    {
-        this.addTrainsRequest=addTrainsRequest;
-        this.oos=oos;
+    Connection connection;
+
+
+    public AddTrainsRequestHandler(Connection connection, AddTrainsRequest addTrainsRequest) {
+       this.connection=connection;
+       this.addTrainsRequest=addTrainsRequest;
     }
 
     @Override
-    void sendQuery() throws IOException, SQLException {
+    void sendQuery() {
         String date= addTrainsRequest.getAdded_Till();
         DateTimeFormatter dtf= DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtf2=  DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -28,8 +29,21 @@ public class AddTrainsRequestHandler extends Handler {
                 addTrainsRequest.getFirstAC_Fare()+"\","+addTrainsRequest.getSecondAC_Fare()+"\","+
                 addTrainsRequest.getThirdAC_Fare()+"\","+addTrainsRequest.getSleeper_Fare()+"\","+
                 date+"\",null;";
-        DatabaseConnector db=new DatabaseConnector();
-        AddTrainsResponse addTrainsResponse=db.addTrains(query1);
-        Server.SendResponse(oos,addTrainsResponse);
+        AddTrainsResponse addTrainsResponse=addTrains(query1);
+        Server.SendResponse(addTrainsResponse);
+    }
+    public AddTrainsResponse addTrains(String query)
+    {
+        String reponse=null;
+        try {
+            PreparedStatement preparedStatement=connection.prepareStatement(query);
+            int c=preparedStatement.executeUpdate();
+            if(c!=0){reponse="Train added succesfully";}
+            else{reponse="Error occured";}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new AddTrainsResponse(reponse);
+
     }
 }

@@ -21,7 +21,7 @@ public class RequestIdentifier implements Runnable{
     @Override
     public void run() {
         while(socket.isConnected()) {
-            Object request = null;
+            Object request;
                 request = Server.ReceiveRequest();
 
             if(request instanceof LoginRequest) {
@@ -35,14 +35,11 @@ public class RequestIdentifier implements Runnable{
                 brh.sendQuery();
             }
            else if (request instanceof DisplayTrainsRequest) {
-                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db, (DisplayTrainsRequest) request, oos);
-                try {
-                    dtrh.sendQuery();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db.getConnection(), (DisplayTrainsRequest) request);
+                dtrh.sendQuery();
+
             } else if (request instanceof CancelBookingRequest) {
-                CancelBookingRequestHandler c = new CancelBookingRequestHandler(db, (CancelBookingRequest) request, oos);
+                CancelBookingRequestHandler c = new CancelBookingRequestHandler(db.getConnection(), (CancelBookingRequest) request);
                 try {
                     c.sendQuery();
                 } catch (IOException | SQLException e) {
@@ -61,54 +58,38 @@ public class RequestIdentifier implements Runnable{
             }
             else if(request instanceof RemoveTrainsRequest)
             {
-                RemoveTrainsRequestHandler removeTrainsRequestHandler=new RemoveTrainsRequestHandler((RemoveTrainsRequest)request,oos);
+                RemoveTrainsRequestHandler removeTrainsRequestHandler=new RemoveTrainsRequestHandler(db.getConnection(),(RemoveTrainsRequest)request);
                 removeTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof CancelTrainsRequest)
             {
-                CancelTrainsRequestHandler cancelTrainsRequestHandler=new CancelTrainsRequestHandler((CancelTrainsRequest)request,oos);
-                try {
-                    cancelTrainsRequestHandler.sendQuery();
-                } catch (IOException | SQLException e) {
-                    e.printStackTrace();
-                }
+                CancelTrainsRequestHandler cancelTrainsRequestHandler=new CancelTrainsRequestHandler(db.getConnection(),(CancelTrainsRequest)request);
+                cancelTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof AddTrainsRequest)
             {
-                AddTrainsRequestHandler addTrainsRequestHandler=new AddTrainsRequestHandler((AddTrainsRequest)request,oos);
-                try {
-                    addTrainsRequestHandler.sendQuery();
-                } catch (IOException | SQLException e) {
-                    e.printStackTrace();
-                }
+                AddTrainsRequestHandler addTrainsRequestHandler=new AddTrainsRequestHandler(db.getConnection(),(AddTrainsRequest)request);
+                addTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof AddSeatsRequest)
             {
-                AddSeatsRequestHandler addSeatsRequestHandler=new AddSeatsRequestHandler((AddSeatsRequest)request,oos);
+                AddSeatsRequestHandler addSeatsRequestHandler=new AddSeatsRequestHandler(db.getConnection(),(AddSeatsRequest)request);
                 addSeatsRequestHandler.sendQuery();
             }
             else if(request instanceof RemoveSeatsRequest)
             {
-                RemoveSeatsRequestHandler removeSeatsRequestHandler=new RemoveSeatsRequestHandler((RemoveSeatsRequest)request,oos);
+                RemoveSeatsRequestHandler removeSeatsRequestHandler=new RemoveSeatsRequestHandler(db.getConnection(),(RemoveSeatsRequest)request);
                 removeSeatsRequestHandler.sendQuery();
             }
             else if(request instanceof AddCoachesRequest)
             {
-                AddCoachesRequestHandler addCoachesRequestHandler=new AddCoachesRequestHandler((AddCoachesRequest)request,oos);
-                try {
-                    addCoachesRequestHandler.sendQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                AddCoachesRequestHandler addCoachesRequestHandler=new AddCoachesRequestHandler(db.getConnection(),(AddCoachesRequest)request);
+                addCoachesRequestHandler.sendQuery();
             }
             else if(request instanceof RemoveCoachesRequest)
             {
-                RemoveCoachesRequestHandler removeCoachesRequestHandler=new RemoveCoachesRequestHandler((RemoveCoachesRequest)request,oos);
-                try {
-                    removeCoachesRequestHandler.sendQuery();
-                } catch (IOException | SQLException e) {
-                    e.printStackTrace();
-                }
+                RemoveCoachesRequestHandler removeCoachesRequestHandler=new RemoveCoachesRequestHandler(db.getConnection(),(RemoveCoachesRequest)request);
+                removeCoachesRequestHandler.sendQuery();
             }
         }
     }

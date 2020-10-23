@@ -1,24 +1,43 @@
-import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class AddCoachesRequestHandler extends Handler {
     AddCoachesRequest addCoachesRequest;
-    ObjectOutputStream oos;
-    AddCoachesRequestHandler(AddCoachesRequest addCoachesRequest,ObjectOutputStream oos)
-    {
+   Connection connection;
+    public AddCoachesRequestHandler(Connection connection, AddCoachesRequest addCoachesRequest) {
+        this.connection=connection;
         this.addCoachesRequest=addCoachesRequest;
-        this.oos=oos;
     }
 
     @Override
-    void sendQuery() throws SQLException {
+    void sendQuery() {
         String Train_ID=addCoachesRequest.getTrain_ID();
         String coach=addCoachesRequest.getCoachType()+"_Coaches";
         int numOfCoaches=addCoachesRequest.getNumOfCoaches();
-        String query1="select "+coach+" from basic_train_info where Train_ID=\""+Train_ID+"\";";
-        String query2="update basic_train_info set "+coach+" = "+"xx"+" where Train_ID=\""+Train_ID+"\";";
-        DatabaseConnector db=new DatabaseConnector();
-        AddCoachesResponse addCoachesResponse=db.addCoaches(query1,query2,numOfCoaches);
-        Server.SendResponse(oos,addCoachesResponse);
+
+        String query1="update basic_train_info set ? = ?+? where Train_ID=?;";
+        AddCoachesResponse addCoachesResponse=addCoaches(query1,numOfCoaches,coach,Train_ID);
+        Server.SendResponse(addCoachesResponse);
+    }
+    public AddCoachesResponse addCoaches(String query1, int numOfCoaches, String coach, String train_ID)
+    {
+        String response;
+        PreparedStatement preparedStatement;
+        int c=0;
+        try {
+            preparedStatement=connection.prepareStatement(query1);
+            preparedStatement.setString(1,coach);
+            preparedStatement.setString(2,coach);
+            preparedStatement.setInt(3,numOfCoaches);
+            preparedStatement.setString(4,train_ID);
+            c=preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if(c!=0){response=numOfCoaches+" Coaches added succesfully";}
+        else {response="Could not add coaches,Please try again";}
+        return new AddCoachesResponse(response);
     }
 }
