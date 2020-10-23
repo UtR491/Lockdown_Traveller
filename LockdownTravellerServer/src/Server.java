@@ -1,6 +1,3 @@
-
-import sun.plugin2.liveconnect.ArgumentHelper;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,7 +9,6 @@ public class Server {
         ServerSocket serverSocket = null;
         Socket socket;
         DatabaseConnector db = null;
-
         try {
             serverSocket = new ServerSocket(12000);
             db = new DatabaseConnector();
@@ -36,7 +32,6 @@ public class Server {
         }
     }
 
-
     public static void SendResponse(Response response) {
         try {
             ObjectOutputStream objectOutputStream = null;
@@ -46,10 +41,13 @@ public class Server {
             e.printStackTrace();
         }
     }
-
     public static void SendResponse (ObjectOutputStream oos, Response response) {
         try {
             System.out.println("Sending the object now " + response);
+            if(response == null)
+                System.out.println("The object is null");
+            else
+                System.out.println("The object is NOT null");
             oos.writeObject(response);
             oos.flush();
         } catch (IOException e) {

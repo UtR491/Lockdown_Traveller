@@ -102,6 +102,11 @@ public class RequestIdentifier implements Runnable{
                 RemoveCoachesRequestHandler removeCoachesRequestHandler=new RemoveCoachesRequestHandler(db.getConnection(),(RemoveCoachesRequest)request,oos);
                 removeCoachesRequestHandler.sendQuery();
             }
+            else if(request instanceof MaintainCustomerRequest) {
+                System.out.println("Maintain customer request");
+                MaintainCustomerRequestHandler maintainCustomerRequestHandler = new MaintainCustomerRequestHandler(oos, db.getConnection(), (MaintainCustomerRequest) request);
+                maintainCustomerRequestHandler.sendQuery();
+            }
         }
     }
 }
