@@ -19,6 +19,13 @@ public class LandingPageController {
             rerouteTrainHyperlink;
 
     public void maintainCustomer(ActionEvent actionEvent) {
+        System.out.println("maintain customer info clicked");
+        MaintainCustomerRequest maintainCustomerRequest = new MaintainCustomerRequest();
+        System.out.println("maintain customer rquest sending");
+        Main.SendRequest(maintainCustomerRequest);
+        System.out.println("waiting for maintain customer response");
+        MaintainCustomerResponse maintainCustomerResponse = (MaintainCustomerResponse) Main.ReceiveResponse();
+        System.out.println("wait for maintain customer response over ");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MaintainCustomer.fxml"));
         Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
         Scene newScene = null;
@@ -29,6 +36,8 @@ public class LandingPageController {
         }
         stage.setScene(newScene);
         stage.setTitle("Customer Information");
+        MaintainCustomerController maintainCustomerController = loader.getController();
+        maintainCustomerController.initData(maintainCustomerResponse);
     }
     public void maintainTrains(ActionEvent actionEvent) {
         System.out.println("Maintain trains pushed");

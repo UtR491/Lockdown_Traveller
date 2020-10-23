@@ -51,13 +51,19 @@ public class Main extends Application {
 
     public static Response ReceiveResponse() {
         try {
-            System.out.println("Inside recieve response to read the object");
+            System.out.println("Inside receive response to read the object");
             Object response = inputStream.readObject();
             System.out.println("Object read");
+            if(response == null) {
+                System.out.println("The response is null");
+            }
+            else
+                System.out.println("The response is NOT null");
             return (Response) response;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        System.out.println("Returning the last null after receive response in Main of admin");
         return null;
     }
 }
