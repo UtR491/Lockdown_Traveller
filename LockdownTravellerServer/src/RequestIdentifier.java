@@ -41,14 +41,11 @@ public class RequestIdentifier implements Runnable{
                 brh.sendQuery();
             }
            else if (request instanceof DisplayTrainsRequest) {
-                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db, (DisplayTrainsRequest) request, oos);
-                try {
-                    dtrh.sendQuery();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db.getConnection(), (DisplayTrainsRequest) request);
+                dtrh.sendQuery();
+
             } else if (request instanceof CancelBookingRequest) {
-                CancelBookingRequestHandler c = new CancelBookingRequestHandler(db, (CancelBookingRequest) request, oos);
+                CancelBookingRequestHandler c = new CancelBookingRequestHandler(db.getConnection(), (CancelBookingRequest) request);
                 try {
                     c.sendQuery();
                 } catch (IOException | SQLException e) {
@@ -69,6 +66,41 @@ public class RequestIdentifier implements Runnable{
                 System.out.println("Maintain trains request");
                 MaintainTrainsRequestHandler maintainTrainsRequestHandler = new MaintainTrainsRequestHandler(oos, db.getConnection(), (MaintainTrainsRequest) request);
                 maintainTrainsRequestHandler.sendQuery();
+            }
+            else if(request instanceof RemoveTrainsRequest)
+            {
+                RemoveTrainsRequestHandler removeTrainsRequestHandler=new RemoveTrainsRequestHandler(db.getConnection(),(RemoveTrainsRequest)request);
+                removeTrainsRequestHandler.sendQuery();
+            }
+            else if(request instanceof CancelTrainsRequest)
+            {
+                CancelTrainsRequestHandler cancelTrainsRequestHandler=new CancelTrainsRequestHandler(db.getConnection(),(CancelTrainsRequest)request);
+                cancelTrainsRequestHandler.sendQuery();
+            }
+            else if(request instanceof AddTrainsRequest)
+            {
+                AddTrainsRequestHandler addTrainsRequestHandler=new AddTrainsRequestHandler(db.getConnection(),(AddTrainsRequest)request);
+                addTrainsRequestHandler.sendQuery();
+            }
+            else if(request instanceof AddSeatsRequest)
+            {
+                AddSeatsRequestHandler addSeatsRequestHandler=new AddSeatsRequestHandler(db.getConnection(),(AddSeatsRequest)request);
+                addSeatsRequestHandler.sendQuery();
+            }
+            else if(request instanceof RemoveSeatsRequest)
+            {
+                RemoveSeatsRequestHandler removeSeatsRequestHandler=new RemoveSeatsRequestHandler(db.getConnection(),(RemoveSeatsRequest)request);
+                removeSeatsRequestHandler.sendQuery();
+            }
+            else if(request instanceof AddCoachesRequest)
+            {
+                AddCoachesRequestHandler addCoachesRequestHandler=new AddCoachesRequestHandler(db.getConnection(),(AddCoachesRequest)request);
+                addCoachesRequestHandler.sendQuery();
+            }
+            else if(request instanceof RemoveCoachesRequest)
+            {
+                RemoveCoachesRequestHandler removeCoachesRequestHandler=new RemoveCoachesRequestHandler(db.getConnection(),(RemoveCoachesRequest)request);
+                removeCoachesRequestHandler.sendQuery();
             }
         }
     }
