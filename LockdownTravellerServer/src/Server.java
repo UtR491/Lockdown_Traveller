@@ -1,4 +1,6 @@
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -6,11 +8,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+    static ObjectOutputStream oos = null;
+    static ObjectInputStream ois = null;
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket;
         DatabaseConnector db = null;
-
         try {
             serverSocket = new ServerSocket(12000);
             db = new DatabaseConnector();
@@ -33,9 +36,15 @@ public class Server {
 
         }
     }
+    public static void SendResponse(Response response) {
+    }
     public static void SendResponse (ObjectOutputStream oos, Response response) {
         try {
             System.out.println("Sending the object now " + response);
+            if(response == null)
+                System.out.println("The object is null");
+            else
+                System.out.println("The object is NOT null");
             oos.writeObject(response);
             oos.flush();
         } catch (IOException e) {
