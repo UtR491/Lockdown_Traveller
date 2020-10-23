@@ -1,3 +1,4 @@
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,15 +8,18 @@ import java.util.ArrayList;
 public class MaintainTrainsRequestHandler extends Handler{
     Connection connection;
     MaintainTrainsRequest maintainTrainsRequest;
-    public MaintainTrainsRequestHandler(Connection connection, MaintainTrainsRequest request) {
+    ObjectOutputStream oos;
+    public MaintainTrainsRequestHandler(ObjectOutputStream oos, Connection connection, MaintainTrainsRequest request) {
         this.connection = connection;
         this.maintainTrainsRequest = request;
+        this.oos = oos;
     }
     public void sendQuery() {
+        System.out.println("Inside sendQuery of maintainTrainsResponse");
         String query1 = "select * from Basic_Train_Info;";
         String query2 = "select * from Route_Info where Train_ID = ?;";
         MaintainTrainsResponse maintainTrainsResponse = maintainTrainsRequest(query1, query2);
-        Server.SendResponse(maintainTrainsResponse);
+        Server.SendResponse(oos, maintainTrainsResponse);
     }
     private MaintainTrainsResponse maintainTrainsRequest(String query1, String query2) {
         try {
