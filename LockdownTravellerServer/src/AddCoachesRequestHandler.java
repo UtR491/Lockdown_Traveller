@@ -1,3 +1,4 @@
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -5,9 +6,11 @@ import java.sql.SQLException;
 public class AddCoachesRequestHandler extends Handler {
     AddCoachesRequest addCoachesRequest;
    Connection connection;
-    public AddCoachesRequestHandler(Connection connection, AddCoachesRequest addCoachesRequest) {
+   ObjectOutputStream oos;
+    public AddCoachesRequestHandler(Connection connection, AddCoachesRequest addCoachesRequest,ObjectOutputStream oos) {
         this.connection=connection;
         this.addCoachesRequest=addCoachesRequest;
+        this.oos=oos;
     }
 
     @Override
@@ -18,7 +21,7 @@ public class AddCoachesRequestHandler extends Handler {
 
         String query1="update basic_train_info set ? = ?+? where Train_ID=?;";
         AddCoachesResponse addCoachesResponse=addCoaches(query1,numOfCoaches,coach,Train_ID);
-        Server.SendResponse(addCoachesResponse);
+        Server.SendResponse(oos,addCoachesResponse);
     }
     public AddCoachesResponse addCoaches(String query1, int numOfCoaches, String coach, String train_ID)
     {

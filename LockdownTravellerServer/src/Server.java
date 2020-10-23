@@ -1,6 +1,3 @@
-
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -36,7 +33,15 @@ public class Server {
 
         }
     }
+
     public static void SendResponse(Response response) {
+        try {
+            ObjectOutputStream objectOutputStream = null;
+            objectOutputStream.writeObject(response);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public static void SendResponse (ObjectOutputStream oos, Response response) {
         try {

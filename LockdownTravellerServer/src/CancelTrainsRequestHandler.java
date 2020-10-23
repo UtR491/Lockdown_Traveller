@@ -1,3 +1,4 @@
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,10 +9,12 @@ import java.time.format.DateTimeFormatter;
 public class CancelTrainsRequestHandler  extends Handler{
     Connection connection;
     CancelTrainsRequest cancelTrainsRequest;
+    ObjectOutputStream oos;
 
-    public CancelTrainsRequestHandler(Connection connection, CancelTrainsRequest cancelTrainsRequest) {
+    public CancelTrainsRequestHandler(Connection connection, CancelTrainsRequest cancelTrainsRequest,ObjectOutputStream oos) {
         this.cancelTrainsRequest=cancelTrainsRequest;
         this.connection=connection;
+        this.oos=oos;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class CancelTrainsRequestHandler  extends Handler{
         String query2="select User_ID from User;";
         String query3="insert into notifications values(?,?,1);";
         CancelTrainsResponse cancelTrainsResponse=cancelTrains(query1,query2,query3,Train_ID,date);
-        Server.SendResponse(cancelTrainsResponse);
+        Server.SendResponse(oos,cancelTrainsResponse);
     }
     public CancelTrainsResponse cancelTrains(String query1, String query2, String query3, String train_ID, String date)
     {

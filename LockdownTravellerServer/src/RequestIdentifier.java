@@ -41,14 +41,14 @@ public class RequestIdentifier implements Runnable{
                 brh.sendQuery();
             }
            else if (request instanceof DisplayTrainsRequest) {
-                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db.getConnection(), (DisplayTrainsRequest) request);
+                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db.getConnection(), (DisplayTrainsRequest) request,oos);
                 dtrh.sendQuery();
 
             } else if (request instanceof CancelBookingRequest) {
-                CancelBookingRequestHandler c = new CancelBookingRequestHandler(db.getConnection(), (CancelBookingRequest) request);
+                CancelBookingRequestHandler c = new CancelBookingRequestHandler(db.getConnection(), (CancelBookingRequest) request,oos);
                 try {
                     c.sendQuery();
-                } catch (IOException | SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -69,37 +69,37 @@ public class RequestIdentifier implements Runnable{
             }
             else if(request instanceof RemoveTrainsRequest)
             {
-                RemoveTrainsRequestHandler removeTrainsRequestHandler=new RemoveTrainsRequestHandler(db.getConnection(),(RemoveTrainsRequest)request);
+                RemoveTrainsRequestHandler removeTrainsRequestHandler=new RemoveTrainsRequestHandler(db.getConnection(),(RemoveTrainsRequest)request,oos);
                 removeTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof CancelTrainsRequest)
             {
-                CancelTrainsRequestHandler cancelTrainsRequestHandler=new CancelTrainsRequestHandler(db.getConnection(),(CancelTrainsRequest)request);
+                CancelTrainsRequestHandler cancelTrainsRequestHandler=new CancelTrainsRequestHandler(db.getConnection(),(CancelTrainsRequest)request,oos);
                 cancelTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof AddTrainsRequest)
             {
-                AddTrainsRequestHandler addTrainsRequestHandler=new AddTrainsRequestHandler(db.getConnection(),(AddTrainsRequest)request);
+                AddTrainsRequestHandler addTrainsRequestHandler=new AddTrainsRequestHandler(db.getConnection(),(AddTrainsRequest)request,oos);
                 addTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof AddSeatsRequest)
             {
-                AddSeatsRequestHandler addSeatsRequestHandler=new AddSeatsRequestHandler(db.getConnection(),(AddSeatsRequest)request);
+                AddSeatsRequestHandler addSeatsRequestHandler=new AddSeatsRequestHandler(db.getConnection(),(AddSeatsRequest)request,oos);
                 addSeatsRequestHandler.sendQuery();
             }
             else if(request instanceof RemoveSeatsRequest)
             {
-                RemoveSeatsRequestHandler removeSeatsRequestHandler=new RemoveSeatsRequestHandler(db.getConnection(),(RemoveSeatsRequest)request);
+                RemoveSeatsRequestHandler removeSeatsRequestHandler=new RemoveSeatsRequestHandler(db.getConnection(),(RemoveSeatsRequest)request,oos);
                 removeSeatsRequestHandler.sendQuery();
             }
             else if(request instanceof AddCoachesRequest)
             {
-                AddCoachesRequestHandler addCoachesRequestHandler=new AddCoachesRequestHandler(db.getConnection(),(AddCoachesRequest)request);
+                AddCoachesRequestHandler addCoachesRequestHandler=new AddCoachesRequestHandler(db.getConnection(),(AddCoachesRequest)request,oos);
                 addCoachesRequestHandler.sendQuery();
             }
             else if(request instanceof RemoveCoachesRequest)
             {
-                RemoveCoachesRequestHandler removeCoachesRequestHandler=new RemoveCoachesRequestHandler(db.getConnection(),(RemoveCoachesRequest)request);
+                RemoveCoachesRequestHandler removeCoachesRequestHandler=new RemoveCoachesRequestHandler(db.getConnection(),(RemoveCoachesRequest)request,oos);
                 removeCoachesRequestHandler.sendQuery();
             }
             else if(request instanceof MaintainCustomerRequest) {
