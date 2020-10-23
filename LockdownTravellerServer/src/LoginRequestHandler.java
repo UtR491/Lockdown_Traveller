@@ -1,3 +1,4 @@
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,11 +7,13 @@ import java.sql.SQLException;
 public class LoginRequestHandler {
     Connection connection = null;
     LoginRequest loginRequest = null;
+    ObjectOutputStream oos = null;
 
-    public LoginRequestHandler(Connection connection, LoginRequest loginRequest) {
+    public LoginRequestHandler(ObjectOutputStream oos, Connection connection, LoginRequest loginRequest) {
         System.out.println("Inside LoginRequestHandler");
         this.connection = connection;
         this.loginRequest=loginRequest;
+        this.oos = oos;
     }
 
     public void sendQuery() {
@@ -21,7 +24,8 @@ public class LoginRequestHandler {
         System.out.println("Sending the loginquery to database connector");
         LoginResponse loginResponse = loginRequest(query);
         System.out.println("Sending the login response to client");
-        Server.SendResponse(loginResponse);
+        Server.SendResponse(oos, loginResponse);
+        System.out.println("Response sent");
     }
 
     private LoginResponse loginRequest(String query) {
