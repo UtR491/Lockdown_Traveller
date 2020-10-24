@@ -24,7 +24,7 @@ public class CancelTrainsRequestHandler  extends Handler{
         DateTimeFormatter dtf= DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtf2=  DateTimeFormatter.ofPattern("yyyy-MM-dd");
         date= LocalDate.parse(date,dtf).format(dtf2);
-        String query1="alter table basic_train_info(Cancelled_Till) add value(?);";
+        String query1="update Basic_Train_Info set Cancelled_Till = ? where Train_ID = ?;";
         String query2="select User_ID from User;";
         String query3="insert into notifications values(?,?,1);";
         CancelTrainsResponse cancelTrainsResponse=cancelTrains(query1,query2,query3,Train_ID,date);
@@ -36,6 +36,7 @@ public class CancelTrainsRequestHandler  extends Handler{
         try {
             PreparedStatement preparedStatement=connection.prepareStatement(query1);
             preparedStatement.setString(1,date);
+            preparedStatement.setString(2, train_ID);
             int c=preparedStatement.executeUpdate();
             if(c!=0){
                 preparedStatement=connection.prepareStatement(query2);
@@ -48,8 +49,8 @@ public class CancelTrainsRequestHandler  extends Handler{
                     c=preparedStatement.executeUpdate();
                 }
             }
-            if(c!=0){reponse="Train Cancelled Succesfully";}
-            else {reponse="Could not find train";}
+            if(c!=0){reponse="success";}
+            else {reponse="failure";}
         } catch (SQLException e) {
             e.printStackTrace();
         }

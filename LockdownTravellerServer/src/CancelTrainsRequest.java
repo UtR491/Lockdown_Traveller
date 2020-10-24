@@ -1,7 +1,7 @@
 import java.io.Serializable;
 
 public class CancelTrainsRequest extends Request implements Serializable {
-private String Train_ID,sDate;
+private String Train_ID, sDate;
 CancelTrainsRequest(String Train_ID,String sDate)
 {
     this.sDate=sDate;
