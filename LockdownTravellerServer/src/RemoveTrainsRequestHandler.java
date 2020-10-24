@@ -3,7 +3,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class RemoveTrainsRequestHandler extends Handler {
     RemoveTrainsRequest removeTrainsRequest;
@@ -18,23 +17,13 @@ public class RemoveTrainsRequestHandler extends Handler {
 
     @Override
     void sendQuery() {
-        ArrayList<String>Train_ID=removeTrainsRequest.getTrain_ID();
 
-        int status;
-        String r = null;
-
-        for (String train_ID : Train_ID) {
-            String query1 = "delete from Basic_Train_Info where Train_ID=?;";
-            String query2 = "select User_ID from User;";
-            String query3 = "insert into notifications values(?,?,1);";
-            RemoveTrainsResponse removeTrainsResponse = removeTrainsRequest(query1, query2, query3, train_ID);
-            status = removeTrainsResponse.getStatus();
-            if (status != 0) {
-                r = "Train removed successfully";
-            }
-            RemoveTrainsResponse removeTrainsResponse1 = new RemoveTrainsResponse(r);
-            Server.SendResponse(oos,removeTrainsResponse1);
-        }
+        String train_ID=removeTrainsRequest.getTrain_ID();
+        String query1 = "delete from Basic_Train_Info where Train_ID=?;";
+        String query2 = "select User_ID from User;";
+        String query3 = "insert into notifications values(?,?,1);";
+        RemoveTrainsResponse removeTrainsResponse = removeTrainsRequest(query1, query2, query3, train_ID);
+        Server.SendResponse(oos,removeTrainsResponse);
     }
     public RemoveTrainsResponse removeTrainsRequest(String query1,String query2,String query3,String train_ID)
     {
@@ -51,13 +40,13 @@ public class RemoveTrainsRequestHandler extends Handler {
                 {
                     preparedStatement=connection.prepareStatement(query3);
                     preparedStatement.setString(1,resultSet.getString("User_ID"));
-                    preparedStatement.setString(2,"As of 11:59 PM today the train number"+train_ID+"has been cancelled indefinitely");
+                    preparedStatement.setString(2,"As of 11:59 PM today the train number "+train_ID+" has been cancelled indefinitely");
                     cancelStatus=preparedStatement.executeUpdate();
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new RemoveTrainsResponse(cancelStatus);
+        return new RemoveTrainsResponse(cancelStatus != 0 ? "success" : "failure");
     }
 }

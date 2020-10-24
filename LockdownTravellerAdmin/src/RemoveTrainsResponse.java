@@ -1,13 +1,13 @@
 import java.io.Serializable;
 
 public class RemoveTrainsResponse extends Response implements Serializable {
-    private String status;
-    RemoveTrainsResponse(String status)
+    final private String response;
+    RemoveTrainsResponse(String response)
     {
-        this.status=status;
+        this.response=response;
     }
 
-    public String getStatus() {
-        return status;
+    public String getResponse() {
+        return response;
     }
 }
