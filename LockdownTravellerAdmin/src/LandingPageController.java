@@ -60,6 +60,10 @@ public class LandingPageController {
         maintainTrainsController.initData(maintainTrainsResponse);
     }
     public void maintainSeats(ActionEvent actionEvent) {
+        MaintainSeatsRequest maintainSeatsRequest = new MaintainSeatsRequest();
+        Main.SendRequest(maintainSeatsRequest);
+        MaintainSeatsResponse maintainSeatsResponse = (MaintainSeatsResponse) Main.ReceiveResponse();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MaintainSeats.fxml"));
         Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
         Scene newScene = null;
@@ -70,6 +74,9 @@ public class LandingPageController {
         }
         stage.setScene(newScene);
         stage.setTitle("Seat Information");
+
+        MaintainSeatsController maintainSeatsController = loader.getController();
+        maintainSeatsController.initData(maintainSeatsResponse);
     }
     public void addTrains(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("AddTrain.fxml"));
