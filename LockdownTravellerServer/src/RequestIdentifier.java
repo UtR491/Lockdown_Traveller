@@ -107,6 +107,11 @@ public class RequestIdentifier implements Runnable{
                 MaintainCustomerRequestHandler maintainCustomerRequestHandler = new MaintainCustomerRequestHandler(oos, db.getConnection(), (MaintainCustomerRequest) request);
                 maintainCustomerRequestHandler.sendQuery();
             }
+            else if(request instanceof MaintainSeatsRequest) {
+                System.out.println("Maintain seats request");
+                MaintainSeatsRequestHandler maintainSeatsRequestHandler = new MaintainSeatsRequestHandler(oos, db.getConnection(), (MaintainSeatsRequest) request);
+                maintainSeatsRequestHandler.sendQuery();
+            }
         }
     }
 }
