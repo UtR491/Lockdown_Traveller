@@ -12,7 +12,7 @@ public class DatabaseConnector {
     private Connection connection = null;
 
     public DatabaseConnector() {
-        getConnection();
+        Server.getConnection();
     }
 
     public BookingResponse bookingRequest(String query1, String query2, String query3, String query4,
@@ -234,19 +234,7 @@ public class DatabaseConnector {
         return new CancelBookingResponse(response);
     }
 
-    private void getConnection() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Properties properties = new Properties();
-            properties.put("user", "utkarsh");
-            properties.put("password", "Hello@123");
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/lockdown_traveller", properties);
 
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public LoginResponse loginRequest(String query) {
         try {

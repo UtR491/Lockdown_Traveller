@@ -38,6 +38,7 @@ public class RequestIdentifier implements Runnable{
                 LoginRequestHandler loginRequestHandler = new LoginRequestHandler(db, (LoginRequest) request, oos);
                 loginRequestHandler.sendQuery();
             }
+
             else if(request instanceof BookingRequest) {
                 System.out.println("Booking Request");
                 BookingRequestHandler brh = new BookingRequestHandler(db, (BookingRequest) request, oos);

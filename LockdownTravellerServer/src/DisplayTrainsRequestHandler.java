@@ -35,15 +35,22 @@ public class DisplayTrainsRequestHandler extends Handler {
         //create query to find total seats in each class
         String query2="select Sleeper_Seats,FirstAC_Seats,SecondAC_Seats,ThirdAC_Seats from basic_train_info where Train_ID=\""+"xxxxx"+"\";";
         // create query to find booked seats between the given stations for a particular train on a particular day
-        String query3="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like 'SL%'));";
-        String query4="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like '1A%'));";
-        String query5="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like '2A%'));";
+        String query3="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"" +
+                "Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") " +
+                "and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like 'SL%'));";
+        String query4="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"Station_No in " +
+                "(select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and " +
+                "(select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like '1A%'));";
+        String query5="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"" +
+                "Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like '2A%'));";
         String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like '3A%'));";
         DisplayTrainsResponse displayTrainsResponse=db.DisplayTrains(query1,query2,query3,query4,query5,query6,sDate,source,dest);
+
         Server.SendResponse(oos,displayTrainsResponse);
  //        oos.writeObject(dtr);
 //        oos.flush();
 
     }
+
     }
 

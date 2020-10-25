@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.net.*;
 
 public class Main extends Application {
     Socket socket=null;
@@ -48,6 +48,40 @@ public class Main extends Application {
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    public static void MACaddress (){
+        InetAddress ip = null;
+        {
+            try {
+                ip = InetAddress.getLocalHost();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
+        NetworkInterface network=null;
+        {
+            try {
+                network = NetworkInterface.getByInetAddress(ip);
+            } catch (SocketException socketException) {
+                socketException.printStackTrace();
+            }
+            byte[] mac = new byte[0];
+            try {
+                mac = network.getHardwareAddress();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < mac.length; i++) {
+                sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+            }
+            for (int num : mac) {
+                sb.append(num);
+            }
+            int finalmac = Integer.parseInt(sb.toString());
+            int BookindID;
+            BookindID = finalmac;
         }
     }
 
