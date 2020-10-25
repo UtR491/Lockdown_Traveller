@@ -10,9 +10,7 @@ public class DatabaseConnector<ObjectOutputStream> {
     private Connection connection = null;
 
     public DatabaseConnector() {
-
-        Server.getConnection();
-
+        connection = Server.getConnection();
     }
 
     public BookingResponse bookingRequest(String query1, String query2, String query3, String query4,

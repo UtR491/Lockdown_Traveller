@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class BookingRequest extends Request implements Serializable {
-    final private String source = null;
-   final private String trainId=null;
-    final private Date date = null;
+    final private String source;
+   final private String trainId;
+    final private Date date;
     final private String destination;
-    final private String coach=null;
+    final private String coach;
     final private String[] preference;
     final private int numSeat;
     final private String[] name;
@@ -32,13 +32,6 @@ public class BookingRequest extends Request implements Serializable {
         this.userId = userId;
         this.availableSeat = availableSeat;
     }
-    public BookingRequest(){
-
-    }
-
-
-
-
     public String getTrainId() {
         return trainId;
     }

@@ -43,26 +43,14 @@ public class BookingRequestHandler extends Handler{
 
             long[] bookingIds = new long[numSeat];
 
-                    PreparedStatement preparedStatement= Server.getConnection().prepareStatement("select distinct Seat_No from " +
-                            "Vacancy_Info where" + " Train_ID = ?  and Seat_No like ? and Date = ?");
-                    preparedStatement.setString(1,trainId);
-                    preparedStatement.setString(2,numSeat+"%");
-                    preparedStatement.setString(3,convertedDate);
-                    preparedStatement.execute();
-                    PreparedStatement preparedStatement1 = Server.getConnection().prepareStatement("select * from Route_Info where " +
-                            "Train_ID = ? and Distance_Covered between" + "(select Distance_Covered from Route_Info " +
-                            "where Train_ID = ? and Station = ?)"
+            String query1 = "select distinct Seat_No from " + "Vacancy_Info where" + " Train_ID = ?  and Seat_No like ? and Date = ?";
+            String query2 = "select * from Route_Info where " +
+                    "Train_ID = ? and Distance_Covered between" + "(select Distance_Covered from Route_Info " +
+                    "where Train_ID = ? and Station = ?)"
                     + "and"
-                    + "(select Distance_Covered from Route_Info where Train_ID = '" + trainId + "' and Station =  '" + destination +"')");
-                    preparedStatement1.execute();
+                    + "(select Distance_Covered from Route_Info where Train_ID = '" + trainId + "' and Station =  '" + destination +"')";
+
                     String coachColumn =null;
-                    PreparedStatement preparedStatement2 = Server.getConnection().prepareStatement("select " + coachColumn + "" +
-                            " from Basic_Train_Info where Train_ID = '" + trainId + "'");
-
-
-
-
-
 
             // Find seats which match the criteria and cannot be booked.
 
@@ -97,12 +85,8 @@ public class BookingRequestHandler extends Handler{
             String query5="insert into Vacancy_Info (Train_ID, Booking_ID, Date, Station, Station_No, Seat_No) "
                     + "values ('" + trainId + "', 'xxxxxxxxxx', '" + convertedDate + "', 'station', 'stationNo', '" + coach + "xx')";
             System.out.println("getting the booking response object from calling bookingRequest function in db connector");
-            BookingResponse br =  db.bookingRequest(preparedStatement, preparedStatement1, query3, query4, numSeat, availableSeat, query5, bookingIds, preference, age, gender);
+            BookingResponse br =  db.bookingRequest(query1, query2, query3, query4, numSeat, availableSeat, query5, bookingIds, preference, age, gender);
             Server.SendResponse(oos,br);
-
-
-
-            System.out.println(preparedStatement);
         } catch (Exception e) {
             e.printStackTrace();
         }

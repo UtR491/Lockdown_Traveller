@@ -71,7 +71,7 @@ public class Server {
 
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 String url = "jdbc:mysql://localhost:3306/lockdown_traveller";
-                connection = DriverManager.getConnection(url, "root", "Bgr^&Bhu");
+                connection = DriverManager.getConnection(url, "utkarsh", "Hello@123");
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
