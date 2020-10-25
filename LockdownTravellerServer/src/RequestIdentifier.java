@@ -113,6 +113,11 @@ public class RequestIdentifier implements Runnable{
                 MaintainSeatsRequestHandler maintainSeatsRequestHandler = new MaintainSeatsRequestHandler(oos, db.getConnection(), (MaintainSeatsRequest) request);
                 maintainSeatsRequestHandler.sendQuery();
             }
+            else if(request instanceof RerouteRequest)
+            {
+                RerouteRequestHandler rerouteRequestHandler=new RerouteRequestHandler(db.getConnection(),(RerouteRequest)request,oos);
+                rerouteRequestHandler.sendQuery();
+            }
         }
     }
 }
