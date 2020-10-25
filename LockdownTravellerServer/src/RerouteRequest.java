@@ -1,19 +1,24 @@
 import java.io.Serializable;
 
 public class RerouteRequest extends Request implements Serializable {
-    String sDate,Train_ID,Station,Arrival,Departure,City_Code,Day_No,Distance_Covered,oldStation;
+    String sDate,Train_ID,Station,Arrival,Departure,City_Code,oldStation,prevStation,nextStation;
     Boolean inplace;
+    int Day_No,distancePrev,distanceOld,distanceNext;
 
-    public RerouteRequest(String sDate, String train_ID, String station, String arrival, String departure, String city_Code, String day_No, String distance_Covered, String oldStation, Boolean inplace) {
+    public RerouteRequest(String sDate, String Train_ID, String Station, String Arrival, String Departure, String City_Code, int Day_No, int distancePrev, int distanceOld, int distanceNext, String oldStation, String prevStation, String nextStation, Boolean inplace) {
         this.sDate = sDate;
-        Train_ID = train_ID;
-        Station = station;
-        Arrival = arrival;
-        Departure = departure;
-        City_Code = city_Code;
-        Day_No = day_No;
-        Distance_Covered = distance_Covered;
+        this.Train_ID = Train_ID;
+        this.Station = Station;
+        this.Arrival = Arrival;
+        this.Departure = Departure;
+        this.City_Code = City_Code;
+        this.Day_No = Day_No;
+        this.distancePrev = distancePrev;
+        this.distanceOld = distanceOld;
+        this.distanceNext = distanceNext;
         this.oldStation = oldStation;
+        this.prevStation = prevStation;
+        this.nextStation = nextStation;
         this.inplace = inplace;
     }
 
@@ -41,16 +46,32 @@ public class RerouteRequest extends Request implements Serializable {
         return City_Code;
     }
 
-    public String getDay_No() {
+    public int getDay_No() {
         return Day_No;
     }
 
-    public String getDistance_Covered() {
-        return Distance_Covered;
+    public int getDistancePrev() {
+        return distancePrev;
+    }
+
+    public int getDistanceOld() {
+        return distanceOld;
+    }
+
+    public int getDistanceNext() {
+        return distanceNext;
     }
 
     public String getOldStation() {
         return oldStation;
+    }
+
+    public String getPrevStation() {
+        return prevStation;
+    }
+
+    public String getNextStation() {
+        return nextStation;
     }
 
     public Boolean getInplace() {
