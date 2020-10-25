@@ -7,21 +7,17 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 public class BookingRequestHandler extends Handler{
-    DatabaseConnector db ;
      BookingRequest bookingRequest;
+     Connection connection;
     ObjectOutputStream oos;
-    public BookingRequestHandler(DatabaseConnector db, BookingRequest bookingRequest, ObjectOutputStream oos) {
+    public BookingRequestHandler(Connection connection, BookingRequest bookingRequest, ObjectOutputStream oos) {
             this.bookingRequest = bookingRequest;
-            this.db = db;
+            this.connection = connection;
             this.oos = oos;
     }
 
-
-
-
 @Override
     public void sendQuery() {
-        Server.getConnection();
         try {
 
             System.out.println("inside the gottaDo function");
@@ -85,8 +81,6 @@ public class BookingRequestHandler extends Handler{
             String query5="insert into Vacancy_Info (Train_ID, Booking_ID, Date, Station, Station_No, Seat_No) "
                     + "values ('" + trainId + "', 'xxxxxxxxxx', '" + convertedDate + "', 'station', 'stationNo', '" + coach + "xx')";
             System.out.println("getting the booking response object from calling bookingRequest function in db connector");
-            BookingResponse br =  db.bookingRequest(query1, query2, query3, query4, numSeat, availableSeat, query5, bookingIds, preference, age, gender);
-            Server.SendResponse(oos,br);
         } catch (Exception e) {
             e.printStackTrace();
         }

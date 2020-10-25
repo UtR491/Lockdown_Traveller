@@ -146,26 +146,4 @@ public class DatabaseConnector<ObjectOutputStream> {
         return connection;
     }
 
-    public AdminLoginResponse adminLoginRequest(String query) {
-        try {
-            System.out.println("Prepared statement");
-            PreparedStatement validateLogin = connection.prepareStatement(query);
-            System.out.println("going to execute");
-            ResultSet adminCredentials = validateLogin.executeQuery();
-            if (!adminCredentials.next()) {
-                System.out.println("fail");
-                return new AdminLoginResponse("failure");
-            } else {
-                do {
-                    System.out.println("success");
-                    return new AdminLoginResponse("success");
-                } while (adminCredentials.next());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        System.out.println("null");
-        return null;
-    }
-
 }
