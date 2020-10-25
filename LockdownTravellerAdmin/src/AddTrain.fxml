@@ -1,14 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="AddTrainController"
-            prefHeight="415.0" prefWidth="570.0">
-
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AddTrainController">
+   <children>
+      <Label layoutX="242.0" layoutY="28.0" text="Add Train">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TextField fx:id="trainIDTextfield" layoutX="71.0" layoutY="90.0" prefHeight="26.0" prefWidth="95.0" promptText="Train ID" />
+      <TextField fx:id="trainNameTextfield" layoutX="181.0" layoutY="90.0" prefHeight="26.0" prefWidth="331.0" promptText="Train Name" />
+      <TextField fx:id="daysRunningTextfield" layoutX="71.0" layoutY="137.0" prefHeight="26.0" prefWidth="290.0" promptText="1100100 means train runs on Mon Tue Fri." />
+      <VBox layoutX="71.0" layoutY="180.0" prefHeight="120.0" prefWidth="441.0">
+         <children>
+            <HBox layoutY="180.0" prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <TextField fx:id="sleeperCoachesTextfield" prefHeight="26.0" prefWidth="139.0" promptText="Sleeper Coaches" />
+                  <TextField fx:id="numSleeperSeatsTextfield" prefHeight="26.0" prefWidth="157.0" promptText="Number of Seats" />
+                  <TextField fx:id="sleeperRateTextfield" prefHeight="26.0" prefWidth="150.0" promptText="Rate per km" />
+               </children></HBox>
+            <HBox layoutY="210.0" prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <TextField fx:id="AC1CoachesTextfield" prefHeight="26.0" prefWidth="139.0" promptText="First AC Coaches" />
+                  <TextField fx:id="numAC1SeatsTextfield" prefHeight="26.0" prefWidth="157.0" promptText="Number Of Seats" />
+                  <TextField fx:id="AC1RateTextfield" prefHeight="26.0" prefWidth="150.0" promptText="Rate per km" />
+               </children></HBox>
+            <HBox layoutY="240.0" prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <TextField fx:id="AC2CoachesTextfield" prefHeight="26.0" prefWidth="139.0" promptText="Second AC Coaches" />
+                  <TextField fx:id="numAC2SeatsTextfield" prefHeight="26.0" prefWidth="157.0" promptText="Number Of Seats" />
+                  <TextField fx:id="AC2RateTextfield" prefHeight="26.0" prefWidth="150.0" promptText="Rate per km" />
+               </children></HBox>
+            <HBox layoutY="270.0" prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <TextField fx:id="AC3CoachesTextfield" prefHeight="26.0" prefWidth="139.0" promptText="Third AC Coaches" />
+                  <TextField fx:id="numAC3SeatsTextfield" prefHeight="26.0" prefWidth="157.0" promptText="Number Of Seats" />
+                  <TextField fx:id="AC3RateTextfield" prefHeight="26.0" prefWidth="150.0" promptText="Rate per km" />
+               </children></HBox>
+         </children>
+      </VBox>
+      <Button fx:id="addStationButton" layoutX="241.0" layoutY="350.0" mnemonicParsing="false" onAction="#goToStationScene" text="Add Stations" />
+      <DatePicker fx:id="addedTillDatepicker" layoutX="363.0" layoutY="137.0" prefHeight="26.0" prefWidth="149.0" promptText="Added Till" />
+      <Label layoutX="363.0" layoutY="123.0" text="Leave if permanent">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Label>
+      <Hyperlink fx:id="finalizeButton" layoutX="219.0" layoutY="315.0" onAction="#assignInfo" text="Finalise train details." />
+   </children>
 </AnchorPane>
