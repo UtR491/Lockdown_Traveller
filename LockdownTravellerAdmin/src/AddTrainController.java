@@ -22,6 +22,8 @@ public class AddTrainController {
     public Hyperlink finalizeButton;
     @FXML
     public Button addStationButton;
+    @FXML
+    public Hyperlink homeLink;
 
     String trainId, trainName, daysRunning, AC1Coaches, AC2Coaches, AC3Coaches, sleeperCoaches, numAC1Seats, numAC2Seats,
             numAC3Seats, numSleeperSeats, AC1Rate, AC2Rate, AC3Rate, sleeperRate, date;
@@ -63,6 +65,18 @@ public class AddTrainController {
         daysRunning = daysRunningTextfield.getText();
         if(addedTillDatepicker.getValue() != null)
             date = addedTillDatepicker.getValue().toString();
+    }
 
+    public void goToHome(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("LandingPage.fxml"));
+        Stage stage = (Stage) homeLink.getScene().getWindow();
+        Scene newScene = null;
+        try {
+            newScene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.setScene(newScene);
+        stage.setTitle("Welcome Admin");
     }
 }

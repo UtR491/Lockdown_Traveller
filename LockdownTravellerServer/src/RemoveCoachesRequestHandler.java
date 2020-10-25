@@ -18,7 +18,7 @@ public class RemoveCoachesRequestHandler extends Handler {
         String Train_ID=removeCoachesRequest.getTrain_ID();
         String coach=removeCoachesRequest.getCoachType()+"_Coaches";
         int numOfCoaches=removeCoachesRequest.getNumOfCoaches();
-        String query1="update basic_train_info set ?=?-? where Train_ID=?;";
+        String query1="update Basic_Train_Info set " + coach + " = " + coach + "-? where Train_ID=?;";
         RemoveCoachesResponse removeCoachesResponse=removeCoaches(query1,numOfCoaches,Train_ID,coach);
         Server.SendResponse(oos,removeCoachesResponse);
     }
@@ -30,17 +30,15 @@ public class RemoveCoachesRequestHandler extends Handler {
         int c=0;
         try {
             preparedStatement = connection.prepareStatement(query1);
-            preparedStatement.setString(1,coach);
-            preparedStatement.setString(2,coach);
-            preparedStatement.setInt(3,numOfCoaches);
-            preparedStatement.setString(4,Train_ID);
+            preparedStatement.setInt(1,numOfCoaches);
+            preparedStatement.setString(2,Train_ID);
             c=preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        if(c!=0){response=numOfCoaches+" number of coaches removed";}
-        else {response="Could not remove coaches,Please try again";}
+        if(c!=0){response="success";}
+        else {response="failure";}
         return new RemoveCoachesResponse(response);
     }
 }
