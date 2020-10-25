@@ -1,19 +1,19 @@
-
-import com.sun.tools.javac.Main;
-
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class LoginRequestHandler {
-    DatabaseConnector db = null;
+    Connection connection = null;
     LoginRequest loginRequest = null;
     ObjectOutputStream oos = null;
 
-    public LoginRequestHandler(DatabaseConnector db, LoginRequest loginRequest, ObjectOutputStream oos) {
+    public LoginRequestHandler(ObjectOutputStream oos, Connection connection, LoginRequest loginRequest) {
         System.out.println("Inside LoginRequestHandler");
-        this.db=db;
+        this.connection = connection;
         this.loginRequest=loginRequest;
-        this.oos=oos;
+        this.oos = oos;
     }
 
     public void sendQuery() {
@@ -22,8 +22,27 @@ public class LoginRequestHandler {
         System.out.println("The inputs given were " + username + " and " + password);
         String query = "select User_ID from User where Username = '" + username + "' and Password='" + password +"';";
         System.out.println("Sending the loginquery to database connector");
-        LoginResponse loginResponse = db.loginRequest(query);
+        LoginResponse loginResponse = loginRequest(query);
         System.out.println("Sending the login response to client");
         Server.SendResponse(oos, loginResponse);
+        System.out.println("Response sent");
+    }
+
+    private LoginResponse loginRequest(String query) {
+        try {
+            PreparedStatement loginQuery = connection.prepareStatement(query);
+            ResultSet loginResult = loginQuery.executeQuery();
+            if (!loginResult.next()) {
+                return new LoginResponse(null);
+            } else {
+                do {
+                    return new LoginResponse(loginResult.getString("User_ID"));
+                } while (loginResult.next());
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        System.out.println("Returning the last null");
+        return null;
     }
 }
