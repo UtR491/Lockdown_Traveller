@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class DatabaseConnector {
+public class DatabaseConnector<ObjectOutputStream> {
     private Connection connection = null;
 
     public DatabaseConnector() {
-        createConnection();
+
+        Server.getConnection();
+
     }
 
     public BookingResponse bookingRequest(String query1, String query2, String query3, String query4,
@@ -120,18 +122,27 @@ public class DatabaseConnector {
     }
 
 
-    private void createConnection() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Properties properties = new Properties();
-            properties.load(new InputStreamReader(new FileInputStream("./src/db.properties")));
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/lockdown_traveller", properties);
 
-        } catch (ClassNotFoundException | SQLException | IOException e) {
-            e.printStackTrace();
-        }
+
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        }
+//         return new DisplayTrainsResponse(Train_ID,Train_Name,Source,Departure,Destination,Arrival,First_AC,Second_AC,Third_AC,Sleeper,Date,i);
+//
+//    }
+    public CancelBookingResponse CancelBooking(String query, ObjectOutputStream oos) throws SQLException, IOException {
+        PreparedStatement preparedStatement=connection.prepareStatement(query);
+        int result=preparedStatement.executeUpdate();
+        String response = null;
+        if(result==0){response="No bookings found under the given PNR.Failed to cancel the booking";}
+        else if(result>0){response="Booking cancelled succesfully";}
+        return new CancelBookingResponse(response);
     }
+
+
 
     public Connection getConnection() {
         return connection;

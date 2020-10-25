@@ -1,21 +1,29 @@
 import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
+
 public class BookingRequestHandler extends Handler{
-    DatabaseConnector db = null;
-     BookingRequest bookingRequest = null;
-    ObjectOutputStream oos = null;
+    DatabaseConnector db ;
+     BookingRequest bookingRequest;
+    ObjectOutputStream oos;
     public BookingRequestHandler(DatabaseConnector db, BookingRequest bookingRequest, ObjectOutputStream oos) {
             this.bookingRequest = bookingRequest;
             this.db = db;
             this.oos = oos;
     }
 
+
+
+
 @Override
     public void sendQuery() {
+        Server.getConnection();
         try {
+
             System.out.println("inside the gottaDo function");
             String trainId = bookingRequest.getTrainId();
             Date date = bookingRequest.getDate();
@@ -35,15 +43,37 @@ public class BookingRequestHandler extends Handler{
 
             long[] bookingIds = new long[numSeat];
 
-            // Find seats which match the criteria and cannot be booked.
-            String query1 = "select distinct Seat_No from Vacancy_Info where Train_ID = '" + trainId + "'"
-                    + " and Seat_No like '" + coach + "%' and Date = '"+convertedDate+"'";
-            String query2 = "select * from Route_Info where Train_ID = '" + trainId + "'"
-                    + "and Distance_Covered between"
-                    + "(select Distance_Covered from Route_Info where Train_ID = '" + trainId + "' and Station =  '" + source +"')"
+                    PreparedStatement preparedStatement= Server.getConnection().prepareStatement("select distinct Seat_No from " +
+                            "Vacancy_Info where" + " Train_ID = ?  and Seat_No like ? and Date = ?");
+                    preparedStatement.setString(1,trainId);
+                    preparedStatement.setString(2,numSeat+"%");
+                    preparedStatement.setString(3,convertedDate);
+                    preparedStatement.execute();
+                    PreparedStatement preparedStatement1 = Server.getConnection().prepareStatement("select * from Route_Info where " +
+                            "Train_ID = ? and Distance_Covered between" + "(select Distance_Covered from Route_Info " +
+                            "where Train_ID = ? and Station = ?)"
                     + "and"
-                    + "(select Distance_Covered from Route_Info where Train_ID = '" + trainId + "' and Station =  '" + destination +"')";
-            String coachColumn =null;
+                    + "(select Distance_Covered from Route_Info where Train_ID = '" + trainId + "' and Station =  '" + destination +"')");
+                    preparedStatement1.execute();
+                    String coachColumn =null;
+                    PreparedStatement preparedStatement2 = Server.getConnection().prepareStatement("select " + coachColumn + "" +
+                            " from Basic_Train_Info where Train_ID = '" + trainId + "'");
+
+
+
+
+
+
+            // Find seats which match the criteria and cannot be booked.
+
+//            String query1 = "select distinct Seat_No from Vacancy_Info where Train_ID = '" + trainId + "'"
+//                    + " and Seat_No like '" + coach + "%' and Date = '"+convertedDate+"'";
+//            String query2 = "select * from Route_Info where Train_ID = '" + trainId + "'"
+//                    + "and Distance_Covered between"
+//                    + "(select Distance_Covered from Route_Info where Train_ID = '" + trainId + "' and Station =  '" + source +"')"
+//                    + "and"
+//                    + "(select Distance_Covered from Route_Info where Train_ID = '" + trainId + "' and Station =  '" + destination +"')";
+
             System.out.println(coach);
             if(coach.equals("SL"))
             {
@@ -67,12 +97,12 @@ public class BookingRequestHandler extends Handler{
             String query5="insert into Vacancy_Info (Train_ID, Booking_ID, Date, Station, Station_No, Seat_No) "
                     + "values ('" + trainId + "', 'xxxxxxxxxx', '" + convertedDate + "', 'station', 'stationNo', '" + coach + "xx')";
             System.out.println("getting the booking response object from calling bookingRequest function in db connector");
-            BookingResponse br =  db.bookingRequest(query1, query2, query3, query4, numSeat, availableSeat, query5, bookingIds, preference, age, gender);
+            BookingResponse br =  db.bookingRequest(preparedStatement, preparedStatement1, query3, query4, numSeat, availableSeat, query5, bookingIds, preference, age, gender);
             Server.SendResponse(oos,br);
 
 
 
-            System.out.println(query1);
+            System.out.println(preparedStatement);
         } catch (Exception e) {
             e.printStackTrace();
         }
