@@ -18,7 +18,7 @@ public class RemoveSeatsRequestHandler extends Handler {
         String Train_ID=removeSeatsRequest.getTrain_ID();
         String coach=removeSeatsRequest.getCoach()+"_Seats";
         int numOfSeats=removeSeatsRequest.getNumOfSeats();
-        String query1="update basic_train_info set ?=?-? where Train_ID=?;";
+        String query1="update Basic_Train_Info set " + coach + " = " + coach + "-? where Train_ID=?;";
         RemoveSeatsResponse removeSeatsResponse=removeSeats(query1,numOfSeats,Train_ID,coach);
         Server.SendResponse(oos,removeSeatsResponse);
     }
@@ -29,17 +29,15 @@ public class RemoveSeatsRequestHandler extends Handler {
         int c=0;
         try {
             preparedStatement = connection.prepareStatement(query1);
-            preparedStatement.setString(1,coach);
-            preparedStatement.setString(2,coach);
-            preparedStatement.setInt(3,numOfSeats);
-            preparedStatement.setString(4,Train_ID);
+            preparedStatement.setInt(1,numOfSeats);
+            preparedStatement.setString(2,Train_ID);
             c=preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        if(c!=0){response=numOfSeats+" number of seats removed";}
-        else {response="Could not remove seats,Please try again";}
+        if(c!=0){response="success";}
+        else {response="failure";}
         return new RemoveSeatsResponse(response);
     }
 }

@@ -113,6 +113,8 @@ public class LandingPageController {
         }
         stage.setScene(newScene);
         stage.setTitle("Modify Seat");
+        ModifySeatsController modifySeatsController = loader.getController();
+        modifySeatsController.executeFirst();
     }
     public void cancelTrains(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CancelTrain.fxml"));
@@ -138,5 +140,8 @@ public class LandingPageController {
         }
         stage.setScene(newScene);
         stage.setTitle("Reroute Train");
+        RerouteTrainController rerouteTrainController = loader.getController();
+        rerouteTrainController.typeComboBox.getItems().setAll("Insert new station at the end.",
+                "Replace the current station with new station");
     }
 }

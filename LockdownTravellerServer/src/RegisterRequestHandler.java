@@ -1,12 +1,13 @@
 import java.io.ObjectOutputStream;
+import java.sql.Connection;
 
 public class RegisterRequestHandler extends Handler {
-    DatabaseConnector db = null;
     RegisterRequest registerRequest = null;
+    Connection connection;
     ObjectOutputStream oos = null;
 
-    public RegisterRequestHandler(DatabaseConnector db, RegisterRequest registerRequest, ObjectOutputStream oos) {
-        this.db=db;
+    public RegisterRequestHandler(Connection connection, RegisterRequest registerRequest, ObjectOutputStream oos) {
+        this.connection = connection;
         this.registerRequest=registerRequest;
         this.oos=oos;
     }
