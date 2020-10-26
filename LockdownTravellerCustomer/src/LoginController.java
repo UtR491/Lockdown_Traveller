@@ -52,7 +52,8 @@ public class LoginController implements Initializable {
                 currentStage.setScene(landingPageScene);
                 currentStage.setTitle("Welcome");
                 LandingPageController landingPage = landingPageLoader.getController();
-                landingPage.initData(userId);
+                landingPage.initData(landingPageScene, userId, loginResponse.getName(), loginResponse.getUsername(), loginResponse.getEmail(),
+                        loginResponse.getPhone());
             }
         } catch (IOException e) {
             e.printStackTrace();

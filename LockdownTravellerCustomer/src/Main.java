@@ -63,7 +63,7 @@ public class Main extends Application {
             else
                 System.out.println("The response is NOT null");
             return (Response) response;
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("Returning the last null after receive response in Main of admin");

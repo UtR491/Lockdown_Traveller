@@ -1,21 +1,14 @@
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import javax.print.DocFlavor;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Random;
-import java.util.ResourceBundle;
 
 public class RegisterController {
     @FXML
@@ -56,15 +49,18 @@ public class RegisterController {
             stage.setTitle("Welcome");
             stage.setScene(scene);
             LandingPageController landingPageController = loader.getController();
-            landingPageController.initData(userId);
+            landingPageController.initData(scene, userId, firstNameField.getText() + " " + lastNameField.getText(),
+                    usernameField.getText(), emailField.getText(), mobileField.getText());
         } else if(registerResponse.getResponse().equals("Username taken")) {
             dialog.setAlertType(Alert.AlertType.WARNING);
             dialog.setHeaderText("Username Taken");
             dialog.setContentText("Username has already been taken.");
+            dialog.show();
         } else {
             dialog.setAlertType(Alert.AlertType.ERROR);
             dialog.setHeaderText("Unexpected Error");
             dialog.setContentText("Some unexpected error occurred");
+            dialog.show();
         }
     }
 
