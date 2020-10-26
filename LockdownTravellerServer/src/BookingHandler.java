@@ -59,6 +59,10 @@ public class BookingHandler {
                     for (i = 22; i <= 23; i++) {
                         PreparedStatement allot_female = Server.getConnection().prepareStatement("update Vacancy_Info set Seat_No= ? " +
                                 "where  + Train_ID=? and Booking_ID= ? and Date=?");
+                        allot_female.setInt(1,seatno);
+                        allot_female.setString(2,trainId);
+                        allot_female.setLong(3,bookingIds);
+                        allot_female.setString(4, convertedDate);
                         allot_female.executeQuery();
                         ResultSet resultSet = allot_female.executeQuery();
                         i= checkSet(resultSet,i,convertedDate,trainId);
@@ -73,6 +77,10 @@ public class BookingHandler {
                 i=24;
                 PreparedStatement allot_specialQuota= Server.getConnection().prepareStatement("update Vacancy_Info set Seat_No= ? " +
                         "where  + Train_ID=? and Booking_ID= ? and Date=?");
+                allot_specialQuota.setInt(1, seatno);
+                allot_specialQuota.setString(2, trainId);
+                allot_specialQuota.setLong(3, bookingIds);
+                allot_specialQuota.setString(4, convertedDate);
                 allot_specialQuota.executeUpdate();
                 ResultSet resultSet = allot_specialQuota.executeQuery();
                 i= checkSet(resultSet,i,convertedDate,trainId);
@@ -265,6 +273,7 @@ public class BookingHandler {
         }
         return i;
     }
+
 }
 
 
