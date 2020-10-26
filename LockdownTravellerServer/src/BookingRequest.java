@@ -6,8 +6,10 @@ import java.util.Date;
 public class BookingRequest extends Request implements Serializable {
     final private String source;
    final private String trainId;
+
    final private Date date ;
    final private String destination;
+
     final private String coach;
     final private String[] preference;
     final private int numSeat;
