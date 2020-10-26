@@ -38,7 +38,7 @@ public class RequestIdentifier implements Runnable{
 
             else if(request instanceof BookingRequest) {
                 System.out.println("Booking Request");
-                BookingRequestHandler brh = new BookingRequestHandler(db, (BookingRequest) request, oos);
+                BookingRequestHandler brh = new BookingRequestHandler(db.getConnection(), (BookingRequest) request, oos);
                 brh.sendQuery();
             }
            else if (request instanceof DisplayTrainsRequest) {
@@ -55,12 +55,12 @@ public class RequestIdentifier implements Runnable{
             }
             else if (request instanceof RegisterRequest){
                 System.out.println("Register Request");
-                RegisterRequestHandler registerRequestHandler= new RegisterRequestHandler (db, (RegisterRequest) request, oos);
+                RegisterRequestHandler registerRequestHandler= new RegisterRequestHandler (db.getConnection(), (RegisterRequest) request, oos);
                 registerRequestHandler.sendQuery();
             }
             else if (request instanceof AdminLoginRequest) {
                 System.out.println("Admin login request");
-                AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos, db);
+                AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos, db.getConnection());
                 adminLoginRequestHandler.sendQuery();
             }
             else if (request instanceof MaintainTrainsRequest) {

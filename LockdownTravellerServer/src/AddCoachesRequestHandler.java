@@ -19,7 +19,7 @@ public class AddCoachesRequestHandler extends Handler {
         String coach=addCoachesRequest.getCoachType()+"_Coaches";
         int numOfCoaches=addCoachesRequest.getNumOfCoaches();
 
-        String query1="update basic_train_info set ? = ?+? where Train_ID=?;";
+        String query1="update Basic_Train_Info set " + coach + " = " + coach + "+? where Train_ID=?;";
         AddCoachesResponse addCoachesResponse=addCoaches(query1,numOfCoaches,coach,Train_ID);
         Server.SendResponse(oos,addCoachesResponse);
     }
@@ -30,17 +30,15 @@ public class AddCoachesRequestHandler extends Handler {
         int c=0;
         try {
             preparedStatement=connection.prepareStatement(query1);
-            preparedStatement.setString(1,coach);
-            preparedStatement.setString(2,coach);
-            preparedStatement.setInt(3,numOfCoaches);
-            preparedStatement.setString(4,train_ID);
+            preparedStatement.setInt(1,numOfCoaches);
+            preparedStatement.setString(2,train_ID);
             c=preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        if(c!=0){response=numOfCoaches+" Coaches added succesfully";}
-        else {response="Could not add coaches,Please try again";}
+        if(c!=0){response="success";}
+        else {response="failure";}
         return new AddCoachesResponse(response);
     }
 }

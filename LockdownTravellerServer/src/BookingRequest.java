@@ -10,6 +10,7 @@ public class BookingRequest extends Request implements Serializable {
    final private Date date ;
    final private String destination;
 
+
     final private String coach;
     final private String[] preference;
     final private int numSeat;
