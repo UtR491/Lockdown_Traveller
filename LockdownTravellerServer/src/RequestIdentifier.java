@@ -118,6 +118,11 @@ public class RequestIdentifier implements Runnable{
                 RerouteRequestHandler rerouteRequestHandler=new RerouteRequestHandler(db.getConnection(),(RerouteRequest)request,oos);
                 rerouteRequestHandler.sendQuery();
             }
+            else if(request instanceof ViewCancelledTrainsRequest)
+            {
+                ViewCancelledTrainsRequestHandler viewCancelledTrainsRequestHandler=new ViewCancelledTrainsRequestHandler(Server.getConnection(),(ViewCancelledTrainsRequest)request,oos);
+                viewCancelledTrainsRequestHandler.sendQuery();
+            }
         }
     }
 }

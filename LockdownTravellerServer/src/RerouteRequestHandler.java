@@ -44,7 +44,7 @@ public class RerouteRequestHandler extends Handler {
             int a=preparedStatement.executeUpdate();
             int b=0,c=0,d=0,e=0;
 
-            if(rerouteRequest.getInplace())
+            if(rerouteRequest.getInplace()&&(rerouteRequest.getPrevStation()!=null))
             {
                 preparedStatement=connection.prepareStatement(query2);
                 preparedStatement.setString(1,rerouteRequest.getTrain_ID());
@@ -90,12 +90,12 @@ public class RerouteRequestHandler extends Handler {
                 preparedStatement.setString(3,rerouteRequest.getOldStation());
                 e=preparedStatement.executeUpdate();
             }
-            else if(!rerouteRequest.getInplace()&&rerouteRequest.getNextStation()==null)
+            else if(!rerouteRequest.getInplace()&&(rerouteRequest.getNextStation()==null))
             {
                 preparedStatement=connection.prepareStatement(query2);
                 preparedStatement.setString(1,rerouteRequest.getTrain_ID());
                 preparedStatement.setString(2,rerouteRequest.getPrevStation());
-                preparedStatement.setString(2,rerouteRequest.getOldStation());
+                preparedStatement.setString(3,rerouteRequest.getOldStation());
 
                 ResultSet resultSet=preparedStatement.executeQuery();
 
@@ -117,6 +117,51 @@ public class RerouteRequestHandler extends Handler {
                 preparedStatement.setInt(9,old+rerouteRequest.getDistanceOld());
                 b=preparedStatement.executeUpdate();
                 a=c=d=e=1;
+            }
+            else if(rerouteRequest.getInplace()&&(rerouteRequest.getPrevStation()==null))
+            {
+                preparedStatement=connection.prepareStatement(query2);
+                preparedStatement.setString(1,rerouteRequest.getTrain_ID());
+                preparedStatement.setString(2,rerouteRequest.getOldStation());
+                preparedStatement.setString(3,rerouteRequest.getNextStation());
+                ResultSet resultSet=preparedStatement.executeQuery();
+
+                resultSet.next();
+                int prev=resultSet.getInt(1);
+                String Train_Name=resultSet.getString(2);
+                resultSet.next();
+                int next=resultSet.getInt(1);
+                int Station_No=resultSet.getInt(3);
+
+                preparedStatement=connection.prepareStatement(query3);
+                preparedStatement.setString(1,rerouteRequest.getTrain_ID());
+                preparedStatement.setString(2,Train_Name);
+                preparedStatement.setString(3,rerouteRequest.getStation());
+                preparedStatement.setInt(4,Station_No-1);
+                preparedStatement.setString(5,rerouteRequest.getCity_Code());
+                preparedStatement.setString(6,rerouteRequest.getArrival());
+                preparedStatement.setString(7,rerouteRequest.getDeparture());
+                preparedStatement.setInt(8,rerouteRequest.getDay_No());
+                preparedStatement.setInt(9,prev+rerouteRequest.getDistancePrev());
+                b=preparedStatement.executeUpdate();
+
+                preparedStatement=connection.prepareStatement(query4);
+                preparedStatement.setInt(1,prev+rerouteRequest.getDistancePrev()+rerouteRequest.getDistanceNext());
+                preparedStatement.setString(2,rerouteRequest.getNextStation());
+                preparedStatement.setString(3,rerouteRequest.getTrain_ID());
+                c=preparedStatement.executeUpdate();
+
+                preparedStatement=connection.prepareStatement(query5);
+                preparedStatement.setInt(1,rerouteRequest.getDistancePrev()+rerouteRequest.getDistanceNext()-(next-prev));
+                preparedStatement.setString(2,rerouteRequest.getTrain_ID());
+                preparedStatement.setInt(3,Station_No);
+                d=preparedStatement.executeUpdate();
+
+                preparedStatement=connection.prepareStatement(query6);
+                preparedStatement.setInt(1,0);
+                preparedStatement.setString(2,rerouteRequest.getTrain_ID());
+                preparedStatement.setString(3,rerouteRequest.getOldStation());
+                e=preparedStatement.executeUpdate();
             }
             else response="Cannot add station between 2 stations.Invalid Request";
 
