@@ -15,7 +15,7 @@
       <DatePicker fx:id="dobDatePicker" layoutX="61.0" layoutY="126.0" prefHeight="26.0" prefWidth="171.0" promptText="Date of birth" />
       <TextField fx:id="emailField" layoutX="61.0" layoutY="174.0" prefHeight="26.0" prefWidth="210.0" promptText="Email" />
       <TextField fx:id="mobileField" layoutX="300.0" layoutY="174.0" onKeyReleased="#validateMobile" onKeyTyped="#validateMobile" prefHeight="26.0" prefWidth="210.0" promptText="Mobile Number" />
-      <ComboBox fx:id="stationComboBox" layoutX="61.0" layoutY="222.0" prefHeight="26.0" prefWidth="171.0" promptText="Home Station" />
+      <TextField fx:id="stationTextfield" layoutX="61.0" layoutY="222.0" prefHeight="26.0" prefWidth="210.0" promptText="Home Station" />
       <TextField fx:id="usernameField" layoutX="61.0" layoutY="268.0" prefHeight="26.0" prefWidth="210.0" promptText="Username" />
       <PasswordField fx:id="passwordField" layoutX="61.0" layoutY="320.0" prefHeight="26.0" prefWidth="210.0" promptText="Password" />
       <PasswordField fx:id="confirmPasswordField" layoutX="300.0" layoutY="320.0" onKeyReleased="#validatePassword" prefHeight="26.0" prefWidth="210.0" promptText="Confirm password" />

@@ -17,15 +17,12 @@ public class SignupController implements Initializable {
     static int number;
 
     private static String getRandomNumberString() {
-
         Random rnd = new Random();
         number = rnd.nextInt(999999);
         return String.format("%06d", number);
     }
-    ObjectInputStream objectInputStream=null;
-    ObjectOutputStream objectOutputStream=null;
     @FXML
-    private TextField lastNameField, firstNameField, emailField, mobileField, usernameField;
+    private TextField lastNameField, firstNameField, emailField, mobileField, usernameField, stationTextfield;
     @FXML
     private AnchorPane signupPane;
     @FXML
@@ -33,7 +30,7 @@ public class SignupController implements Initializable {
     @FXML
     private DatePicker dobDatePicker;
     @FXML
-    private ComboBox<String> stationComboBox, genderComboBox;
+    private ComboBox<String> genderComboBox;
     @FXML
     private PasswordField confirmPasswordField, passwordField;
     @FXML
@@ -42,8 +39,7 @@ public class SignupController implements Initializable {
     public void signup(ActionEvent actionEvent) {
         RegisterRequest registerRequest=new RegisterRequest(firstNameField.getText(), emailField.getText(),
                 lastNameField.getText(), mobileField.getText(), "", 0, usernameField.getText(), passwordField.getText(),number);
-        Main.SendRequest(objectOutputStream,registerRequest);
-
+        Main.SendRequest(registerRequest);
     }
 
     public void switchToSignin(ActionEvent actionEvent) {
@@ -60,7 +56,6 @@ public class SignupController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
 
     public void validateMobile(javafx.scene.input.KeyEvent keyEvent) {
@@ -76,9 +71,8 @@ public class SignupController implements Initializable {
         else
             passwordMismatchLabel.setText("Passwords don't match!");
     }
-    public void initData (ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
-        this.objectOutputStream=objectOutputStream;
-        this.objectInputStream=objectInputStream;
-    }
 
+    public void executeFirst() {
+        genderComboBox.getItems().addAll("Male", "Female", "Other");
+    }
 }
