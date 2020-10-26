@@ -60,7 +60,7 @@ public class LoginController implements Initializable {
     }
 
     public void switchToSignup(ActionEvent actionEvent) {
-        FXMLLoader signupLoader = new FXMLLoader(getClass().getResource("Signup.fxml"));
+        FXMLLoader signupLoader = new FXMLLoader(getClass().getResource("Register.fxml"));
         Stage stage = (Stage) signupButton.getScene().getWindow();
         Scene signupScene = null;
         try {
@@ -69,8 +69,8 @@ public class LoginController implements Initializable {
             e.printStackTrace();
         }
         stage.setScene(signupScene);
-        SignupController signupController = signupLoader.getController();
-        signupController.executeFirst();
+        RegisterController registerController = signupLoader.getController();
+        registerController.executeFirst();
     }
 }
 

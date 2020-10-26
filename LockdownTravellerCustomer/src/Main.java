@@ -7,11 +7,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
+import java.util.Random;
 
 public class Main extends Application {
     Socket socket=null;
     static ObjectOutputStream outputStream=null;
     static ObjectInputStream inputStream = null;
+    final private static char base36Char[] = "1234567890qwertyuiopasdfghjklzxcvbnm".toCharArray();
+    final private static Random random = new Random();
     public static void main(String[] args) {
         launch(args);
     }
@@ -66,7 +69,7 @@ public class Main extends Application {
         System.out.println("Returning the last null after receive response in Main of admin");
         return null;
     }
-    public static void MACaddress (){
+    public static String MACaddress (){
         InetAddress ip = null;
         {
             try {
@@ -95,10 +98,15 @@ public class Main extends Application {
             for (int num : mac) {
                 sb.append(num);
             }
-            int finalmac = Integer.parseInt(sb.toString());
-            int BookindID;
-            BookindID = finalmac;
+            return sb.toString();
         }
     }
 
+    public static String randomIDGenerator() {
+        String id = "";
+        for(int i = 0; i < 7; i++) {
+            id += base36Char[random.nextInt(36)];
+        }
+        return id;
+    }
 }

@@ -6,21 +6,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import javax.print.DocFlavor;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class SignupController implements Initializable {
-    static int number;
-
-    private static String getRandomNumberString() {
-        Random rnd = new Random();
-        number = rnd.nextInt(999999);
-        return String.format("%06d", number);
-    }
+public class RegisterController {
     @FXML
     private TextField lastNameField, firstNameField, emailField, mobileField, usernameField, stationTextfield;
     @FXML
@@ -36,10 +33,39 @@ public class SignupController implements Initializable {
     @FXML
     private Button signupButton, signinButton;
 
+    Alert dialog = new Alert(Alert.AlertType.WARNING);
+
     public void signup(ActionEvent actionEvent) {
+        LocalDate today = LocalDate.now();
+        String userId = Main.randomIDGenerator();
+        int age = Period.between(dobDatePicker.getValue(), today).getYears();
         RegisterRequest registerRequest=new RegisterRequest(firstNameField.getText(), emailField.getText(),
-                lastNameField.getText(), mobileField.getText(), "", 0, usernameField.getText(), passwordField.getText(),number);
+                lastNameField.getText(), mobileField.getText(), genderComboBox.getValue(), age, usernameField.getText(),
+                passwordField.getText(), userId);
         Main.SendRequest(registerRequest);
+        RegisterResponse registerResponse = (RegisterResponse) Main.ReceiveResponse();
+        if(registerResponse.getResponse().equals("success")) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("LandingPage.fxml"));
+            Stage stage = (Stage) signupButton.getScene().getWindow();
+            Scene scene = null;
+            try {
+                scene = new Scene(loader.load());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stage.setTitle("Welcome");
+            stage.setScene(scene);
+            LandingPageController landingPageController = loader.getController();
+            landingPageController.initData(userId);
+        } else if(registerResponse.getResponse().equals("Username taken")) {
+            dialog.setAlertType(Alert.AlertType.WARNING);
+            dialog.setHeaderText("Username Taken");
+            dialog.setContentText("Username has already been taken.");
+        } else {
+            dialog.setAlertType(Alert.AlertType.ERROR);
+            dialog.setHeaderText("Unexpected Error");
+            dialog.setContentText("Some unexpected error occurred");
+        }
     }
 
     public void switchToSignin(ActionEvent actionEvent) {
@@ -52,10 +78,6 @@ public class SignupController implements Initializable {
             e.printStackTrace();
         }
         stage.setScene(loginScene);
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
     }
 
     public void validateMobile(javafx.scene.input.KeyEvent keyEvent) {
