@@ -113,6 +113,8 @@ public class LandingPageController {
         }
         stage.setScene(newScene);
         stage.setTitle("Modify Seat");
+        ModifySeatsController modifySeatsController = loader.getController();
+        modifySeatsController.executeFirst();
     }
     public void cancelTrains(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CancelTrain.fxml"));
