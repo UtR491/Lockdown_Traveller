@@ -28,7 +28,7 @@ public class DisplayTrainsRequestHandler extends Handler {
         String sDate=displayTrainsRequest.getsDate();
 
         //create a query to find the trains between source and destination
-        String query1 = "select x.*, y.Days_Running from\n" +
+        String query1 = "select x.*, y.Days_Running, y.Added_Till, y.Cancelled_Till from\n" +
                 "(select a.Train_ID, a.Train_Name, b.Arrival, a.Departure, a.Day_No from \n" +
                 "(select * from Route_Info\n" +
                 "where Station=?) as a\n" +
@@ -55,10 +55,10 @@ public class DisplayTrainsRequestHandler extends Handler {
 //        String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=\""+"xxxxx"+"\"Station_No in (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station_No between (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+source+"\") and (select Station_No from route_info where Train_ID=\""+"xxxxx"+"\" and Station=\""+dest+"\") and Date=\""+sDate+"\"and Seat_No like '3A%'));";
 //        DisplayTrainsResponse displayTrainsResponse=db.DisplayTrains(query1,query2,query3,query4,query5,query6,sDate,source,dest);
 
-        String query3="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like 'SL%'));";
-        String query4="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
-        String query5="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like '2A%'));";
-        String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
+        String query3="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like 'SL%'));";
+        String query4="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
+        String query5="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like '2A%'));";
+        String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
         String query7="select Added_Till,Cancelled_Till from Basic_Train_Info where Train_ID=?;";
         DisplayTrainsResponse displayTrainsResponse=DisplayTrains(query1,query2,query3,query4,query5,query6,query7,sDate,source,dest);
 
@@ -79,11 +79,13 @@ public class DisplayTrainsRequestHandler extends Handler {
             preparedStatement = connection.prepareStatement(query1, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             preparedStatement.setString(1,source);
             preparedStatement.setString(2,dest);
+            System.out.println(preparedStatement.toString());
             result = preparedStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String [] Train_ID = new String[5],Train_Name = new String[5],Departure=new String[5],Arrival=new String[5],First_AC=new String[5],Second_AC=new String[5],Third_AC=new String[5],Sleeper=new String[5];
+        String [] Train_ID = new String[5],Train_Name = new String[5],Departure=new String[5],Arrival=new String[5],
+                First_AC=new String[5],Second_AC=new String[5],Third_AC=new String[5],Sleeper=new String[5];
         String Date = null,Source=null,Destination=null;
         int i=0;
         while (true) {
