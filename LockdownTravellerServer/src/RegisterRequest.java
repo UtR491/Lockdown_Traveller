@@ -1,25 +1,19 @@
-
-
 import java.io.Serializable;
 
 public class RegisterRequest extends Request implements Serializable {
 
-
-    private final String firstName;
-    private final String lastName;
-    private final String emailID;
-    private final String gender;
-    private final String phone_number;
-    private final int age;
-    private final String username;
-    private final String password;
-    private final int userID;
-
-
-
+    final private String firstName;
+    final private String lastName;
+    final private String emailID;
+    final private String gender;
+    final private String phone_number;
+    final private int age;
+    final private String username;
+    final private String password;
+    final private String userID;
 
     public RegisterRequest(String firstName, String emailID, String lastName, String phone_number, String gender, int age,
-                           String username, String password, int userID) {
+                           String username, String password, String userID) {
         this.age=age;
         this.userID=userID;
         this.emailID=emailID;
@@ -29,11 +23,9 @@ public class RegisterRequest extends Request implements Serializable {
         this.phone_number=phone_number;
         this.username=username;
         this.gender=gender;
-
-
     }
 
-    public String getFirstName (){
+    public String getFirstName () {
         return this.firstName;
     }
     public String getLastName(){
@@ -54,7 +46,7 @@ public class RegisterRequest extends Request implements Serializable {
     public String getPassword (){
         return this.password;
     }
-    public int getUserID(){
+    public String getUserID(){
         return this.userID;
     }
     public int getAge(){

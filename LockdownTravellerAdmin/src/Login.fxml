@@ -13,5 +13,4 @@
             <Font size="22.0" />
         </font>
     </Label>
-    <Label fx:id="noAccountLabel" layoutX="198.0" layoutY="314.0" text="Don't have an account?" />
 </AnchorPane>

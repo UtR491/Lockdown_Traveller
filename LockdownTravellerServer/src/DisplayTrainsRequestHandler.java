@@ -26,42 +26,34 @@ public class DisplayTrainsRequestHandler extends Handler {
         String source=displayTrainsRequest.getSource();
         String dest=displayTrainsRequest.getDest();
         String sDate=displayTrainsRequest.getsDate();
-        //converting the string date into the date datatype of mySQL
-        DateTimeFormatter dtf= DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DateTimeFormatter dtf2=  DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        sDate= LocalDate.parse(sDate,dtf).format(dtf2);
-String query0="select Train_ID from basic_train_info where datediff(?,Rerouted_Till in (select Rerouted_Till from basic_train_info))>0";
+String query0="select Train_ID from Basic_Train_Info where datediff(?,Rerouted_Till in (select Rerouted_Till from Basic_Train_Info))>0";
         //create a query to find the trains between source and destination
         String query1 = "select x.*, y.Days_Running,y.Cancelled_Till,y.Added_Till from\n" +
                 "(select a.Train_ID, a.Train_Name, b.Arrival, a.Departure, a.Day_No from \n" +
-                "(select * from route_info\n" +
-                "where Station=? and inCurrentRoute=1) as a\n" +
+                "(select * from Route_Info\n" +
+                "where Station=?) as a\n" +
                 "join \n" +
-                "(select * from route_info\n" +
-                "where Station=? and inCurrentRoute=1) as b\n" +
+                "(select * from Route_Info\n" +
+                "where Station=?) as b\n" +
                 "where a.Train_ID = b.Train_ID) as x\n" +
                 "join \n" +
-                "basic_train_info as y\n" +
+                "Basic_Train_Info as y\n" +
                 "on x.Train_ID = y.Train_ID;\n" +
                 "\n";
         //create query to find total seats in each class
-        String query2="select Sleeper_Coaches,Sleeper_Seats,FirstAC_Coaches,FirstAC_Seats,SecondAC_Coaches,SecondAC_Seats,ThirdAC_Coaches,ThirdAC_Seats from basic_train_info where Train_ID=?;";
+        String query2="select Sleeper_Coaches,Sleeper_Seats,FirstAC_Coaches,FirstAC_Seats,SecondAC_Coaches,SecondAC_Seats,ThirdAC_Coaches,ThirdAC_Seats from Basic_Train_Info where Train_ID=?;";
 
-        String query3="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=? and Seat_No like 'SL%'));";
-        String query4="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
-        String query5="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=? and Seat_No like '2A%'));";
-        String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
-        String query7="select Added_Till,Cancelled_Till from basic_train_info where Train_ID=?;";
+        String query3="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like 'SL%'));";
+        String query4="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
+        String query5="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like '2A%'));";
+        String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
+        String query7="select Added_Till,Cancelled_Till from Basic_Train_Info where Train_ID=?;";
         DisplayTrainsResponse displayTrainsResponse=DisplayTrains(query1,query2,query3,query4,query5,query6,query7,sDate,source,dest);
 
         Server.SendResponse(oos,displayTrainsResponse);
     }
     private static int DayToDate(String sDate) {
-        String[] date = sDate.split("/");
-        System.out.println("Printing stuff"+date[0]);
-        System.out.println(date[1]);
-        System.out.println(date[2]);
-        LocalDate localDate = LocalDate.of(Integer.parseInt(date[2]), Integer.parseInt(date[1]), Integer.parseInt(date[0]));
+        LocalDate localDate = LocalDate.parse(sDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         return dayOfWeek.getValue();
     }
@@ -75,11 +67,13 @@ String query0="select Train_ID from basic_train_info where datediff(?,Rerouted_T
             preparedStatement = connection.prepareStatement(query1, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             preparedStatement.setString(1,source);
             preparedStatement.setString(2,dest);
+            System.out.println(preparedStatement.toString());
             result = preparedStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        String [] Train_ID = new String[5],Train_Name = new String[5],Departure=new String[5],Arrival=new String[5],First_AC=new String[5],Second_AC=new String[5],Third_AC=new String[5],Sleeper=new String[5];
+        String [] Train_ID = new String[5],Train_Name = new String[5],Departure=new String[5],Arrival=new String[5],
+                First_AC=new String[5],Second_AC=new String[5],Third_AC=new String[5],Sleeper=new String[5];
         String Date = null,Source=null,Destination=null;
         int i=0;
         while (true) {
@@ -132,7 +126,8 @@ String query0="select Train_ID from basic_train_info where datediff(?,Rerouted_T
                         }
                         else if(resultSet1.getString("Cancelled_Till")!=null)
                         {
-                            java.util.Date date2= sdf.parse(resultSet1.getString("Cancelled_Till"));
+                            java.util.Date date2= new SimpleDateFormat("yyyy-MM-dd").parse(resultSet1.getString(
+                                    "Cancelled_Till"));
                             compare2=date.compareTo(date2);
                             if(compare2>0)
                             {

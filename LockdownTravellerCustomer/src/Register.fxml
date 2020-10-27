@@ -4,25 +4,25 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="signupPane" prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SignupController">
+<AnchorPane fx:id="signupPane" prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RegisterController">
    <children>
-      <TextField fx:id="firstNameField" layoutX="61.0" layoutY="79.0" prefHeight="26.0" prefWidth="210.0" promptText="First Name" />
       <Label fx:id="signupLabel" layoutX="241.0" layoutY="30.0" prefHeight="30.0" prefWidth="89.0" text="Sign Up">
          <font>
             <Font size="22.0" />
          </font></Label>
+      <TextField fx:id="firstNameField" layoutX="61.0" layoutY="79.0" prefHeight="26.0" prefWidth="210.0" promptText="First Name" />
       <TextField fx:id="lastNameField" layoutX="300.0" layoutY="79.0" prefHeight="26.0" prefWidth="210.0" promptText="Last Name" />
       <DatePicker fx:id="dobDatePicker" layoutX="61.0" layoutY="126.0" prefHeight="26.0" prefWidth="171.0" promptText="Date of birth" />
+      <ComboBox fx:id="genderComboBox" layoutX="300.0" layoutY="126.0" prefHeight="26.0" prefWidth="171.0" promptText="Gender" />
       <TextField fx:id="emailField" layoutX="61.0" layoutY="174.0" prefHeight="26.0" prefWidth="210.0" promptText="Email" />
       <TextField fx:id="mobileField" layoutX="300.0" layoutY="174.0" onKeyReleased="#validateMobile" onKeyTyped="#validateMobile" prefHeight="26.0" prefWidth="210.0" promptText="Mobile Number" />
-      <ComboBox fx:id="stationComboBox" layoutX="61.0" layoutY="222.0" prefHeight="26.0" prefWidth="171.0" promptText="Home Station" />
+      <TextField fx:id="stationTextfield" layoutX="61.0" layoutY="222.0" prefHeight="26.0" prefWidth="210.0" promptText="Home Station" />
       <TextField fx:id="usernameField" layoutX="61.0" layoutY="268.0" prefHeight="26.0" prefWidth="210.0" promptText="Username" />
       <PasswordField fx:id="passwordField" layoutX="61.0" layoutY="320.0" prefHeight="26.0" prefWidth="210.0" promptText="Password" />
       <PasswordField fx:id="confirmPasswordField" layoutX="300.0" layoutY="320.0" onKeyReleased="#validatePassword" prefHeight="26.0" prefWidth="210.0" promptText="Confirm password" />
       <Button fx:id="signupButton" layoutX="252.0" layoutY="369.0" mnemonicParsing="false" onAction="#signup" text="Sign up" />
       <Label fx:id="orLabel" layoutX="429.0" layoutY="374.0" text="or" />
       <Button fx:id="signinButton" layoutX="451.0" layoutY="369.0" mnemonicParsing="false" onAction="#switchToSignin" text="Sign in" />
-      <ComboBox fx:id="genderComboBox" layoutX="300.0" layoutY="126.0" prefHeight="26.0" prefWidth="171.0" promptText="Gender" />
       <Label fx:id="mobileInvalidLabel" layoutX="300.0" layoutY="158.0" textFill="#f20808" />
       <Label fx:id="passwordMismatchLabel" layoutX="300.0" layoutY="304.0" textFill="#f80505" />
    </children>

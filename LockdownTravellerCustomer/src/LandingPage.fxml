@@ -6,11 +6,65 @@
 
 <AnchorPane prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LandingPageController">
    <children>
-      <Label layoutX="209.0" layoutY="31.0" prefHeight="44.0" prefWidth="153.0" text="Landing Page">
+      <ToolBar prefHeight="28.0" prefWidth="572.0">
+        <items>
+          <Button fx:id="findTrainsButton" mnemonicParsing="false" onAction="#displayTrains" text="Find Trains" />
+            <Button fx:id="historyButton" mnemonicParsing="false" onAction="#history" text="History" />
+            <Button fx:id="notificationButton" mnemonicParsing="false" onAction="#notifications" text="Notifications" />
+            <Button fx:id="cancelBookingButton" mnemonicParsing="false" onAction="#cancelBooking" text="Cancel" />
+            <Button fx:id="upcomingTravelsButton" mnemonicParsing="false" onAction="#upcomingTravels" text="Upcoming" />
+        </items>
+      </ToolBar>
+      <Hyperlink fx:id="logoutLink" layoutX="494.0" layoutY="377.0" onAction="#logout" text="Log out." />
+      <Label layoutX="70.0" layoutY="175.0" text="Username :">
          <font>
-            <Font size="22.0" />
+            <Font size="16.0" />
          </font>
       </Label>
-      <Button fx:id="findTrainsButton" layoutX="241.0" layoutY="195.0" mnemonicParsing="false" onAction="#findTrains" text="Find Trains" />
+      <Label layoutX="70.0" layoutY="95.0" text="Hi,">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="nameLabel" layoutX="119.0" layoutY="90.0" text="">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="70.0" layoutY="257.0" text="Email ID    :">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="70.0" layoutY="300.0" text="Phone No. :">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="70.0" layoutY="218.0" text="User ID     :">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="usernameLabel" layoutX="204.0" layoutY="175.0" text="">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="userIdLabel" layoutX="204.0" layoutY="218.0" text="">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="emailLabel" layoutX="204.0" layoutY="257.0" text="">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="phoneLabel" layoutX="204.0" layoutY="300.0" text="">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

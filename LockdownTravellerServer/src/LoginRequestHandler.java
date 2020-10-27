@@ -20,7 +20,7 @@ public class LoginRequestHandler {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
         System.out.println("The inputs given were " + username + " and " + password);
-        String query = "select User_ID from User where Username = '" + username + "' and Password='" + password +"';";
+        String query = "select * from User where Username = '" + username + "' and Password='" + password +"';";
         System.out.println("Sending the loginquery to database connector");
         LoginResponse loginResponse = loginRequest(query);
         System.out.println("Sending the login response to client");
@@ -33,10 +33,13 @@ public class LoginRequestHandler {
             PreparedStatement loginQuery = connection.prepareStatement(query);
             ResultSet loginResult = loginQuery.executeQuery();
             if (!loginResult.next()) {
-                return new LoginResponse(null);
+                return new LoginResponse(null, null, null, null, null);
             } else {
                 do {
-                    return new LoginResponse(loginResult.getString("User_ID"));
+                    return new LoginResponse(loginResult.getString("User_ID"),
+                            loginResult.getString("First_Name") + " " + loginResult.getString("Last_Name"),
+                            loginResult.getString("Username"), loginResult.getString("Email_ID"),
+                            loginResult.getString("Phone_No"));
                 } while (loginResult.next());
             }
         } catch (SQLException throwables) {
