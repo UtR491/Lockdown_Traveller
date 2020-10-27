@@ -1,3 +1,4 @@
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -151,89 +152,89 @@ public class BookingHandler {
                     }
                 }
                 else if (30 <= age[j] || age[j] < 45) {
-                if (coach == "2AC") {
-                    if (15 <= age[j] || age[j] < 45) {
-                        i++;
-                    }
-                }
-
-                i++;
-                seatno = 2 * i;
-                try {
-                    PreparedStatement allot_middleBerth = Server.getConnection().prepareStatement(" update Vacancy_Info set Seat_No= ? " +
-                            "where  + Train_ID=? and Booking_ID= ? and Date=?");
-                    allot_middleBerth.setInt(1, seatno);
-                    allot_middleBerth.setString(2, trainId);
-                    allot_middleBerth.setLong(3, bookingIds);
-                    allot_middleBerth.setString(4, convertedDate);
-//                        coach to be added in the tables
-                    ResultSet resultSet = allot_middleBerth.executeQuery();
-                    i = checkSet(resultSet, i, convertedDate, trainId);
-                    if (i == 6) {
-
-                        if (coach == "2AC") {
-                            break;
+                    if (coach == "2AC") {
+                        if (15 <= age[j] || age[j] < 45) {
+                            i++;
                         }
-
-                        seatno = 3 * i;
-                        allot_middleBerth.setInt(1, seatno);
-                        i = checkSet(resultSet, i, convertedDate, trainId);
-                    } else {
-                        seatno = i;
-                        allot_middleBerth.setInt(1, seatno);
-                        i = checkSet(resultSet, i, convertedDate, trainId);
                     }
 
-                    allot_middleBerth.executeUpdate();
-
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                i++;
-                seatno = i;
-                try {
-                    PreparedStatement allot_lowerBerth = Server.getConnection().prepareStatement(" update Vacancy_Info set Seat_No= ? " +
-                            "where  + Train_ID=? and Booking_ID= ? and Date=?");
-                    allot_lowerBerth.setInt(1, seatno);
-                    allot_lowerBerth.setString(2, trainId);
-                    allot_lowerBerth.setLong(3, bookingIds);
-                    allot_lowerBerth.setString(4, convertedDate);
+                    i++;
+                    seatno = 2 * i;
+                    try {
+                        PreparedStatement allot_middleBerth = Server.getConnection().prepareStatement(" update Vacancy_Info set Seat_No= ? " +
+                                "where  + Train_ID=? and Booking_ID= ? and Date=?");
+                        allot_middleBerth.setInt(1, seatno);
+                        allot_middleBerth.setString(2, trainId);
+                        allot_middleBerth.setLong(3, bookingIds);
+                        allot_middleBerth.setString(4, convertedDate);
 //                        coach to be added in the tables
-                    ResultSet resultSet = allot_lowerBerth.executeQuery();
-                    i = checkSet(resultSet, i, convertedDate, trainId);
-                    if (i == 6) {
-                        if (coach == "1AC") {
-                            break;
+                        ResultSet resultSet = allot_middleBerth.executeQuery();
+                        i = checkSet(resultSet, i, convertedDate, trainId);
+                        if (i == 6) {
+
+                            if (coach == "2AC") {
+                                break;
+                            }
+
+                            seatno = 3 * i;
+                            allot_middleBerth.setInt(1, seatno);
+                            i = checkSet(resultSet, i, convertedDate, trainId);
+                        } else {
+                            seatno = i;
+                            allot_middleBerth.setInt(1, seatno);
+                            i = checkSet(resultSet, i, convertedDate, trainId);
                         }
-                        seatno = 2 * i;
+
+                        allot_middleBerth.executeUpdate();
+
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    i++;
+                    seatno = i;
+                    try {
+                        PreparedStatement allot_lowerBerth = Server.getConnection().prepareStatement(" update Vacancy_Info set Seat_No= ? " +
+                                "where  + Train_ID=? and Booking_ID= ? and Date=?");
                         allot_lowerBerth.setInt(1, seatno);
+                        allot_lowerBerth.setString(2, trainId);
+                        allot_lowerBerth.setLong(3, bookingIds);
+                        allot_lowerBerth.setString(4, convertedDate);
+//                        coach to be added in the tables
+                        ResultSet resultSet = allot_lowerBerth.executeQuery();
                         i = checkSet(resultSet, i, convertedDate, trainId);
-                    } else {
-
-                        if (coach == "2AC") {
+                        if (i == 6) {
                             if (coach == "1AC") {
                                 break;
                             }
-                            break;
+                            seatno = 2 * i;
+                            allot_lowerBerth.setInt(1, seatno);
+                            i = checkSet(resultSet, i, convertedDate, trainId);
+                        } else {
+
+                            if (coach == "2AC") {
+                                if (coach == "1AC") {
+                                    break;
+                                }
+                                break;
+                            }
+
+                            seatno = 3 * i;
+                            allot_lowerBerth.setInt(1, seatno);
+                            i = checkSet(resultSet, i, convertedDate, trainId);
                         }
 
-                        seatno = 3 * i;
-                        allot_lowerBerth.setInt(1, seatno);
-                        i = checkSet(resultSet, i, convertedDate, trainId);
+                        allot_lowerBerth.executeUpdate();
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
-
-                    allot_lowerBerth.executeUpdate();
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 }
+                continue;
             }
-            continue;
         }
-    }
         Date todayDate = new Date();
         boolean before = todayDate.before(date);
         if (before == true) {
@@ -273,11 +274,3 @@ public class BookingHandler {
         return i;
     }
 }
-
-
-
-
-
-
-
-
