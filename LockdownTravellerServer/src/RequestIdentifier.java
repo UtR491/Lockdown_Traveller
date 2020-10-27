@@ -24,6 +24,7 @@ public class RequestIdentifier implements Runnable{
             e.printStackTrace();
         }
         while(socket.isConnected()) {
+            assert ois != null;
             Object request = Server.ReceiveRequest(ois);
             if(request == null)
                 break;
@@ -129,6 +130,11 @@ public class RequestIdentifier implements Runnable{
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            }
+            else if(request instanceof BookTouristPackageRequest)
+            {
+                BookTouristPackageRequestHandler bookTouristPackageRequestHandler=new BookTouristPackageRequestHandler(Server.getConnection(),oos,(BookTouristPackageRequest)request);
+                bookTouristPackageRequestHandler.sendQuery();
             }
         }
     }
