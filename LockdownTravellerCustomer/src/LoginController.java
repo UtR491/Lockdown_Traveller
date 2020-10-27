@@ -10,14 +10,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-    ObjectInputStream objectInputStream=null;
-    ObjectOutputStream objectOutputStream=null;
 
     @FXML
     private Label noAccountLabel, signinLabel;
@@ -32,19 +28,17 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
     }
 
     public void login(ActionEvent actionEvent) {
         System.out.println("Creating a login request object in thread " + Thread.currentThread());
         LoginRequest loginRequest=new LoginRequest(usernameField.getText(), passwordField.getText());
         System.out.println("Sending the object in thread " + Thread.currentThread());
-        Main.SendRequest(objectOutputStream,loginRequest);
+        Main.SendRequest(loginRequest);
 
         try {
             System.out.println("Waiting for response");
-            LoginResponse loginResponse = (LoginResponse) objectInputStream.readObject();
+            LoginResponse loginResponse = (LoginResponse) Main.ReceiveResponse();
             System.out.println("Wait over");
             if(loginResponse.getUserId() == null) {
                 System.out.println("Wrong info given");
@@ -58,15 +52,16 @@ public class LoginController implements Initializable {
                 currentStage.setScene(landingPageScene);
                 currentStage.setTitle("Welcome");
                 LandingPageController landingPage = landingPageLoader.getController();
-                landingPage.initData(userId, objectInputStream, objectOutputStream);
+                landingPage.initData(landingPageScene, userId, loginResponse.getName(), loginResponse.getUsername(), loginResponse.getEmail(),
+                        loginResponse.getPhone());
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void switchToSignup(ActionEvent actionEvent) {
-        FXMLLoader signupLoader = new FXMLLoader(getClass().getResource("Signup.fxml"));
+        FXMLLoader signupLoader = new FXMLLoader(getClass().getResource("Register.fxml"));
         Stage stage = (Stage) signupButton.getScene().getWindow();
         Scene signupScene = null;
         try {
@@ -75,14 +70,9 @@ public class LoginController implements Initializable {
             e.printStackTrace();
         }
         stage.setScene(signupScene);
-
+        RegisterController registerController = signupLoader.getController();
+        registerController.executeFirst();
     }
-
-    public void initData (ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
-        this.objectOutputStream=objectOutputStream;
-        this.objectInputStream=objectInputStream;
-    }
-
 }
 
 

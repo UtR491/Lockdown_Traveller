@@ -11,12 +11,12 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <ComboBox fx:id="modifyOptionComboBox" layoutX="152.0" layoutY="144.0" prefHeight="26.0" prefWidth="124.0" promptText="Modify" />
       <TextField fx:id="trainIdTextField" layoutX="152.0" layoutY="99.0" prefHeight="26.0" prefWidth="266.0" promptText="Trian ID" />
+      <ComboBox fx:id="modifyOptionComboBox" layoutX="152.0" layoutY="144.0" prefHeight="26.0" prefWidth="124.0" promptText="Modify" />
+      <ComboBox fx:id="typeComboBox" layoutX="294.0" layoutY="144.0" prefHeight="26.0" prefWidth="124.0" promptText="Modification" />
       <ComboBox fx:id="coachComboBox" layoutX="152.0" layoutY="195.0" prefHeight="26.0" prefWidth="266.0" promptText="Coach" />
       <TextField fx:id="newNumberTextfield" layoutX="152.0" layoutY="244.0" prefHeight="26.0" prefWidth="266.0" promptText="Change by" />
       <Button fx:id="modifySeatsButton" layoutX="254.0" layoutY="323.0" mnemonicParsing="false" onAction="#modifySeatCoach" text="Modify" />
-      <ComboBox fx:id="typeComboBox" layoutX="294.0" layoutY="144.0" prefHeight="26.0" prefWidth="124.0" promptText="Modification" />
       <Hyperlink fx:id="homeLink" layoutX="469.0" layoutY="377.0" onAction="#goToHome" text="Go to home" />
    </children>
 </AnchorPane>

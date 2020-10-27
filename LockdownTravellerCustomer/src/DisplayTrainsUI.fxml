@@ -14,6 +14,6 @@
         <TextField fx:id="sourceTextField" layoutX="216.0" layoutY="90.0" promptText="Enter Source" />
         <TextField fx:id="destTextField" layoutX="216.0" layoutY="139.0" promptText="Enter Destination" />
         <DatePicker fx:id="dateDatePicker" layoutX="216.0" layoutY="187.0" prefHeight="25.0" prefWidth="147.0" promptText="dd/mm/yyyy" />
-        <Button fx:id="Display" layoutX="216.0" layoutY="278.0" mnemonicParsing="false" onAction="#displayTrains" prefHeight="25.0" prefWidth="149.0" text="Display Trains" />
+        <Button fx:id="Display" layoutX="216.0" layoutY="278.0" mnemonicParsing="false" onAction="#sendRequest" prefHeight="25.0" prefWidth="149.0" text="Display Trains" />
     </children>
 </AnchorPane>

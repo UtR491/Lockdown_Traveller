@@ -31,17 +31,18 @@ public class DisplayTrainsRequestHandler extends Handler {
         DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         sDate = LocalDate.parse(sDate, dtf).format(dtf2);
 //String query0="select Train_ID from basic_train_info where datediff(?,Rerouted_Till in (select Rerouted_Till from basic_train_info))>0";
+
         //create a query to find the trains between source and destination
         String query1 = "select x.*, y.Days_Running from\n" +
                 "(select a.Train_ID, a.Train_Name, b.Arrival, a.Departure, a.Day_No from \n" +
-                "(select * from route_info\n" +
-                "where Station=? and inCurrentRoute=1) as a\n" +
+                "(select * from Route_Info\n" +
+                "where Station=?) as a\n" +
                 "join \n" +
-                "(select * from route_info\n" +
-                "where Station=? and inCurrentRoute=1) as b\n" +
+                "(select * from Route_Info\n" +
+                "where Station=?) as b\n" +
                 "where a.Train_ID = b.Train_ID) as x\n" +
                 "join \n" +
-                "basic_train_info as y\n" +
+                "Basic_Train_Info as y\n" +
                 "on x.Train_ID = y.Train_ID;\n" +
                 "\n";
         //create query to find total seats in each class
@@ -53,7 +54,6 @@ public class DisplayTrainsRequestHandler extends Handler {
         String query6 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
         String query7 = "select Added_Till,Cancelled_Till from basic_train_info where Train_ID=?;";
         DisplayTrainsResponse displayTrainsResponse = DisplayTrains(query1, query2, query3, query4, query5, query6, query7, sDate, source, dest);
-
         Server.SendResponse(oos, displayTrainsResponse);
     }
 
@@ -72,14 +72,18 @@ public class DisplayTrainsRequestHandler extends Handler {
         try {
             assert null != connection;
             preparedStatement = connection.prepareStatement(query1, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            preparedStatement.setString(1, source);
-            preparedStatement.setString(2, dest);
+            preparedStatement.setString(1,source);
+            preparedStatement.setString(2,dest);
+            System.out.println(preparedStatement.toString());
+
             result = preparedStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         String[] Train_ID = new String[5], Train_Name = new String[5], Departure = new String[5], Arrival = new String[5], First_AC = new String[5], Second_AC = new String[5], Third_AC = new String[5], Sleeper = new String[5];
         int i = 0;
+
         while (true) {
             try {
                 assert result != null;
@@ -213,8 +217,7 @@ public class DisplayTrainsRequestHandler extends Handler {
                     e.printStackTrace();
                 }
             }
-
-        }
+            }
         return new DisplayTrainsResponse(Train_ID, Train_Name, source, Departure, dest, Arrival, First_AC, Second_AC, Third_AC, Sleeper, sDate, i);
 
     }
