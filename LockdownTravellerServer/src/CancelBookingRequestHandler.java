@@ -23,7 +23,7 @@ public class CancelBookingRequestHandler extends Handler
         String query="update Booking_Info set Booking_Status='Cancelled' where PNR='"+PNR+"' and User_ID = '" + userID
                 +"' and not Booking_Status = 'Cancelled';";
         CancelBookingResponse cancelBookingResponse = CancelBooking(query);
-        Server.SendResponse(oos, cancelBookingResponse);
+        Server.SendResponse(oos,cancelBookingResponse);
     }
 
     public CancelBookingResponse CancelBooking(String query) throws SQLException {

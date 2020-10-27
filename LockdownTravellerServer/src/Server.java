@@ -15,10 +15,9 @@ public class Server {
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket;
-        DatabaseConnector db = null;
         try {
             serverSocket = new ServerSocket(12000);
-            db = new DatabaseConnector();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,7 +29,7 @@ public class Server {
                 socket = serverSocket.accept();
                 System.out.println("customer connected now creating database connection");
                 System.out.println("database connected now going to request identifier.");
-                Thread t = new Thread(new RequestIdentifier(socket, db, db.getConnection()));
+                Thread t = new Thread(new RequestIdentifier(socket));
                 t.start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -61,7 +60,7 @@ public class Server {
         try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 String url = "jdbc:mysql://localhost:3306/lockdown_traveller";
-                connection = DriverManager.getConnection(url, "utkarsh", "Hello@123");
+                connection = DriverManager.getConnection(url, "root", "060801&ABab");
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();

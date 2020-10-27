@@ -5,9 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginRequestHandler {
-    Connection connection = null;
-    LoginRequest loginRequest = null;
-    ObjectOutputStream oos = null;
+    Connection connection;
+    LoginRequest loginRequest ;
+    ObjectOutputStream oos;
 
     public LoginRequestHandler(ObjectOutputStream oos, Connection connection, LoginRequest loginRequest) {
         System.out.println("Inside LoginRequestHandler");
