@@ -123,6 +123,15 @@ public class RequestIdentifier implements Runnable{
                 ViewCancelledTrainsRequestHandler viewCancelledTrainsRequestHandler=new ViewCancelledTrainsRequestHandler(Server.getConnection(),(ViewCancelledTrainsRequest)request,oos);
                 viewCancelledTrainsRequestHandler.sendQuery();
             }
+            else if(request instanceof DisplayTouristPackageRequest)
+            {
+                DisplayTouristPackageRequestHandler displayTouristPackageRequestHandler=new DisplayTouristPackageRequestHandler(oos,Server.getConnection(),(DisplayTouristPackageRequest)request);
+                try {
+                    displayTouristPackageRequestHandler.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

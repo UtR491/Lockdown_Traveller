@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewCancelledTrainsRequestHandler extends Handler {
     private Connection connection;
@@ -38,6 +40,22 @@ public class ViewCancelledTrainsRequestHandler extends Handler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new ViewCancelledTrainsResponse(resultSet);
+        ArrayList<String> Train_Name = null,Train_ID = null,Cancelled_Till= new ArrayList<>();
+        while (true)
+        {
+            try {
+                if (!resultSet.next()) break;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                Train_Name.add(resultSet.getString(1));
+                Train_ID.add(resultSet.getString(2));
+                Cancelled_Till.add(resultSet.getString(3));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return new ViewCancelledTrainsResponse(Train_ID,Train_Name,Cancelled_Till);
     }
 }

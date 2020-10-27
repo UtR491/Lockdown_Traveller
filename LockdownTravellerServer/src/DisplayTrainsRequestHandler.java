@@ -32,7 +32,7 @@ public class DisplayTrainsRequestHandler extends Handler {
         sDate= LocalDate.parse(sDate,dtf).format(dtf2);
 String query0="select Train_ID from basic_train_info where datediff(?,Rerouted_Till in (select Rerouted_Till from basic_train_info))>0";
         //create a query to find the trains between source and destination
-        String query1 = "select x.*, y.Days_Running from\n" +
+        String query1 = "select x.*, y.Days_Running,y.Cancelled_Till,y.Added_Till from\n" +
                 "(select a.Train_ID, a.Train_Name, b.Arrival, a.Departure, a.Day_No from \n" +
                 "(select * from route_info\n" +
                 "where Station=? and inCurrentRoute=1) as a\n" +
@@ -47,10 +47,10 @@ String query0="select Train_ID from basic_train_info where datediff(?,Rerouted_T
         //create query to find total seats in each class
         String query2="select Sleeper_Coaches,Sleeper_Seats,FirstAC_Coaches,FirstAC_Seats,SecondAC_Coaches,SecondAC_Seats,ThirdAC_Coaches,ThirdAC_Seats from basic_train_info where Train_ID=?;";
 
-        String query3="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=? and Seat_No like 'SL%'));";
-        String query4="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
-        String query5="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=? and Seat_No like '2A%'));";
-        String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
+        String query3="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=? and Seat_No like 'SL%'));";
+        String query4="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
+        String query5="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=? and Seat_No like '2A%'));";
+        String query6="select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from vacancy_info where Train_ID=? and Station_No in (select Station_No from route_info where Train_ID= ? and Station_No between (select Station_No from route_info where Train_ID=? and Station=?) and (select Station_No from route_info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
         String query7="select Added_Till,Cancelled_Till from basic_train_info where Train_ID=?;";
         DisplayTrainsResponse displayTrainsResponse=DisplayTrains(query1,query2,query3,query4,query5,query6,query7,sDate,source,dest);
 
@@ -128,6 +128,15 @@ String query0="select Train_ID from basic_train_info where datediff(?,Rerouted_T
                                     }
                                 }
                                 else counter=1;
+                            }
+                        }
+                        else if(resultSet1.getString("Cancelled_Till")!=null)
+                        {
+                            java.util.Date date2= sdf.parse(resultSet1.getString("Cancelled_Till"));
+                            compare2=date.compareTo(date2);
+                            if(compare2>0)
+                            {
+                                counter=1;
                             }
                         }
                         else counter=1;
