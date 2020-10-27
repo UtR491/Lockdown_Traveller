@@ -11,6 +11,7 @@ public class Server {
     public static Connection connection;
 
 
+
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket;
@@ -38,15 +39,7 @@ public class Server {
         }
     }
 
-    public static void SendResponse(Response response) {
-        try {
-            ObjectOutputStream objectOutputStream = null;
-            objectOutputStream.writeObject(response);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
     public static void SendResponse (ObjectOutputStream oos, Response response) {
         try {
             System.out.println("Sending the object now " + response);

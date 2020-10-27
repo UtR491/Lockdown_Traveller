@@ -118,6 +118,20 @@ public class RequestIdentifier implements Runnable{
                 RerouteRequestHandler rerouteRequestHandler=new RerouteRequestHandler(db.getConnection(),(RerouteRequest)request,oos);
                 rerouteRequestHandler.sendQuery();
             }
+            else if(request instanceof ViewCancelledTrainsRequest)
+            {
+                ViewCancelledTrainsRequestHandler viewCancelledTrainsRequestHandler=new ViewCancelledTrainsRequestHandler(Server.getConnection(),(ViewCancelledTrainsRequest)request,oos);
+                viewCancelledTrainsRequestHandler.sendQuery();
+            }
+            else if(request instanceof DisplayTouristPackageRequest)
+            {
+                DisplayTouristPackageRequestHandler displayTouristPackageRequestHandler=new DisplayTouristPackageRequestHandler(oos,Server.getConnection(),(DisplayTouristPackageRequest)request);
+                try {
+                    displayTouristPackageRequestHandler.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
