@@ -21,7 +21,7 @@ public class CancelBookingRequestHandler extends Handler
         String PNR=cb.getPNR();
         String query="update booking_info set Booking_Status='Cancelled' where PNR=\""+PNR+"\"";
         CancelBookingResponse cancelBookingResponse = CancelBooking(query);
-        Server.SendResponse(cancelBookingResponse);
+        Server.SendResponse(oos,cancelBookingResponse);
     }
 
     public CancelBookingResponse CancelBooking(String query) throws SQLException {
