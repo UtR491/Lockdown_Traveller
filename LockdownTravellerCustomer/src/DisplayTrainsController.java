@@ -22,25 +22,26 @@ public class DisplayTrainsController {
     public Hyperlink homeLink;
 
     private Scene homeScene;
+        public void sendRequest (ActionEvent actionEvent){
+            DisplayTrainsRequest displayTrainsRequest = new DisplayTrainsRequest(sourceTextfield.getText(),
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy").format(dateDatePicker.getValue()),
+                    destinationTextfield.getText());
+            Main.SendRequest(displayTrainsRequest);
+            DisplayTrainsResponse displayTrainsResponse = (DisplayTrainsResponse) Main.ReceiveResponse();
+            for (String trainID : displayTrainsResponse.getTrain_ID())
+                System.out.println("Train ID - " + trainID);
+        }
 
-    public void sendRequest(ActionEvent actionEvent) {
-        DisplayTrainsRequest displayTrainsRequest = new DisplayTrainsRequest(sourceTextfield.getText(),
-                DateTimeFormatter.ofPattern("dd/MM/yyyy").format(dateDatePicker.getValue()),
-                destinationTextfield.getText());
-        Main.SendRequest(displayTrainsRequest);
-        DisplayTrainsResponse displayTrainsResponse = (DisplayTrainsResponse) Main.ReceiveResponse();
-        for(String trainID : displayTrainsResponse.getTrain_ID())
-            System.out.println("Train ID - " + trainID);
+        public void goToHome (ActionEvent actionEvent){
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("LandingPage.fxml"));
+            Stage stage = (Stage) homeLink.getScene().getWindow();
+            stage.setScene(homeScene);
+            stage.setTitle("Welcome");
+        }
+
+
+        public void initData (Scene homeScene){
+            this.homeScene = homeScene;
+        }
     }
 
-    public void goToHome(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("LandingPage.fxml"));
-        Stage stage = (Stage) homeLink.getScene().getWindow();
-        stage.setScene(homeScene);
-        stage.setTitle("Welcome");
-    }
-
-    public void initData(Scene homeScene) {
-        this.homeScene = homeScene;
-    }
-}

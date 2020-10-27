@@ -26,7 +26,7 @@ public class CancelTrainsRequestHandler  extends Handler{
         date= LocalDate.parse(date,dtf).format(dtf2);
         String query1="update Basic_Train_Info set Cancelled_Till = ? where Train_ID = ?;";
         String query2="select User_ID from User;";
-        String query3="insert into notifications values(?,?,1);";
+        String query3="insert into notification values(?,?,1);";
         CancelTrainsResponse cancelTrainsResponse=cancelTrains(query1,query2,query3,Train_ID,date);
         Server.SendResponse(oos,cancelTrainsResponse);
     }

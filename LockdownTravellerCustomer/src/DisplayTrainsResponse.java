@@ -71,4 +71,20 @@ public class DisplayTrainsResponse extends Response implements Serializable
         return i;
     }
 }
+class AvailableSeats implements Serializable
+{
+    private String Coach,Seats;
+    AvailableSeats(String Coach,String Seats)
+    {
+        this.Coach=Coach;
+        this.Seats=Seats;
+    }
 
+    public String getCoach() {
+        return Coach;
+    }
+
+    public String getSeats() {
+        return Seats;
+    }
+}
