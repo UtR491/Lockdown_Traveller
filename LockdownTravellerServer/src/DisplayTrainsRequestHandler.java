@@ -111,7 +111,7 @@ public class DisplayTrainsRequestHandler extends Handler {
                     resultSet1.next();
                     int compare1, compare2, counter = 0;
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     try {
                         java.util.Date date = sdf.parse(sDate);
                         if (resultSet1.getString("Added_Till") != null) {
