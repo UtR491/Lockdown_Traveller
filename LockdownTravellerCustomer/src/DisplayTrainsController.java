@@ -38,7 +38,7 @@ ObjectInputStream ois;
         Main.SendRequest(oos,displayTrainsRequest);
         try {
             DisplayTrainsResponse displayTrainsResponse=(DisplayTrainsResponse)ois.readObject();
-            FXMLLoader display=new FXMLLoader(getClass().getResource("DisplayTrainsUI.fxml"));
+            FXMLLoader display=new FXMLLoader(getClass().getResource("DisplayTrainsLandingPage.fxml"));
             Stage currentStage=(Stage) Display.getScene().getWindow();
             Scene displayTrains=null;
             try {
@@ -48,7 +48,7 @@ ObjectInputStream ois;
             }
             currentStage.setScene(displayTrains);
             DisplayTrainsLandingPageController displayTrainsLandingPageController=display.getController();
-            displayTrainsLandingPageController.init(displayTrainsResponse.getTrain_ID(),displayTrainsResponse.getTrain_Name(),displayTrainsResponse.getDeparture(),displayTrainsResponse.getArrival(),displayTrainsResponse.getThird_AC(),displayTrainsResponse.getSecond_AC(),displayTrainsResponse.getFirst_AC(),displayTrainsResponse.getSleeper(),displayTrainsResponse.getSource(),displayTrainsResponse.getDestination(),displayTrainsResponse.getsDate(),displayTrainsResponse.getI());
+            displayTrainsLandingPageController.init(displayTrainsResponse);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
