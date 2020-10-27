@@ -19,7 +19,9 @@ public class CancelBookingRequestHandler extends Handler
     void sendQuery() throws  SQLException {
         System.out.println("Inside Handler's get response method");
         String PNR=cb.getPNR();
-        String query="update booking_info set Booking_Status='Cancelled' where PNR=\""+PNR+"\"";
+        String userID = cb.getUserId();
+        String query="update Booking_Info set Booking_Status='Cancelled' where PNR='"+PNR+"' and User_ID = '" + userID
+                +"' and not Booking_Status = 'Cancelled';";
         CancelBookingResponse cancelBookingResponse = CancelBooking(query);
         Server.SendResponse(oos, cancelBookingResponse);
     }
@@ -28,8 +30,8 @@ public class CancelBookingRequestHandler extends Handler
         PreparedStatement preparedStatement=connection.prepareStatement(query);
         int result=preparedStatement.executeUpdate();
         String response = null;
-        if(result==0){response="No bookings found under the given PNR.Failed to cancel the booking";}
-        else if(result>0){response="Booking cancelled succesfully";}
+        if(result==0){response="failure";}
+        else if(result>0){response="success";}
         return new CancelBookingResponse(response);
     }
 }
