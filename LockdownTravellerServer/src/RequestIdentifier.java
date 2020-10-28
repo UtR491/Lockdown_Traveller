@@ -42,7 +42,11 @@ public class RequestIdentifier implements Runnable{
             }
            else if (request instanceof DisplayTrainsRequest) {
                 DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(Server.getConnection(), (DisplayTrainsRequest) request,oos);
-                dtrh.sendQuery();
+                try {
+                    dtrh.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
             } else if (request instanceof CancelBookingRequest) {
                 CancelBookingRequestHandler c = new CancelBookingRequestHandler(Server.getConnection(), (CancelBookingRequest) request,oos);
@@ -115,7 +119,11 @@ public class RequestIdentifier implements Runnable{
             else if(request instanceof RerouteRequest)
             {
                 RerouteRequestHandler rerouteRequestHandler=new RerouteRequestHandler(Server.getConnection(),(RerouteRequest)request,oos);
-                rerouteRequestHandler.sendQuery();
+                try {
+                    rerouteRequestHandler.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
             else if(request instanceof ViewCancelledTrainsRequest)
             {
@@ -135,6 +143,15 @@ public class RequestIdentifier implements Runnable{
             {
                 BookTouristPackageRequestHandler bookTouristPackageRequestHandler=new BookTouristPackageRequestHandler(Server.getConnection(),oos,(BookTouristPackageRequest)request);
                 bookTouristPackageRequestHandler.sendQuery();
+            }
+            else if(request instanceof NotificationRequest)
+            {
+                NotificationRequestHandler notificationRequestHandler=new NotificationRequestHandler(Server.getConnection(),(NotificationRequest)request,oos);
+                try {
+                    notificationRequestHandler.sendQuery();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
