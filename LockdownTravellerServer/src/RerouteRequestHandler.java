@@ -273,11 +273,11 @@ public class RerouteRequestHandler extends Handler {
         if(a1*a2*a3*a4*a5*a6*a7!=0)
         {
             preparedStatement.executeUpdate();
-            response="Train rerouted successfully";
+            response="SUCCESS";
         }
         else
         {
-            response="error occured";
+            response="FAILURE";
         }
         return new RerouteResponse(response);
     }
