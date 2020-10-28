@@ -1,12 +1,12 @@
 import java.io.Serializable;
 
 public class NotificationRequest extends Request implements Serializable {
-    private int userID;
-    NotificationRequest(int userID){
+    private String userID;
+    NotificationRequest(String userID){
         this.userID= userID;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 }

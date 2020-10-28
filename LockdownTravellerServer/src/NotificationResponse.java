@@ -1,29 +1,20 @@
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class NotificationResponse extends Response implements Serializable {
-    Message message;
-    ObjectOutputStream outputStream;
-//    server sendreponse method called
+    private ArrayList<String> message;
+    private String userID;
 
-}
-    class Message{
-
-        private String PNR;
-        long bookindId;
-        RerouteResponse rerouteResponse;
-        CancelTrainsResponse cancelTrainsResponse;
-
-        public void Message (String PNR, long bookingId, RerouteResponse rerouteResponse, CancelTrainsResponse cancelTrainsResponse){
-
-            this.PNR=PNR;
-            this.bookindId=bookingId;
-            this.rerouteResponse=rerouteResponse;
-            this.cancelTrainsResponse=cancelTrainsResponse;
-
-        }
-
-
+    public NotificationResponse(ArrayList<String> message, String userID) {
+        this.message = message;
+        this.userID = userID;
     }
 
+    public ArrayList<String> getMessage() {
+        return message;
+    }
 
+    public String getUserID() {
+        return userID;
+    }
+}
