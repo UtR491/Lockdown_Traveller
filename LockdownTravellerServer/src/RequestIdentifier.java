@@ -36,7 +36,7 @@ public class RequestIdentifier implements Runnable{
 
             else if(request instanceof BookingRequest) {
                 System.out.println("Booking Request");
-                BookingRequestHandler brh = new BookingRequestHandler(Server.getConnection(), (BookingRequest) request, oos);
+                BookingHandler brh = new BookingHandler(Server.getConnection(), (BookingRequest) request, oos);
                 brh.sendQuery();
             }
            else if (request instanceof DisplayTrainsRequest) {

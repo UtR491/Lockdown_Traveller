@@ -58,7 +58,7 @@ public class LandingPageController {
         stage.setTitle("Find Trains");
         stage.setScene(scene);
         DisplayTrainsController displayTrainsController = loader.getController();
-        displayTrainsController.initData(homeScene);
+        displayTrainsController.initData(homeScene, userId);
     }
     public void history(ActionEvent actionEvent) {
     }

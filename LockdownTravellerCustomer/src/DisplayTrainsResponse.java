@@ -1,13 +1,16 @@
-
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class DisplayTrainsResponse extends Response implements Serializable
 {
-    final private String [] Train_ID,Train_Name,Departure,Arrival,First_AC,Second_AC,Third_AC,Sleeper;
+    final private ArrayList<String> Train_ID,Train_Name,Departure,Arrival,First_AC,Second_AC,Third_AC,Sleeper;
     final private String sDate,Source,Destination;
     final private int i;
 
-    DisplayTrainsResponse(String [] Train_ID,String [] Train_Name,String  Source,String [] Departure,String  Destination,String [] Arrival,String [] First_AC,String [] Second_AC,String [] Third_AC,String [] Sleeper,String sDate,int i){
+    public DisplayTrainsResponse(ArrayList<String> Train_ID, ArrayList<String> Train_Name, String Source,
+                                 ArrayList<String> Departure, String Destination, ArrayList<String> Arrival,
+                                 ArrayList<String> First_AC, ArrayList<String> Second_AC, ArrayList<String> Third_AC,
+                                 ArrayList<String> Sleeper, String sDate, int i) {
         this.Train_ID=Train_ID;
         this.Train_Name=Train_Name;
         this.Source=Source;
@@ -20,14 +23,13 @@ public class DisplayTrainsResponse extends Response implements Serializable
         this.Sleeper=Sleeper;
         this.sDate=sDate;
         this.i=i;
-
     }
 
-    public String[] getTrain_ID() {
+    public ArrayList<String> getTrain_ID() {
         return Train_ID;
     }
 
-    public String[] getTrain_Name() {
+    public ArrayList<String> getTrain_Name() {
         return Train_Name;
     }
 
@@ -35,7 +37,7 @@ public class DisplayTrainsResponse extends Response implements Serializable
         return Source;
     }
 
-    public String[] getDeparture() {
+    public ArrayList<String> getDeparture() {
         return Departure;
     }
 
@@ -43,7 +45,7 @@ public class DisplayTrainsResponse extends Response implements Serializable
         return Destination;
     }
 
-    public String[] getArrival() {
+    public ArrayList<String> getArrival() {
         return Arrival;
     }
 
@@ -51,19 +53,19 @@ public class DisplayTrainsResponse extends Response implements Serializable
         return sDate;
     }
 
-    public String[] getFirst_AC() {
+    public ArrayList<String> getFirst_AC() {
         return First_AC;
     }
 
-    public String[] getSecond_AC() {
+    public ArrayList<String> getSecond_AC() {
         return Second_AC;
     }
 
-    public String[] getThird_AC() {
+    public ArrayList<String> getThird_AC() {
         return Third_AC;
     }
 
-    public String[] getSleeper() {
+    public ArrayList<String> getSleeper() {
         return Sleeper;
     }
 
@@ -71,6 +73,7 @@ public class DisplayTrainsResponse extends Response implements Serializable
         return i;
     }
 }
+
 class AvailableSeats implements Serializable
 {
     private String Coach,Seats;

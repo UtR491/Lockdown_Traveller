@@ -7,28 +7,28 @@ public class BookingRequest extends Request implements Serializable {
     final private Date date;
     final private String destination;
     final private String coach;
-    final private String[] preference;
-    final private int numSeat;
-    final private String[] name;
-    final private int[] age;
-    final private char[] gender;
     final private String userId;
     final private int availableSeat;
+    final private String[] preference;
+    final private String[] name;
+    final private int[] age;
+    final private int numSeat;
+    final private char[] gender;
 
-    public BookingRequest(String source, String destination, String trainId, String coach, Date date, int numSeat, String[] name,
-                          int[] age, char[] gender, String userId, int availableSeat, String[] preference) {
+    public BookingRequest(String source, String destination, String trainId, String coach, Date date, String[] name,
+                          int[] age, char[] gender, String userId, int availableSeat, String[] preference, int numSeat) {
         this.source = source;
         this.destination = destination;
         this.trainId = trainId;
         this.coach = coach;
         this.preference = preference;
         this.date = date;
-        this.numSeat = numSeat;
         this.name = name;
         this.age = age;
         this.gender = gender;
         this.userId = userId;
         this.availableSeat = availableSeat;
+        this.numSeat = numSeat;
     }
 
     public String getTrainId() {
@@ -55,10 +55,6 @@ public class BookingRequest extends Request implements Serializable {
         return coach;
     }
 
-    public int getNumSeat() {
-        return numSeat;
-    }
-
     public String[] getName() { return name; }
 
     public int[] getAge() { return age; }
@@ -68,4 +64,8 @@ public class BookingRequest extends Request implements Serializable {
     public String getUserId() { return userId; }
 
     public int getAvailableSeat() { return availableSeat; }
+
+    public int getNumSeat() {
+        return numSeat;
+    }
 }

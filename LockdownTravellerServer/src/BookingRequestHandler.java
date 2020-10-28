@@ -26,8 +26,12 @@ public class BookingRequestHandler extends Handler{
             String source = bookingRequest.getSource();
             String destination = bookingRequest.getDestination();
             String coach = bookingRequest.getCoach();
+            if(coach.equals("Sleeper"))
+                coach = "SL";
+            else if(coach.equals("First AC"))
+
             String[] preference = bookingRequest.getPreference();
-            int numSeat = bookingRequest.getNumSeat();
+            int numSeat = 24;
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             String convertedDate = df.format(date);
             String userId = bookingRequest.getUserId();

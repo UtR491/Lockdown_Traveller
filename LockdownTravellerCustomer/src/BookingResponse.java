@@ -12,4 +12,16 @@ public class BookingResponse extends Response implements Serializable {
         this.seatsAlloted = seatsAlloted;
         this.confirmedSeats = confirmedSeats;
     }
+
+    public long[] getBookingIds() {
+        return bookingIds;
+    }
+
+    public String[] getSeatsAlloted() {
+        return seatsAlloted;
+    }
+
+    public int getConfirmedSeats() {
+        return confirmedSeats;
+    }
 }
