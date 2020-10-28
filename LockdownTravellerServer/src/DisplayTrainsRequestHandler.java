@@ -36,12 +36,8 @@ public class DisplayTrainsRequestHandler extends Handler {
 String q2="select Train_ID from Basic_Train_Info where datediff(?,?)>0";
 String q3="delete from Route_Info where Train_ID=? and inCurrentRoute=1;";
 String q4="update Route_Info set inCurrentRoute=1 where Train_ID=? and inCurrentRoute=0;";
-if(checkRerouteStatus(q1,q2,q3,q4)==0)
-{
-    DisplayTrainsResponse displayTrainsResponse=new DisplayTrainsResponse("Error Occured");
-    Server.SendResponse(oos,displayTrainsResponse);
-}
-else {
+checkRerouteStatus(q1,q2,q3,q4);
+
 
     //create a query to find the trains between source and destination
     String query1 = "select x.*, y.Days_Running from\n" +
@@ -66,9 +62,9 @@ else {
     String query7 = "select Added_Till,Cancelled_Till from Basic_Train_Info where Train_ID=?;";
     DisplayTrainsResponse displayTrainsResponse = DisplayTrains(query1, query2, query3, query4, query5, query6, query7, sDate, source, dest);
     Server.SendResponse(oos, displayTrainsResponse);
-}
+
     }
-int checkRerouteStatus(String q1,String q2,String q3,String q4) throws SQLException {
+void checkRerouteStatus(String q1,String q2,String q3,String q4) throws SQLException {
     PreparedStatement preparedStatement=connection.prepareStatement(q1);
     ResultSet resultSet=preparedStatement.executeQuery();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -80,7 +76,6 @@ int checkRerouteStatus(String q1,String q2,String q3,String q4) throws SQLExcept
         e.printStackTrace();
     }
     preparedStatement=connection.prepareStatement(q2);
-    int c=0,b=0;
     while (resultSet.next())
     {
         preparedStatement.setString(1,d);
@@ -90,16 +85,14 @@ int checkRerouteStatus(String q1,String q2,String q3,String q4) throws SQLExcept
         {
             preparedStatement=connection.prepareStatement(q3);
             preparedStatement.setString(1,trainID.getString(1));
-             c=preparedStatement.executeUpdate();
+             preparedStatement.executeUpdate();
 
             preparedStatement=connection.prepareStatement(q4);
             preparedStatement.setString(1,trainID.getString(1));
-            b=preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
         }
-        if(b*c==0)
-            return 0;
+
     }
-    return 1;
 }
     private static int DayToDate(String sDate) {
         String[] date = sDate.split("-");
