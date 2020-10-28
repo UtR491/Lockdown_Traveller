@@ -3,11 +3,16 @@ import java.io.Serializable;
 
 public class DisplayTrainsResponse extends Response implements Serializable
 {
-    final private String [] Train_ID,Train_Name,Departure,Arrival,First_AC,Second_AC,Third_AC,Sleeper;
-    final private String sDate,Source,Destination;
-    final private int i;
+     private String [] Train_ID,Train_Name,Departure,Arrival,First_AC,Second_AC,Third_AC,Sleeper;
+     private String sDate,Source,Destination;
+     private int i;
+    String error;
 
-    DisplayTrainsResponse(String [] Train_ID,String [] Train_Name,String  Source,String [] Departure,String  Destination,String [] Arrival,String [] First_AC,String [] Second_AC,String [] Third_AC,String [] Sleeper,String sDate,int i){
+    public DisplayTrainsResponse(String error) {
+        this.error = error;
+    }
+
+    DisplayTrainsResponse(String [] Train_ID, String [] Train_Name, String  Source, String [] Departure, String  Destination, String [] Arrival, String [] First_AC, String [] Second_AC, String [] Third_AC, String [] Sleeper, String sDate, int i){
         this.Train_ID=Train_ID;
         this.Train_Name=Train_Name;
         this.Source=Source;
@@ -21,6 +26,10 @@ public class DisplayTrainsResponse extends Response implements Serializable
         this.sDate=sDate;
         this.i=i;
 
+    }
+
+    public String getError() {
+        return error;
     }
 
     public String[] getTrain_ID() {
