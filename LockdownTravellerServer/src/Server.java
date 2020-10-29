@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Server {
@@ -18,7 +20,6 @@ public class Server {
         Socket socket;
 
         map= new HashMap<>();
-        DatabaseConnector db = null;
 
         try {
             serverSocket = new ServerSocket(12000);
@@ -73,6 +74,15 @@ public class Server {
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    public static Object ReceiveRequest(ObjectInputStream objectInputStream)
+    {
+        try {
+            return objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
