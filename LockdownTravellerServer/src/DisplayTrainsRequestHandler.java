@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class DisplayTrainsRequestHandler extends Handler {
@@ -32,11 +33,12 @@ public class DisplayTrainsRequestHandler extends Handler {
         DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         sDate = LocalDate.parse(sDate, dtf).format(dtf2);
         // query to check the expiration of reroute period
-        String q1="select Rerouted_Till from Basic_Train_Info where Rerouted_Till is not null;";
-String q2="select Train_ID from Basic_Train_Info where datediff(?,?)>0";
+        String q1="select Rerouted_Till,Train_ID from Basic_Train_Info where Rerouted_Till is not null;";
+String q2="select Train_ID from Basic_Train_Info where Train_ID=?";
 String q3="delete from Route_Info where Train_ID=? and inCurrentRoute=1;";
 String q4="update Route_Info set inCurrentRoute=1 where Train_ID=? and inCurrentRoute=0;";
-checkRerouteStatus(q1,q2,q3,q4);
+String q5="update Basic_Train_Info set Rerouted_Till = null where Train_ID=?;";
+checkRerouteStatus(q1,q2,q3,q4,q5);
 
 
     //create a query to find the trains between source and destination
@@ -53,44 +55,62 @@ checkRerouteStatus(q1,q2,q3,q4);
             "on x.Train_ID = y.Train_ID;\n" +
             "\n";
     //create query to find total seats in each class
-    String query2 = "select Sleeper_Coaches,Sleeper_Seats,FirstAC_Coaches,FirstAC_Seats,SecondAC_Coaches,SecondAC_Seats,ThirdAC_Coaches,ThirdAC_Seats from Basic_Train_Info where Train_ID=?;";
+    String query2 = "select Sleeper_Coaches,Sleeper_Seats,FirstAC_Coaches,FirstAC_Seats,SecondAC_Coaches,SecondAC_Seats,ThirdAC_Coaches,ThirdAC_Seats,Sleeper_Fare,FirstAC_Fare,SecondAC_Fare,ThirdAC_Fare from Basic_Train_Info where Train_ID=?;";
 
     String query3 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like 'SL%'));";
-    String query4 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
+    String query4 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in  (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
     String query5 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like '2A%'));";
     String query6 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
     String query7 = "select Added_Till,Cancelled_Till from Basic_Train_Info where Train_ID=?;";
-    DisplayTrainsResponse displayTrainsResponse = DisplayTrains(query1, query2, query3, query4, query5, query6, query7, sDate, source, dest);
+    String query8="select Distance_Covered from Route_Info where Train_ID=? and inCurrentRoute=1 and Station in (?,?);";
+    DisplayTrainsResponse displayTrainsResponse = DisplayTrains(query1, query2, query3, query4, query5, query6, query7,query8, sDate, source, dest);
     Server.SendResponse(oos, displayTrainsResponse);
 
     }
-void checkRerouteStatus(String q1,String q2,String q3,String q4) throws SQLException {
+void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) throws SQLException {
     PreparedStatement preparedStatement=connection.prepareStatement(q1);
     ResultSet resultSet=preparedStatement.executeQuery();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    Date date=new Date();
-    String d = null;
+    String s=sdf.format(new Date());
+    Date currDate = null;
     try {
-        d=sdf.parse(String.valueOf(date)).toString();
+        currDate=sdf.parse(s);
     } catch (ParseException e) {
         e.printStackTrace();
     }
+    Date reroutedDate = null;
     preparedStatement=connection.prepareStatement(q2);
     while (resultSet.next())
     {
-        preparedStatement.setString(1,d);
-        preparedStatement.setString(2,resultSet.getString(1));
-        ResultSet trainID=preparedStatement.executeQuery();
-        while (trainID.next())
-        {
-            preparedStatement=connection.prepareStatement(q3);
-            preparedStatement.setString(1,trainID.getString(1));
-             preparedStatement.executeUpdate();
-
-            preparedStatement=connection.prepareStatement(q4);
-            preparedStatement.setString(1,trainID.getString(1));
-            preparedStatement.executeUpdate();
+        try {
+             reroutedDate=sdf.parse(resultSet.getString(1));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        assert reroutedDate != null;
+        assert currDate != null;
+        int compare=currDate.compareTo(reroutedDate);
+        if(compare>0)
+        {
+            preparedStatement.setString(1,resultSet.getString(2));
+            ResultSet trainID=preparedStatement.executeQuery();
+            while (trainID.next())
+            {
+                preparedStatement=connection.prepareStatement(q3);
+                preparedStatement.setString(1,trainID.getString(1));
+                preparedStatement.executeUpdate();
+
+                preparedStatement=connection.prepareStatement(q4);
+                preparedStatement.setString(1,trainID.getString(1));
+                preparedStatement.executeUpdate();
+
+                preparedStatement=connection.prepareStatement(q5);
+                preparedStatement.setString(1,trainID.getString(1));
+                preparedStatement.executeUpdate();
+            }
+
+        }
+
 
     }
 }
@@ -101,7 +121,7 @@ void checkRerouteStatus(String q1,String q2,String q3,String q4) throws SQLExcep
         return dayOfWeek.getValue();
     }
 
-   DisplayTrainsResponse DisplayTrains(String query1, String query2, String query3, String query4, String query5, String query6, String query7, String sDate, String source, String dest) {
+   DisplayTrainsResponse DisplayTrains(String query1, String query2, String query3, String query4, String query5, String query6, String query7,String query8, String sDate, String source, String dest) {
         char[] Days_Running = null;
         ResultSet result = null;
         int required_day = DisplayTrainsRequestHandler.DayToDate(sDate);
@@ -118,9 +138,9 @@ void checkRerouteStatus(String q1,String q2,String q3,String q4) throws SQLExcep
             e.printStackTrace();
         }
 
-        String[] Train_ID = new String[5], Train_Name = new String[5], Departure = new String[5], Arrival = new String[5], First_AC = new String[5], Second_AC = new String[5], Third_AC = new String[5], Sleeper = new String[5];
+        ArrayList<String> Train_ID = new ArrayList<>(), Train_Name = new ArrayList<>(), Departure = new ArrayList<>(), Arrival = new ArrayList<>(), First_AC = new ArrayList<>(), Second_AC = new ArrayList<>(), Third_AC = new ArrayList<>(), Sleeper = new ArrayList<>();
         int i = 0;
-
+       ArrayList<Integer>AC3Fare=new ArrayList<>(),AC2Fare=new ArrayList<>(),AC1Fare=new ArrayList<>(),SLFare=new ArrayList<>();
         while (true) {
             try {
                 assert result != null;
@@ -174,88 +194,113 @@ void checkRerouteStatus(String q1,String q2,String q3,String q4) throws SQLExcep
                         e.printStackTrace();
                     }
                     if (counter == 1) {
-                        Train_ID[i] = result.getString("Train_ID");
-                        Train_Name[i] = result.getString("Train_Name");
-                        Departure[i] = result.getString("Departure");
-                        Arrival[i] = result.getString("Arrival");
+
+
+
+                        Train_ID.add(result.getString("Train_ID"));
+                        Train_Name.add(result.getString("Train_Name"));
+                        Departure.add(result.getString("Departure"));
+                        Arrival.add(result.getString("Arrival"));
 
 
                         preparedStatement = connection.prepareStatement(query2);
-                        preparedStatement.setString(1, Train_ID[i]);
+                        preparedStatement.setString(1, Train_ID.get(i));
                         ResultSet resultSet = preparedStatement.executeQuery();
 
 
                         preparedStatement = connection.prepareStatement(query3);
-                        preparedStatement.setString(1, Train_ID[i]);
-                        preparedStatement.setString(2, Train_ID[i]);
-                        preparedStatement.setString(3, Train_ID[i]);
+                        preparedStatement.setString(1, Train_ID.get(i));
+                        preparedStatement.setString(2, Train_ID.get(i));
+                        preparedStatement.setString(3, Train_ID.get(i));
                         preparedStatement.setString(4, source);
-                        preparedStatement.setString(5, Train_ID[i]);
+                        preparedStatement.setString(5, Train_ID.get(i));
                         preparedStatement.setString(6, dest);
                         preparedStatement.setString(7, sDate);
                         ResultSet SL_Seats = preparedStatement.executeQuery();
                         resultSet.next();
                         SL_Seats.next();
-                        int available_seats = 0;
+                        int available_seats ;
                         if (resultSet.getString("Sleeper_Seats") != null) {
                             available_seats = Integer.parseInt(resultSet.getString("Sleeper_Seats")) - Integer.parseInt(SL_Seats.getString(1));
-                            Sleeper[i] = String.valueOf(available_seats * Integer.parseInt(resultSet.getString("Sleeper_Coaches")));
-                        } else Sleeper[i] = String.valueOf(available_seats);
+                            Sleeper.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("Sleeper_Coaches"))));
+                        } else Sleeper.add("N/A");
 
 
                         preparedStatement = connection.prepareStatement(query4);
-                        preparedStatement.setString(1, Train_ID[i]);
-                        preparedStatement.setString(2, Train_ID[i]);
-                        preparedStatement.setString(3, Train_ID[i]);
+                        preparedStatement.setString(1, Train_ID.get(i));
+                        preparedStatement.setString(2, Train_ID.get(i));
+                        preparedStatement.setString(3, Train_ID.get(i));
                         preparedStatement.setString(4, source);
-                        preparedStatement.setString(5, Train_ID[i]);
+                        preparedStatement.setString(5, Train_ID.get(i));
                         preparedStatement.setString(6, dest);
                         preparedStatement.setString(7, sDate);
                         ResultSet AC1_Seats = preparedStatement.executeQuery();
                         AC1_Seats.next();
                         if (resultSet.getString("FirstAC_Seats") != null) {
                             available_seats = Integer.parseInt(resultSet.getString("FirstAC_Seats")) - Integer.parseInt(AC1_Seats.getString(1));
-                            First_AC[i] = String.valueOf(available_seats * Integer.parseInt(resultSet.getString("FirstAC_Coaches")));
-                        } else First_AC[i] = String.valueOf(available_seats);
+                            First_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("FirstAC_Coaches"))));
+                        } else First_AC.add("N/A");
 
 
                         preparedStatement = connection.prepareStatement(query5);
-                        preparedStatement.setString(1, Train_ID[i]);
-                        preparedStatement.setString(2, Train_ID[i]);
-                        preparedStatement.setString(3, Train_ID[i]);
+                        preparedStatement.setString(1, Train_ID.get(i));
+                        preparedStatement.setString(2, Train_ID.get(i));
+                        preparedStatement.setString(3, Train_ID.get(i));
                         preparedStatement.setString(4, source);
-                        preparedStatement.setString(5, Train_ID[i]);
+                        preparedStatement.setString(5, Train_ID.get(i));
                         preparedStatement.setString(6, dest);
                         preparedStatement.setString(7, sDate);
                         ResultSet AC2_Seats = preparedStatement.executeQuery();
                         AC2_Seats.next();
                         if (resultSet.getString("SecondAC_Seats") != null) {
                             available_seats = Integer.parseInt(resultSet.getString("SecondAC_Seats")) - Integer.parseInt(AC2_Seats.getString(1));
-                            Second_AC[i] = String.valueOf(available_seats * Integer.parseInt(resultSet.getString("SecondAC_Coaches")));
-                        } else Second_AC[i] = String.valueOf(available_seats);
+                            Second_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("SecondAC_Coaches"))));
+                        } else Second_AC.add("N/A");
 
                         preparedStatement = connection.prepareStatement(query6);
-                        preparedStatement.setString(1, Train_ID[i]);
-                        preparedStatement.setString(2, Train_ID[i]);
-                        preparedStatement.setString(3, Train_ID[i]);
+                        preparedStatement.setString(1, Train_ID.get(i));
+                        preparedStatement.setString(2, Train_ID.get(i));
+                        preparedStatement.setString(3, Train_ID.get(i));
                         preparedStatement.setString(4, source);
-                        preparedStatement.setString(5, Train_ID[i]);
+                        preparedStatement.setString(5, Train_ID.get(i));
                         preparedStatement.setString(6, dest);
                         preparedStatement.setString(7, sDate);
                         ResultSet AC3_Seats = preparedStatement.executeQuery();
                         AC3_Seats.next();
                         if (resultSet.getString("ThirdAC_Seats") != null) {
                             available_seats = Integer.parseInt(resultSet.getString("ThirdAC_Seats")) - Integer.parseInt(AC3_Seats.getString(1));
-                            Third_AC[i] = String.valueOf(available_seats * Integer.parseInt(resultSet.getString("ThirdAC_Coaches")));
-                        } else Third_AC[i] = String.valueOf(available_seats);
+                            Third_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("ThirdAC_Coaches"))));
+                        } else Third_AC.add("N/A");
                         i++;
+
+
+
+                        //getting the tkt cost for each class
+                        preparedStatement=connection.prepareStatement(query8);
+                        preparedStatement.setString(1,result.getString("Train_ID"));
+                        preparedStatement.setString(2,source);
+                        preparedStatement.setString(3,dest);
+                        ResultSet d=preparedStatement.executeQuery();
+                        Integer distance=d.getInt(2)-d.getInt(1);
+                        if(result.getString(12)!=null)AC3Fare.add(result.getInt(12)*distance);
+                        else AC3Fare.add(-1);
+                        if(result.getString(11)!=null)AC2Fare.add(result.getInt(11)*distance);
+                        else AC2Fare.add(-1);
+                        if(result.getString(10)!=null)AC1Fare.add(result.getInt(10)*distance);
+                        else AC1Fare.add(-1);
+                        if(result.getString(9)!=null)SLFare.add(result.getInt(9)*distance);
+                        else SLFare.add(-1);
+
+
+
+
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
             }
-        return new DisplayTrainsResponse(Train_ID, Train_Name, source, Departure, dest, Arrival, First_AC, Second_AC, Third_AC, Sleeper, sDate, i);
+        return new DisplayTrainsResponse(Train_ID,Train_Name,Departure,Arrival,First_AC,Second_AC,Third_AC,Sleeper,sDate,source,dest,AC1Fare,AC2Fare,AC3Fare,SLFare);
 
     }
 }
