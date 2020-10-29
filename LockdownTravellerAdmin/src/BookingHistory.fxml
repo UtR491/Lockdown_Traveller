@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BookingHistoryController">
+   <children>
+      <Label layoutX="233.0" layoutY="26.0" prefHeight="25.0" prefWidth="135.0" text="Booking History" />
+      <TableView fx:id="Bookinghistory" layoutX="14.0" layoutY="81.0" prefHeight="255.0" prefWidth="579.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="TrainId" />
+          <TableColumn prefWidth="85.0" text="BookingId" />
+            <TableColumn prefWidth="54.0" text="Name" />
+            <TableColumn prefWidth="56.0" text="Age" />
+            <TableColumn prefWidth="68.0" text="Gender" />
+            <TableColumn prefWidth="62.0" text="source" />
+            <TableColumn prefWidth="96.0" text="destination" />
+            <TableColumn prefWidth="75.0" text="Date" />
+        </columns>
+      </TableView>
+      <Button layoutX="39.0" layoutY="354.0" mnemonicParsing="false" text="Go to Home" />
+   </children>
+</AnchorPane>
