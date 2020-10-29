@@ -12,7 +12,8 @@ import java.io.IOException;
 public class LandingPageController {
 
     @FXML
-    public Button findTrainsButton, historyButton, notificationButton, upcomingTravelsButton, cancelBookingButton;
+    public Button findTrainsButton, historyButton, notificationButton, reroutedTrainsButton, cancelBookingButton,
+            cancelledTrainsButton;
     @FXML
     public Hyperlink logoutLink, homeLink;
     @FXML
@@ -58,11 +59,26 @@ public class LandingPageController {
         stage.setTitle("Find Trains");
         stage.setScene(scene);
         DisplayTrainsController displayTrainsController = loader.getController();
-        displayTrainsController.initData(homeScene);
+        displayTrainsController.initData(homeScene, userId);
     }
     public void history(ActionEvent actionEvent) {
     }
     public void notifications(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Notifications.fxml"));
+        Scene scene = null;
+        Stage stage = (Stage) cancelBookingButton.getScene().getWindow();
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.setTitle("Notifications.");
+        stage.setScene(scene);
+        NotificationsController notificationsController = loader.getController();
+        NotificationRequest notificationRequest = new NotificationRequest(userId);
+        Main.SendRequest(notificationRequest);
+        NotificationResponse notificationResponse = (NotificationResponse) Main.ReceiveResponse();
+        notificationsController.initData(homeScene, userId, notificationResponse);
     }
     public void cancelBooking(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CancelBooking.fxml"));
@@ -78,6 +94,35 @@ public class LandingPageController {
         CancelBookingController cancelBookingController = loader.getController();
         cancelBookingController.initData(homeScene, userId);
     }
-    public void upcomingTravels(ActionEvent actionEvent) {
+    public void reroutedTrains(ActionEvent actionEvent) {
+        ViewReroutedTrainsRequest viewReroutedTrainsRequest = new ViewReroutedTrainsRequest();
+        Main.SendRequest(viewReroutedTrainsRequest);
+        ViewReroutedTrainsResponse viewReroutedTrainsResponse = (ViewReroutedTrainsResponse) Main.ReceiveResponse();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewReroutedTrains.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = (Stage) logoutLink.getScene().getWindow();
+        stage.setScene(scene);
+        ViewReroutedTrainsController viewReroutedTrainsController = loader.getController();
+        viewReroutedTrainsController.initData(homeScene, viewReroutedTrainsResponse);
+    }
+
+    public void cancelledTrains(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewCancelledTrains.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = (Stage) logoutLink.getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("View Cancelled Trains");
+        ViewCancelledTrainsController viewCancelledTrainsController = loader.getController();
+        viewCancelledTrainsController.initData(homeScene);
     }
 }

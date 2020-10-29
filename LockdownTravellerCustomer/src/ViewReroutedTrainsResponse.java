@@ -54,3 +54,46 @@ public class ViewReroutedTrainsResponse extends Response implements Serializable
         return distanceCovered;
     }
 }
+
+class ReroutedLeaf {
+    private final String station, cityCode, arrival, departure;
+    private final int dayNo, distance, stationNo;
+
+    ReroutedLeaf(String station, String cityCode, String arrival, String departure, int dayNo, int distance, int stationNo) {
+        this.station = station;
+        this.cityCode = cityCode;
+        this.arrival = arrival;
+        this.departure = departure;
+        this.dayNo = dayNo;
+        this.distance = distance;
+        this.stationNo = stationNo;
+    }
+
+    public String getStation() {
+        return station;
+    }
+
+    public String getCityCode() {
+        return cityCode;
+    }
+
+    public String getArrival() {
+        return arrival;
+    }
+
+    public String getDeparture() {
+        return departure;
+    }
+
+    public int getDayNo() {
+        return dayNo;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getStationNo() {
+        return stationNo;
+    }
+}

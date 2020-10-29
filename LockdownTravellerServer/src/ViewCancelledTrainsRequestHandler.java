@@ -22,8 +22,8 @@ public class ViewCancelledTrainsRequestHandler extends Handler {
 
     @Override
     void sendQuery() {
-        String q="select Cancelled_Till,Train_ID from basic_train_info where Cancelled_Till is not null;";
-        String query="select Train_Name,Train_ID,Cancelled_Till from basic_train_info where Train_ID=?;";
+        String q="select Cancelled_Till,Train_ID from Basic_Train_Info where Cancelled_Till is not null;";
+        String query="select Train_Name,Train_ID,Cancelled_Till from Basic_Train_Info where Train_ID=?;";
         ViewCancelledTrainsResponse viewCancelledTrainsResponse=viewCancelledTrains(q, query,viewCancelledTrainsRequest);
         Server.SendResponse(oos,viewCancelledTrainsResponse);
     }

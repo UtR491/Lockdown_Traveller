@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="TicketController">
+   <children>
+      <Label layoutX="207.0" layoutY="14.0" text="Confirmation">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Hyperlink fx:id="homeLink" layoutX="479.0" layoutY="389.0" onAction="#goToHome" text="Go to home." />
+      <ListView fx:id="ticketHolder" layoutY="135.0" prefHeight="252.0" prefWidth="570.0" />
+      <Label layoutX="228.0" layoutY="61.0" text="Your ticket details. Take a screenshot for future use." textFill="#ee160e" />
+      <Label layoutY="115.0" text="Total Cost :">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="399.0" layoutY="115.0" text="PNR :">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="costLabel" layoutX="101.0" layoutY="115.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="pnrLabel" layoutX="449.0" layoutY="115.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
