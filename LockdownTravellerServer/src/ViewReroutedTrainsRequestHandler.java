@@ -29,8 +29,14 @@ public class ViewReroutedTrainsRequestHandler extends Handler implements Seriali
     }
 
     public ViewReroutedTrainsResponse viewReroutedTrains(String q1, String q2) throws SQLException {
-        Date currDate=new Date();
+        Date currDate=null;
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        String s=sdf.format(new Date());
+        try {
+            currDate=sdf.parse(s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         ResultSet resultSet = null,reroutedTrains;
         PreparedStatement preparedStatement;
         ArrayList<String> trainID = new ArrayList<>();
@@ -55,7 +61,7 @@ public class ViewReroutedTrainsRequestHandler extends Handler implements Seriali
         {
             try {
                 reroutedTill=sdf.parse(resultSet.getString(1));
-                currDate=sdf.parse(String.valueOf(currDate));
+                assert currDate != null;
                 int compare=reroutedTill.compareTo(currDate);
                 if(compare>0)
                 {
