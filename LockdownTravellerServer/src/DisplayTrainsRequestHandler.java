@@ -32,11 +32,12 @@ public class DisplayTrainsRequestHandler extends Handler {
         DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         sDate = LocalDate.parse(sDate, dtf).format(dtf2);
         // query to check the expiration of reroute period
-        String q1="select Rerouted_Till from Basic_Train_Info where Rerouted_Till is not null;";
-String q2="select Train_ID from Basic_Train_Info where datediff(?,?)>0";
+        String q1="select Rerouted_Till,Train_ID from Basic_Train_Info where Rerouted_Till is not null;";
+String q2="select Train_ID from Basic_Train_Info where Train_ID=?";
 String q3="delete from Route_Info where Train_ID=? and inCurrentRoute=1;";
 String q4="update Route_Info set inCurrentRoute=1 where Train_ID=? and inCurrentRoute=0;";
-checkRerouteStatus(q1,q2,q3,q4);
+String q5="update Basic_Train_Info set Rerouted_Till = null where Train_ID=?;";
+checkRerouteStatus(q1,q2,q3,q4,q5);
 
 
     //create a query to find the trains between source and destination
@@ -64,33 +65,48 @@ checkRerouteStatus(q1,q2,q3,q4);
     Server.SendResponse(oos, displayTrainsResponse);
 
     }
-void checkRerouteStatus(String q1,String q2,String q3,String q4) throws SQLException {
+void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) throws SQLException {
     PreparedStatement preparedStatement=connection.prepareStatement(q1);
     ResultSet resultSet=preparedStatement.executeQuery();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    Date date=new Date();
-    String d = null;
+    Date currDate=new Date();
     try {
-        d=sdf.parse(String.valueOf(date)).toString();
+        currDate=sdf.parse(String.valueOf(currDate));
     } catch (ParseException e) {
         e.printStackTrace();
     }
+    Date reroutedDate = null;
     preparedStatement=connection.prepareStatement(q2);
     while (resultSet.next())
     {
-        preparedStatement.setString(1,d);
-        preparedStatement.setString(2,resultSet.getString(1));
-        ResultSet trainID=preparedStatement.executeQuery();
-        while (trainID.next())
-        {
-            preparedStatement=connection.prepareStatement(q3);
-            preparedStatement.setString(1,trainID.getString(1));
-             preparedStatement.executeUpdate();
-
-            preparedStatement=connection.prepareStatement(q4);
-            preparedStatement.setString(1,trainID.getString(1));
-            preparedStatement.executeUpdate();
+        try {
+             reroutedDate=sdf.parse(resultSet.getString(1));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        assert reroutedDate != null;
+        int compare=currDate.compareTo(reroutedDate);
+        if(compare>0)
+        {
+            preparedStatement.setString(1,resultSet.getString(2));
+            ResultSet trainID=preparedStatement.executeQuery();
+            while (trainID.next())
+            {
+                preparedStatement=connection.prepareStatement(q3);
+                preparedStatement.setString(1,trainID.getString(1));
+                preparedStatement.executeUpdate();
+
+                preparedStatement=connection.prepareStatement(q4);
+                preparedStatement.setString(1,trainID.getString(1));
+                preparedStatement.executeUpdate();
+
+                preparedStatement=connection.prepareStatement(q5);
+                preparedStatement.setString(1,trainID.getString(1));
+                preparedStatement.executeUpdate();
+            }
+
+        }
+
 
     }
 }
