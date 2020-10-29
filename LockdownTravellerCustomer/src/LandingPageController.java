@@ -12,7 +12,7 @@ import java.io.IOException;
 public class LandingPageController {
 
     @FXML
-    public Button findTrainsButton, historyButton, notificationButton, upcomingTravelsButton, cancelBookingButton;
+    public Button findTrainsButton, historyButton, notificationButton, reroutedTrainsButton, cancelBookingButton;
     @FXML
     public Hyperlink logoutLink, homeLink;
     @FXML
@@ -93,6 +93,20 @@ public class LandingPageController {
         CancelBookingController cancelBookingController = loader.getController();
         cancelBookingController.initData(homeScene, userId);
     }
-    public void upcomingTravels(ActionEvent actionEvent) {
+    public void reroutedTrains(ActionEvent actionEvent) {
+        ViewReroutedTrainsRequest viewReroutedTrainsRequest = new ViewReroutedTrainsRequest();
+        Main.SendRequest(viewReroutedTrainsRequest);
+        ViewReroutedTrainsResponse viewReroutedTrainsResponse = (ViewReroutedTrainsResponse) Main.ReceiveResponse();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewReroutedTrains.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = (Stage) logoutLink.getScene().getWindow();
+        stage.setScene(scene);
+        ViewReroutedTrainsController viewReroutedTrainsController = loader.getController();
+        viewReroutedTrainsController.initData(homeScene, viewReroutedTrainsResponse);
     }
 }
