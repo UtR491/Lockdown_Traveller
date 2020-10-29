@@ -7,16 +7,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class Server {
     public static Connection connection;
-
+    public static Map<String,Socket> map;
 
 
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket;
+        map= new HashMap<>();
         DatabaseConnector db = null;
         try {
             serverSocket = new ServerSocket(12000);
@@ -25,7 +28,7 @@ public class Server {
             e.printStackTrace();
         }
 
-        while(true) {
+        while (true) {
             try {
                 assert serverSocket != null;
                 System.out.println("Waiting for a customer");
@@ -42,10 +45,25 @@ public class Server {
     }
 
 
-    public static void SendResponse (ObjectOutputStream oos, Response response) {
+
+    public static Connection getConnection() {
+        if (connection != null) {
+            return connection;
+        }
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/lockdown_traveller";
+            connection = DriverManager.getConnection(url, "utkarsh", "Hello@123");
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return connection;
+    }
+    public static void SendResponse(ObjectOutputStream oos, Response response) {
         try {
             System.out.println("Sending the object now " + response);
-            if(response == null)
+            if (response == null)
                 System.out.println("The object is null");
             else
                 System.out.println("The object is NOT null");
@@ -55,30 +73,4 @@ public class Server {
             e.printStackTrace();
         }
     }
-
-    public static Connection getConnection() {
-        if(connection !=null){
-            return connection;
-        }
-        try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                String url = "jdbc:mysql://localhost:3306/lockdown_traveller";
-                connection = DriverManager.getConnection(url, "utkarsh", "Hello@123");
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-        return connection;
-    }
-
-
-    public static Object ReceiveRequest(ObjectInputStream objectInputStream) {
-        try {
-            return objectInputStream.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 }
