@@ -236,7 +236,15 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                             available_seats = Integer.parseInt(resultSet.getString("Sleeper_Seats")) - Integer.parseInt(SL_Seats.getString(1));
                             Sleeper.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("Sleeper_Coaches"))));
                         } else Sleeper.add("N/A");
-                        if(resultSet.getString(9)!=null)SLFare.add(resultSet.getInt(9)*distance);
+                        if(resultSet.getString(9)!=null)
+                        {
+                            if(result.getString("Train_ID").equals("22209")&&resultSet.getString("FirstAC_Seats") != null)//dynamic pricing for garib rath train
+                            {
+                                float percentageBooked=Float.parseFloat(SL_Seats.getString(1))/(Float.parseFloat(resultSet.getString("Sleeper_Seats"))*Float.parseFloat(resultSet.getString("Sleeper_Coaches")));
+                                SLFare.add((int) (resultSet.getInt(9)*distance*(1+percentageBooked)));
+                            }
+                            SLFare.add(resultSet.getInt(9)*distance);
+                        }
                         else SLFare.add(-1);
 
 
@@ -254,7 +262,15 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                             available_seats = Integer.parseInt(resultSet.getString("FirstAC_Seats")) - Integer.parseInt(AC1_Seats.getString(1));
                             First_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("FirstAC_Coaches"))));
                         } else First_AC.add("N/A");
-                        if(resultSet.getString(10)!=null)AC1Fare.add(resultSet.getInt(10)*distance);
+                        if(resultSet.getString(10)!=null)
+                        {
+                            if(result.getString("Train_ID").equals("22209")&&resultSet.getString("FirstAC_Seats") != null)//dynamic pricing for garib rath train
+                            {
+                                float percentageBooked=Float.parseFloat(AC1_Seats.getString(1))/(Float.parseFloat(resultSet.getString("FirstAC_Seats"))*Float.parseFloat(resultSet.getString("FirstAC_Coaches")));
+                                AC1Fare.add((int) (resultSet.getInt(10)*distance*(1+percentageBooked)));
+                            }
+                            else AC1Fare.add(resultSet.getInt(10)*distance);
+                        }
                         else AC1Fare.add(-1);
 
 
@@ -272,7 +288,15 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                             available_seats = Integer.parseInt(resultSet.getString("SecondAC_Seats")) - Integer.parseInt(AC2_Seats.getString(1));
                             Second_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("SecondAC_Coaches"))));
                         } else Second_AC.add("N/A");
-                        if(resultSet.getString(11)!=null)AC2Fare.add(resultSet.getInt(11)*distance);
+                        if(resultSet.getString(11)!=null)
+                        {
+                            if(result.getString("Train_ID").equals("22209")&&resultSet.getString("SecondAC_Seats") != null)//dynamic pricing for garib rath train
+                            {
+                                float percentageBooked=Float.parseFloat(AC2_Seats.getString(1))/(Float.parseFloat(resultSet.getString("SecondAC_Seats"))*Float.parseFloat(resultSet.getString("SecondAC_Coaches")));
+                                AC2Fare.add((int) (resultSet.getInt(11)*distance*(1+percentageBooked)));
+                            }
+                            else AC2Fare.add(resultSet.getInt(11)*distance);
+                        }
                         else AC2Fare.add(-1);
 
                         preparedStatement = connection.prepareStatement(query6);
@@ -289,16 +313,17 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                             available_seats = Integer.parseInt(resultSet.getString("ThirdAC_Seats")) - Integer.parseInt(AC3_Seats.getString(1));
                             Third_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("ThirdAC_Coaches"))));
                         } else Third_AC.add("N/A");
-                        if(resultSet.getString(12)!=null)AC3Fare.add(resultSet.getInt(12)*distance);
+                        if(resultSet.getString(12)!=null)
+                        {
+                            if(result.getString("Train_ID").equals("22209")&&resultSet.getString("ThirdAC_Seats") != null)//dynamic pricing for garib rath train
+                            {
+                                float percentageBooked=Float.parseFloat(AC3_Seats.getString(1))/(Float.parseFloat(resultSet.getString("ThirdAC_Seats"))*Float.parseFloat(resultSet.getString("ThirdAC_Coaches")));
+                                AC3Fare.add((int) (resultSet.getInt(12)*distance*(1+percentageBooked)));
+                            }
+                            else AC3Fare.add(resultSet.getInt(12)*distance);
+                        }
                         else AC3Fare.add(-1);
                         i++;
-
-
-
-
-
-
-
 
                     }
                 } catch (SQLException e) {
