@@ -3,15 +3,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 public class RequestIdentifier implements Runnable{
     Socket socket;
-    DatabaseConnector db;
-    public RequestIdentifier(Socket socket, DatabaseConnector db, Connection connection) {
+
+    public RequestIdentifier(Socket socket) {
         this.socket = socket;
-        this.db = db;
     }
 
     @Override
@@ -26,27 +24,32 @@ public class RequestIdentifier implements Runnable{
             e.printStackTrace();
         }
         while(socket.isConnected()) {
+            assert ois != null;
             Object request = Server.ReceiveRequest(ois);
             if(request == null)
                 break;
 
             if(request instanceof LoginRequest) {
                 System.out.println("Login Request");
-                LoginRequestHandler loginRequestHandler = new LoginRequestHandler(oos, db.getConnection(), (LoginRequest) request);
+                LoginRequestHandler loginRequestHandler = new LoginRequestHandler(oos, Server.getConnection(), (LoginRequest) request);
                 loginRequestHandler.sendQuery();
             }
 
             else if(request instanceof BookingRequest) {
                 System.out.println("Booking Request");
-                BookingRequestHandler brh = new BookingRequestHandler(db.getConnection(), (BookingRequest) request, oos);
+                BookingRequestHandler brh = new BookingRequestHandler(Server.getConnection(), (BookingRequest) request, oos);
                 brh.sendQuery();
             }
            else if (request instanceof DisplayTrainsRequest) {
-                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(db.getConnection(), (DisplayTrainsRequest) request,oos);
-                dtrh.sendQuery();
+                DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(Server.getConnection(), (DisplayTrainsRequest) request,oos);
+                try {
+                    dtrh.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
             } else if (request instanceof CancelBookingRequest) {
-                CancelBookingRequestHandler c = new CancelBookingRequestHandler(db.getConnection(), (CancelBookingRequest) request,oos);
+                CancelBookingRequestHandler c = new CancelBookingRequestHandler(Server.getConnection(), (CancelBookingRequest) request,oos);
                 try {
                     c.sendQuery();
                 } catch (SQLException e) {
@@ -55,68 +58,109 @@ public class RequestIdentifier implements Runnable{
             }
             else if (request instanceof RegisterRequest){
                 System.out.println("Register Request");
-                RegisterRequestHandler registerRequestHandler= new RegisterRequestHandler (db.getConnection(), (RegisterRequest) request, oos);
+                RegisterRequestHandler registerRequestHandler= new RegisterRequestHandler (Server.getConnection(), (RegisterRequest) request, oos);
                 registerRequestHandler.sendQuery();
             }
             else if (request instanceof AdminLoginRequest) {
                 System.out.println("Admin login request");
-                AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos, db.getConnection());
+                AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos, Server.getConnection());
                 adminLoginRequestHandler.sendQuery();
             }
             else if (request instanceof MaintainTrainsRequest) {
                 System.out.println("Maintain trains request");
-                MaintainTrainsRequestHandler maintainTrainsRequestHandler = new MaintainTrainsRequestHandler(oos, db.getConnection(), (MaintainTrainsRequest) request);
+                MaintainTrainsRequestHandler maintainTrainsRequestHandler = new MaintainTrainsRequestHandler(oos, Server.getConnection(), (MaintainTrainsRequest) request);
                 maintainTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof RemoveTrainsRequest)
             {
-                RemoveTrainsRequestHandler removeTrainsRequestHandler=new RemoveTrainsRequestHandler(db.getConnection(),(RemoveTrainsRequest)request,oos);
+                RemoveTrainsRequestHandler removeTrainsRequestHandler=new RemoveTrainsRequestHandler(Server.getConnection(),(RemoveTrainsRequest)request,oos);
                 removeTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof CancelTrainsRequest)
             {
-                CancelTrainsRequestHandler cancelTrainsRequestHandler=new CancelTrainsRequestHandler(db.getConnection(),(CancelTrainsRequest)request,oos);
+                CancelTrainsRequestHandler cancelTrainsRequestHandler=new CancelTrainsRequestHandler(Server.getConnection(),(CancelTrainsRequest)request,oos);
                 cancelTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof AddTrainsRequest)
             {
-                AddTrainsRequestHandler addTrainsRequestHandler=new AddTrainsRequestHandler(db.getConnection(),(AddTrainsRequest)request,oos);
+                AddTrainsRequestHandler addTrainsRequestHandler=new AddTrainsRequestHandler(Server.getConnection(),(AddTrainsRequest)request,oos);
                 addTrainsRequestHandler.sendQuery();
             }
             else if(request instanceof AddSeatsRequest)
             {
-                AddSeatsRequestHandler addSeatsRequestHandler=new AddSeatsRequestHandler(db.getConnection(),(AddSeatsRequest)request,oos);
+                AddSeatsRequestHandler addSeatsRequestHandler=new AddSeatsRequestHandler(Server.getConnection(),(AddSeatsRequest)request,oos);
                 addSeatsRequestHandler.sendQuery();
             }
             else if(request instanceof RemoveSeatsRequest)
             {
-                RemoveSeatsRequestHandler removeSeatsRequestHandler=new RemoveSeatsRequestHandler(db.getConnection(),(RemoveSeatsRequest)request,oos);
+                RemoveSeatsRequestHandler removeSeatsRequestHandler=new RemoveSeatsRequestHandler(Server.getConnection(),(RemoveSeatsRequest)request,oos);
                 removeSeatsRequestHandler.sendQuery();
             }
             else if(request instanceof AddCoachesRequest)
             {
-                AddCoachesRequestHandler addCoachesRequestHandler=new AddCoachesRequestHandler(db.getConnection(),(AddCoachesRequest)request,oos);
+                AddCoachesRequestHandler addCoachesRequestHandler=new AddCoachesRequestHandler(Server.getConnection(),(AddCoachesRequest)request,oos);
                 addCoachesRequestHandler.sendQuery();
             }
             else if(request instanceof RemoveCoachesRequest)
             {
-                RemoveCoachesRequestHandler removeCoachesRequestHandler=new RemoveCoachesRequestHandler(db.getConnection(),(RemoveCoachesRequest)request,oos);
+                RemoveCoachesRequestHandler removeCoachesRequestHandler=new RemoveCoachesRequestHandler(Server.getConnection(),(RemoveCoachesRequest)request,oos);
                 removeCoachesRequestHandler.sendQuery();
             }
             else if(request instanceof MaintainCustomerRequest) {
                 System.out.println("Maintain customer request");
-                MaintainCustomerRequestHandler maintainCustomerRequestHandler = new MaintainCustomerRequestHandler(oos, db.getConnection(), (MaintainCustomerRequest) request);
+                MaintainCustomerRequestHandler maintainCustomerRequestHandler = new MaintainCustomerRequestHandler(oos, Server.getConnection(), (MaintainCustomerRequest) request);
                 maintainCustomerRequestHandler.sendQuery();
             }
             else if(request instanceof MaintainSeatsRequest) {
                 System.out.println("Maintain seats request");
-                MaintainSeatsRequestHandler maintainSeatsRequestHandler = new MaintainSeatsRequestHandler(oos, db.getConnection(), (MaintainSeatsRequest) request);
+                MaintainSeatsRequestHandler maintainSeatsRequestHandler = new MaintainSeatsRequestHandler(oos, Server.getConnection(), (MaintainSeatsRequest) request);
                 maintainSeatsRequestHandler.sendQuery();
             }
             else if(request instanceof RerouteRequest)
             {
-                RerouteRequestHandler rerouteRequestHandler=new RerouteRequestHandler(db.getConnection(),(RerouteRequest)request,oos);
-                rerouteRequestHandler.sendQuery();
+                RerouteRequestHandler rerouteRequestHandler=new RerouteRequestHandler(Server.getConnection(),(RerouteRequest)request,oos);
+                try {
+                    rerouteRequestHandler.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(request instanceof ViewCancelledTrainsRequest)
+            {
+                ViewCancelledTrainsRequestHandler viewCancelledTrainsRequestHandler=new ViewCancelledTrainsRequestHandler(Server.getConnection(),(ViewCancelledTrainsRequest)request,oos);
+                viewCancelledTrainsRequestHandler.sendQuery();
+            }
+            else if(request instanceof DisplayTouristPackageRequest)
+            {
+                DisplayTouristPackageRequestHandler displayTouristPackageRequestHandler=new DisplayTouristPackageRequestHandler(oos,Server.getConnection(),(DisplayTouristPackageRequest)request);
+                try {
+                    displayTouristPackageRequestHandler.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(request instanceof BookTouristPackageRequest)
+            {
+                BookTouristPackageRequestHandler bookTouristPackageRequestHandler=new BookTouristPackageRequestHandler(Server.getConnection(),oos,(BookTouristPackageRequest)request);
+                bookTouristPackageRequestHandler.sendQuery();
+            }
+            else if(request instanceof NotificationRequest)
+            {
+                NotificationRequestHandler notificationRequestHandler=new NotificationRequestHandler(Server.getConnection(),(NotificationRequest)request,oos);
+                try {
+                    notificationRequestHandler.sendQuery();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(request instanceof ViewReroutedTrainsRequest)
+            {
+                ViewReroutedTrainsRequestHandler viewReroutedTrainsRequestHandler=new ViewReroutedTrainsRequestHandler(Server.getConnection(),oos,(ViewReroutedTrainsRequest)request);
+                try {
+                    viewReroutedTrainsRequestHandler.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

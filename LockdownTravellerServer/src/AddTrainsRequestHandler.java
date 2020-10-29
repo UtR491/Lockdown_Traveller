@@ -1,5 +1,3 @@
-import com.sun.prism.shader.Solid_TextureYV12_AlphaTest_Loader;
-
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,8 +24,8 @@ public class AddTrainsRequestHandler extends Handler {
         DateTimeFormatter dtf2=  DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if(date != null)
         date= LocalDate.parse(date,dtf).format(dtf2);
-        String query1 = "insert into Basic_Train_Info values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String query2 = "insert into Route_Info values (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        String query1 = "insert into Basic_Train_Info values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query2 = "insert into Route_Info values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         AddTrainsResponse addTrainsResponse=addTrains(query1, query2);
         Server.SendResponse(oos,addTrainsResponse);
     }
@@ -39,19 +37,21 @@ public class AddTrainsRequestHandler extends Handler {
             preparedStatement.setString(1, addTrainsRequest.getTrain_ID());
             preparedStatement.setString(2, addTrainsRequest.getTrain_Name());
             preparedStatement.setString(3, addTrainsRequest.getDays_Running());
-            preparedStatement.setString(4, addTrainsRequest.getFirstAC_Coaches());
-            preparedStatement.setString(5, addTrainsRequest.getSecondAC_Coaches());
-            preparedStatement.setString(6, addTrainsRequest.getThirdAC_Coaches());
-            preparedStatement.setString(7, addTrainsRequest.getSleeper_Coaches());
-            preparedStatement.setString(8, addTrainsRequest.getFirstAC_Seats());
-            preparedStatement.setString(9, addTrainsRequest.getSecondAC_Seats());
-            preparedStatement.setString(10, addTrainsRequest.getThirdAC_Seats());
-            preparedStatement.setString(11, addTrainsRequest.getSleeper_Seats());
-            preparedStatement.setString(12, addTrainsRequest.getFirstAC_Fare());
-            preparedStatement.setString(13, addTrainsRequest.getSecondAC_Fare());
-            preparedStatement.setString(14, addTrainsRequest.getThirdAC_Fare());
-            preparedStatement.setString(15, addTrainsRequest.getSleeper_Fare());
-            preparedStatement.setString(16, date);
+            preparedStatement.setString(4, null);
+            preparedStatement.setString(5, addTrainsRequest.getFirstAC_Coaches());
+            preparedStatement.setString(6, addTrainsRequest.getSecondAC_Coaches());
+            preparedStatement.setString(7, addTrainsRequest.getThirdAC_Coaches());
+            preparedStatement.setString(8, addTrainsRequest.getSleeper_Coaches());
+            preparedStatement.setString(9, addTrainsRequest.getFirstAC_Seats());
+            preparedStatement.setString(10, addTrainsRequest.getSecondAC_Seats());
+            preparedStatement.setString(11, addTrainsRequest.getThirdAC_Seats());
+            preparedStatement.setString(12, addTrainsRequest.getSleeper_Seats());
+            preparedStatement.setString(13, addTrainsRequest.getFirstAC_Fare());
+            preparedStatement.setString(14, addTrainsRequest.getSecondAC_Fare());
+            preparedStatement.setString(15, addTrainsRequest.getThirdAC_Fare());
+            preparedStatement.setString(16, addTrainsRequest.getSleeper_Fare());
+            preparedStatement.setString(17, null);
+            preparedStatement.setString(18, date);
             int c1=preparedStatement.executeUpdate();
 
             PreparedStatement addRouteInfo = connection.prepareStatement(query2);
@@ -67,6 +67,7 @@ public class AddTrainsRequestHandler extends Handler {
                 addRouteInfo.setString(7, addTrainsRequest.getDeparture().get(i));
                 addRouteInfo.setString(8, addTrainsRequest.getDay_No().get(i));
                 addRouteInfo.setString(9, addTrainsRequest.getDistance_Covered().get(i));
+                addRouteInfo.setInt(10, 0);
                 c2 = c2 * addRouteInfo.executeUpdate();
             }
 

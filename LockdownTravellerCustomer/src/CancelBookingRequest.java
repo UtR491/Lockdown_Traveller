@@ -1,12 +1,16 @@
 import java.io.*;
 
 public class CancelBookingRequest extends Request implements Serializable {
-    private String PNR;
-    CancelBookingRequest(String PNR)
-    {
+    final private String PNR, userId;
+    CancelBookingRequest(String PNR, String userID) {
         this.PNR=PNR;
+        this.userId = userID;
     }
     public String getPNR() {
         return PNR;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 }

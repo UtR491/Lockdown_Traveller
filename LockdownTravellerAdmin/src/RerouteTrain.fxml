@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="RerouteTrainController"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RerouteTrainController">
+   <children>
+      <Label layoutX="218.0" layoutY="35.0" text="Reroute Train">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TextField fx:id="trianIdTextfield" layoutX="76.0" layoutY="94.0" promptText="Train ID" />
+      <DatePicker fx:id="dateDatePicker" layoutX="314.0" layoutY="94.0" prefHeight="26.0" prefWidth="165.0" promptText="Reroute Until" />
+      <TextField fx:id="newStationTextfield" layoutX="76.0" layoutY="134.0" prefHeight="26.0" prefWidth="118.0" promptText="New Station" />
+      <TextField fx:id="arrivalTextfield" layoutX="218.0" layoutY="134.0" prefHeight="26.0" prefWidth="58.0" promptText="Arr" />
+      <TextField fx:id="departureTextfield" layoutX="285.0" layoutY="134.0" prefHeight="26.0" prefWidth="58.0" promptText="Dep" />
+      <TextField fx:id="cityCodeTextfield" layoutX="354.0" layoutY="134.0" prefHeight="26.0" prefWidth="58.0" promptText="City" />
+      <TextField fx:id="dayTextfield" layoutX="421.0" layoutY="134.0" prefHeight="26.0" prefWidth="58.0" promptText="Day" />
+      <TextField fx:id="currentDistanceTextfield" layoutX="76.0" layoutY="174.0" prefHeight="26.0" prefWidth="118.0" promptText="Current Dist" />
+      <TextField fx:id="previousDistanceTextfield" layoutX="217.0" layoutY="174.0" prefHeight="26.0" prefWidth="118.0" promptText="Prev Dist" />
+      <TextField fx:id="nextDistanceTextfield" layoutX="363.0" layoutY="174.0" prefHeight="26.0" prefWidth="118.0" promptText="Next Dist" />
+      <TextField fx:id="currentStationTextfield" layoutX="76.0" layoutY="214.0" prefHeight="26.0" prefWidth="118.0" promptText="Current Station" />
+      <TextField fx:id="previousStationTextfield" layoutX="217.0" layoutY="214.0" prefHeight="26.0" prefWidth="118.0" promptText="Prev Station" />
+      <TextField fx:id="nextStationTextfield" layoutX="363.0" layoutY="214.0" prefHeight="26.0" prefWidth="118.0" promptText="Next Station" />
+      <ComboBox fx:id="typeComboBox" layoutX="76.0" layoutY="254.0" prefHeight="26.0" prefWidth="403.0" promptText="Type Of Reroute" />
+      <Button fx:id="rerouteButton" layoutX="232.0" layoutY="320.0" mnemonicParsing="false" onAction="#sendRequest" text="Reroute Train" />
+      <Hyperlink fx:id="homeLink" layoutX="469.0" layoutY="377.0" onAction="#goToHome" text="Go to home" />
+   </children>
 </AnchorPane>

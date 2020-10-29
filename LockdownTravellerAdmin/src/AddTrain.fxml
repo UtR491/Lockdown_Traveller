@@ -14,6 +14,7 @@
       <TextField fx:id="trainIDTextfield" layoutX="71.0" layoutY="90.0" prefHeight="26.0" prefWidth="95.0" promptText="Train ID" />
       <TextField fx:id="trainNameTextfield" layoutX="181.0" layoutY="90.0" prefHeight="26.0" prefWidth="331.0" promptText="Train Name" />
       <TextField fx:id="daysRunningTextfield" layoutX="71.0" layoutY="137.0" prefHeight="26.0" prefWidth="290.0" promptText="1100100 means train runs on Mon Tue Fri." />
+      <DatePicker fx:id="addedTillDatepicker" layoutX="363.0" layoutY="137.0" prefHeight="26.0" prefWidth="149.0" promptText="Added Till" />
       <VBox layoutX="71.0" layoutY="180.0" prefHeight="120.0" prefWidth="441.0">
          <children>
             <HBox layoutY="180.0" prefHeight="30.0" prefWidth="200.0">
@@ -42,14 +43,13 @@
                </children></HBox>
          </children>
       </VBox>
+      <Hyperlink fx:id="finalizeButton" layoutX="219.0" layoutY="315.0" onAction="#assignInfo" text="Finalise train details." />
       <Button fx:id="addStationButton" layoutX="241.0" layoutY="350.0" mnemonicParsing="false" onAction="#goToStationScene" text="Add Stations" />
-      <DatePicker fx:id="addedTillDatepicker" layoutX="363.0" layoutY="137.0" prefHeight="26.0" prefWidth="149.0" promptText="Added Till" />
       <Label layoutX="363.0" layoutY="123.0" text="Leave if permanent">
          <font>
             <Font size="10.0" />
          </font>
       </Label>
-      <Hyperlink fx:id="finalizeButton" layoutX="219.0" layoutY="315.0" onAction="#assignInfo" text="Finalise train details." />
       <Hyperlink fx:id="homeLink" layoutX="469.0" layoutY="377.0" onAction="#goToHome" text="Go to home" />
    </children>
 </AnchorPane>
