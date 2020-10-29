@@ -63,6 +63,18 @@ public class LandingPageController {
     public void history(ActionEvent actionEvent) {
     }
     public void notifications(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Notifications.fxml"));
+        Scene scene = null;
+        Stage stage = (Stage) cancelBookingButton.getScene().getWindow();
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.setTitle("Notifications.");
+        stage.setScene(scene);
+        NotificatonsController notificatonsController = loader.getController();
+        notificatonsController.initData(homeScene, userId);
     }
     public void cancelBooking(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CancelBooking.fxml"));

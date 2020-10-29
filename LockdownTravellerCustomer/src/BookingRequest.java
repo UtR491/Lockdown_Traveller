@@ -1,10 +1,10 @@
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class BookingRequest extends Request implements Serializable {
     final private String source;
     final private String trainId;
-    final private Date date;
+    final private LocalDate date;
     final private String destination;
     final private String coach;
     final private String userId;
@@ -15,7 +15,7 @@ public class BookingRequest extends Request implements Serializable {
     final private int numSeat;
     final private char[] gender;
 
-    public BookingRequest(String source, String destination, String trainId, String coach, Date date, String[] name,
+    public BookingRequest(String source, String destination, String trainId, String coach, LocalDate date, String[] name,
                           int[] age, char[] gender, String userId, int availableSeat, String[] preference, int numSeat) {
         this.source = source;
         this.destination = destination;
@@ -35,7 +35,7 @@ public class BookingRequest extends Request implements Serializable {
         return trainId;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import javax.xml.soap.Text;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -50,14 +52,9 @@ public class BookingRequestController {
             gender[i] = ((ComboBox<String>)passengers.get(i).getChildren().get(2)).getValue().charAt(0);
             preference[i] = ((ComboBox<String>)passengers.get(i).getChildren().get(3)).getValue();
         }
-        Date date1 = null;
-        try {
-            date1 = new SimpleDateFormat("dd/MM/yyyy").parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        LocalDate date1 = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         BookingRequest bookingRequest = new BookingRequest(source, destination, trainID.substring(0, trainID.indexOf(" ")),
-                coach, date1, name, age, gender, userID, seats, preference, Math.min(counter, 6));
+                coach.replace(" ", ""), date1, name, age, gender, userID, seats, preference, Math.min(counter, 6));
         Main.SendRequest(bookingRequest);
         BookingResponse bookingResponse = (BookingResponse) Main.ReceiveResponse();
         int n = bookingResponse.getBookingIds().length;
