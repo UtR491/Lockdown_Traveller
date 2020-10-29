@@ -15,7 +15,7 @@ public class Notification implements Serializable {
 
     PreparedStatement notification;
     Date todayDate = new Date();
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     String strDate = dateFormat.format(todayDate);
     String userid= bookingRequest.getUserId();
 
