@@ -3,9 +3,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class ViewCancelledTrainsRequestHandler extends Handler {
@@ -21,41 +22,48 @@ public class ViewCancelledTrainsRequestHandler extends Handler {
 
     @Override
     void sendQuery() {
-
-        String query="select Train_Name,Train_ID,Cancelled_Till from basic_train_info where Cancelled_Till in (select Cancelled_Till from basic_train_info where datediff(Cancelled_Till,?)>0);";
-        ViewCancelledTrainsResponse viewCancelledTrainsResponse=viewCancelledTrains(query,viewCancelledTrainsRequest);
+        String q="select Cancelled_Till,Train_ID from basic_train_info where Cancelled_Till is not null;";
+        String query="select Train_Name,Train_ID,Cancelled_Till from basic_train_info where Train_ID=?;";
+        ViewCancelledTrainsResponse viewCancelledTrainsResponse=viewCancelledTrains(q, query,viewCancelledTrainsRequest);
         Server.SendResponse(oos,viewCancelledTrainsResponse);
     }
-    public ViewCancelledTrainsResponse viewCancelledTrains(String query,ViewCancelledTrainsRequest viewCancelledTrainsRequest)
-    {
-        String date=viewCancelledTrainsRequest.getDate();
-        DateTimeFormatter dtf= DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DateTimeFormatter dtf2=  DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        date= LocalDate.parse(date,dtf).format(dtf2);
-        ResultSet resultSet = null;
+    public ViewCancelledTrainsResponse viewCancelledTrains(String q,String query,ViewCancelledTrainsRequest viewCancelledTrainsRequest) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date reqdDate = null, cancelledTill;
         try {
-            PreparedStatement preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setString(1,date);
-            resultSet=preparedStatement.executeQuery();
-        } catch (SQLException e) {
+            reqdDate = sdf.parse(viewCancelledTrainsRequest.getDate());
+        } catch (ParseException e) {
             e.printStackTrace();
         }
-        ArrayList<String> Train_Name = null,Train_ID = null,Cancelled_Till= new ArrayList<>();
-        while (true)
-        {
-            try {
-                if (!resultSet.next()) break;
-            } catch (SQLException e) {
-                e.printStackTrace();
+        ResultSet resultSet , cancelledTrains;
+        ArrayList<String> Train_Name = new ArrayList<>();
+        ArrayList<String> Train_ID = new ArrayList<>();
+        ArrayList<String> Cancelled_Till = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(q);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                cancelledTill = sdf.parse(resultSet.getString(1));
+                assert reqdDate != null;
+                int compare = cancelledTill.compareTo(reqdDate);
+                if (compare > 0) {
+                    preparedStatement = connection.prepareStatement(query);
+                    preparedStatement.setString(1, resultSet.getString(2));
+                    cancelledTrains = preparedStatement.executeQuery();
+                    while (cancelledTrains.next()) {
+                        assert false;
+                        Train_Name.add(cancelledTrains.getString(1));
+                        assert false;
+                        Train_ID.add(cancelledTrains.getString(2));
+                        Cancelled_Till.add(cancelledTrains.getString(3));
+                    }
+                }
             }
-            try {
-                Train_Name.add(resultSet.getString(1));
-                Train_ID.add(resultSet.getString(2));
-                Cancelled_Till.add(resultSet.getString(3));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
+        } catch (SQLException | ParseException e) {
+            e.printStackTrace();
         }
-        return new ViewCancelledTrainsResponse(Train_ID,Train_Name,Cancelled_Till);
+
+        return new ViewCancelledTrainsResponse(Train_ID, Train_Name, Cancelled_Till);
     }
 }

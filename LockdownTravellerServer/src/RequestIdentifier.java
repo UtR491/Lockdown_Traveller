@@ -153,6 +153,15 @@ public class RequestIdentifier implements Runnable{
                     e.printStackTrace();
                 }
             }
+            else if(request instanceof ViewReroutedTrainsRequest)
+            {
+                ViewReroutedTrainsRequestHandler viewReroutedTrainsRequestHandler=new ViewReroutedTrainsRequestHandler(Server.getConnection(),oos,(ViewReroutedTrainsRequest)request);
+                try {
+                    viewReroutedTrainsRequestHandler.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
