@@ -90,10 +90,12 @@ public class DisplayTrainsResponse extends Response implements Serializable
 class AvailableSeats implements Serializable
 {
     private String Coach,Seats;
-    AvailableSeats(String Coach,String Seats)
+    private int fare;
+    AvailableSeats(String Coach,String Seats, int fare)
     {
         this.Coach=Coach;
         this.Seats=Seats;
+        this.fare = fare;
     }
 
     public String getCoach() {
@@ -102,5 +104,9 @@ class AvailableSeats implements Serializable
 
     public String getSeats() {
         return Seats;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

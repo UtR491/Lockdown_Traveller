@@ -13,7 +13,7 @@ public class BookingHandler {
     final private String coach, trainID, userID;
     private String coachCode;
     private boolean[] notVacant;
-    private int numCoaches, seatsPerCoach, numSeats, availableSeats, sourceStationNumber=-1;
+    private int numCoaches, seatsPerCoach, numSeats, availableSeats, sourceStationNumber=-1, totalCost;
     private ArrayList<String> stationsOnRoute = new ArrayList<>();
     public BookingHandler(Connection connection, BookingRequest bookingRequest, ObjectOutputStream oos) {
         this.connection = connection;
@@ -22,6 +22,7 @@ public class BookingHandler {
         trainID = this.bookingRequest.getTrainId();
         coach = this.bookingRequest.getCoach();
         userID = this.bookingRequest.getUserId();
+        totalCost = this.bookingRequest.getTotalCost();
     }
 
     public void sendQuery() {
@@ -54,11 +55,14 @@ public class BookingHandler {
                 "Passenger_Gender, Booking_Status) values (?, ?, ?, ?, ?, ?, ?);";
         String query5 = "insert into Vacancy_Info(Train_ID, Booking_ID, Date, Station, Station_No, Seat_No) values" +
                 "(?, ?, ?, ?, ?, ?);";
-        BookingResponse bookingResponse = bookSeats(query1, query2, query3, query4, query5);
+        String query6 = "select Total_Spend from User where User_ID = ?;";
+        String query7 = "update User set Total_Spend = Total_Spend + ? where User_ID = ?;";
+        BookingResponse bookingResponse = bookSeats(query1, query2, query3, query4, query5, query6, query7);
         Server.SendResponse(oos, bookingResponse);
     }
 
-    private BookingResponse bookSeats(String query1, String query2, String query3, String query4, String query5) {
+    private BookingResponse bookSeats(String query1, String query2, String query3, String query4, String query5,
+                                      String query6, String query7) {
         try {
             PreparedStatement stations = connection.prepareStatement(query1);
             stations.setString(1, trainID);
@@ -105,6 +109,28 @@ public class BookingHandler {
                     notVacant[0] = true;
                 }
             }
+            // Discounting from total cost.
+            PreparedStatement getPreviousSpent = connection.prepareStatement(query6);
+            getPreviousSpent.setString(1, userID);
+            ResultSet previousSpent = getPreviousSpent.executeQuery();
+            previousSpent.next();
+            int prev = previousSpent.getInt("Total_Spend");
+            if(prev < 5000) {
+                // no discount
+            } else if(prev < 20000) {
+                // 10%
+                totalCost = (int) (0.9 * totalCost);
+            } else if(prev < 40000) {
+                // 20%
+                totalCost = (int) (0.8 * totalCost);
+            } else {
+                // 30%
+                totalCost = (int) (0.7 * totalCost);
+            }
+            PreparedStatement updateSpent = connection.prepareStatement(query7);
+            updateSpent.setInt(1, totalCost);
+            updateSpent.setString(2, userID);
+            updateSpent.executeUpdate();
             BookingResponse bookingResponse;
             if(bookingRequest.getNumSeat() == 1 && bookingRequest.getGender()[0] == 'F')
                 bookingResponse = allotSingleFemale();
@@ -136,7 +162,6 @@ public class BookingHandler {
                     }
                 }
             }
-            System.out.println(c != 0 ? "Noice" : "Not Noice");
             return bookingResponse;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -269,7 +294,7 @@ public class BookingHandler {
         for(int i = Math.min(Math.max(0, availableSeats), numSeats); i < numSeats; i++) {
             bookingID[i] = randomBookingIDGenerator() + coachCode + "XXX";
         }
-        return new BookingResponse(bookingID, seatNo, confirmedSeats, pnr);
+        return new BookingResponse(bookingID, seatNo, confirmedSeats, pnr, totalCost);
     }
 
     private String allot2(int a, int b) {
@@ -354,7 +379,7 @@ public class BookingHandler {
                 }
             }
         }
-        return new BookingResponse(bookingID, seat, confirmedSeats, pnr);
+        return new BookingResponse(bookingID, seat, confirmedSeats, pnr, totalCost);
     }
     final private static char[] base36Char = "1234567890qwertyuiopasdfghjklzxcvbnm".toCharArray();
     final private static Random random = new Random();

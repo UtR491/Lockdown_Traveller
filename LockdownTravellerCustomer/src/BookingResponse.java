@@ -7,6 +7,15 @@ public class BookingResponse extends Response implements Serializable {
     private final String[] seatsAlloted;
     private final int confirmedSeats;
     private final String pnr;
+    private final int totalCost;
+
+    public BookingResponse(String[] bookingIds, String[] seatsAlloted, int confirmedSeats, String pnr, int totalCost) {
+        this.bookingIds = bookingIds;
+        this.seatsAlloted = seatsAlloted;
+        this.confirmedSeats = confirmedSeats;
+        this.pnr = pnr;
+        this.totalCost = totalCost;
+    }
 
     public String[] getBookingIds() {
         return bookingIds;
@@ -24,10 +33,7 @@ public class BookingResponse extends Response implements Serializable {
         return pnr;
     }
 
-    public BookingResponse(String[] bookingIds, String[] seatsAlloted, int confirmedSeats, String pnr) {
-        this.bookingIds = bookingIds;
-        this.seatsAlloted = seatsAlloted;
-        this.confirmedSeats = confirmedSeats;
-        this.pnr = pnr;
+    public int getTotalCost() {
+        return totalCost;
     }
 }

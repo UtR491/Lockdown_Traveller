@@ -1,5 +1,6 @@
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -8,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import javax.xml.soap.Text;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -23,16 +25,17 @@ public class BookingRequestController {
     public Button bookTicketsButton;
     private Scene homeScene = null;
     private String coach, trainID, userID, source, destination, date;
-    private int seats;
+    private int seats, fare;
     private ArrayList<HBox> passengers = new ArrayList<>();
     public void initData(Scene homeScene, String coach, String trainID, String userID, String source, String destination,
-                         String date, int seats) {
+                         String date, int seats, int fare) {
         this.homeScene = homeScene;
         this.coach = coach;
         this.trainID = trainID;
         this.userID = userID;
         this.source = source;
         this.destination = destination;
+        this.fare = fare;
         String[] dates = date.split("-");
         this.date = dates[2] + "/" + dates[1] +"/" + dates[0];
         this.seats = seats;
@@ -54,13 +57,22 @@ public class BookingRequestController {
         }
         LocalDate date1 = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         BookingRequest bookingRequest = new BookingRequest(source, destination, trainID.substring(0, trainID.indexOf(" ")),
-                coach.replace(" ", ""), date1, name, age, gender, userID, seats, preference, Math.min(counter, 6));
+                coach.replace(" ", ""), date1, name, age, gender, userID, seats, preference, Math.min(counter, 6),
+                fare * preference.length);
         Main.SendRequest(bookingRequest);
         BookingResponse bookingResponse = (BookingResponse) Main.ReceiveResponse();
-        int n = bookingResponse.getBookingIds().length;
-        for(int i =0; i < n; i++) {
-            System.out.println(bookingResponse.getBookingIds()[i] + " " + bookingResponse.getSeatsAlloted()[i]);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Ticket.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        Stage stage = (Stage) homeLink.getScene().getWindow();
+        stage.setTitle("Booking Details");
+        stage.setScene(scene);
+        TicketController ticketController = loader.getController();
+        ticketController.initData(homeScene, bookingResponse, name, age, gender);
     }
 
     public void goToHome (ActionEvent actionEvent){

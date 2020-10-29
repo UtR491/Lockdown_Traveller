@@ -1,3 +1,4 @@
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,10 +33,12 @@ public class TrainsListController {
         this.userID = userID;
         TreeTableColumn<AvailableSeats, String> coach = new TreeTableColumn<>("Coach");
         TreeTableColumn<AvailableSeats, String> availability = new TreeTableColumn<>("Availability");
+        TreeTableColumn<AvailableSeats, String> fare = new TreeTableColumn<>("Ticket Cost");
         TreeTableColumn<AvailableSeats, Void> book = new TreeTableColumn<>("Book");
-        coach.setMinWidth(300);
+        coach.setMinWidth(250);
         availability.setMinWidth(100);
-        book.setMinWidth(170);
+        fare.setMinWidth(120);
+        book.setMinWidth(100);
         Callback<TreeTableColumn<AvailableSeats, Void>, TreeTableCell<AvailableSeats, Void>> bookButton =
                 new Callback<TreeTableColumn<AvailableSeats, Void>, TreeTableCell<AvailableSeats, Void>>() {
             @Override
@@ -58,7 +61,8 @@ public class TrainsListController {
                             stage.setTitle("Passenger Details");
                             BookingRequestController bookingRequestController = loader.getController();
                             bookingRequestController.initData(homeScene, availableSeats.getCoach(), train.getCoach(),
-                                    userID, source, destination, date, Integer.parseInt(availableSeats.getSeats()));
+                                    userID, source, destination, date, Integer.parseInt(availableSeats.getSeats()),
+                                    availableSeats.getFare());
                         });
                     }
                     @Override
@@ -85,22 +89,32 @@ public class TrainsListController {
                 new ReadOnlyStringWrapper(p.getValue().getValue().getCoach()));
         availability.setCellValueFactory((TreeTableColumn.CellDataFeatures<AvailableSeats, String> p) ->
                 new ReadOnlyStringWrapper(p.getValue().getValue().getSeats()));
-        trainHolder.getColumns().addAll(coach, availability, book);
-        TreeItem<AvailableSeats> rootNode = new TreeItem<>(new AvailableSeats("Trains", ""));
+        fare.setCellValueFactory((TreeTableColumn.CellDataFeatures<AvailableSeats, String> p) ->
+                new ReadOnlyStringWrapper(p.getValue().getValue().getFare() == 0 ? "" :
+                        Integer.toString(p.getValue().getValue().getFare())));
+        trainHolder.getColumns().addAll(coach, availability, fare, book);
+        TreeItem<AvailableSeats> rootNode = new TreeItem<>(new AvailableSeats("Trains", "", 0));
         rootNode.setExpanded(true);
         for(int i = 0; i < displayTrainsResponse.getTrain_Name().size(); i++) {
             TreeItem<AvailableSeats> train = new TreeItem<>(new AvailableSeats(
                     displayTrainsResponse.getTrain_ID().get(i) + " " +
-                            displayTrainsResponse.getTrain_Name().get(i), ""));
+                            displayTrainsResponse.getTrain_Name().get(i), "", 0));
             rootNode.getChildren().add(train);
             TreeItem<AvailableSeats> coachInfo = new TreeItem<>(new AvailableSeats("First AC",
-                    displayTrainsResponse.getFirst_AC().get(i)));
-            train.getChildren().add(coachInfo);
-            coachInfo = new TreeItem<>(new AvailableSeats("Second AC", displayTrainsResponse.getSecond_AC().get(i)));
-            train.getChildren().add(coachInfo);
-            coachInfo = new TreeItem<>(new AvailableSeats("Third AC", displayTrainsResponse.getThird_AC().get(i)));
-            train.getChildren().add(coachInfo);
-            coachInfo = new TreeItem<>(new AvailableSeats("Sleeper", displayTrainsResponse.getSleeper().get(i)));
+                    displayTrainsResponse.getFirst_AC().get(i), displayTrainsResponse.getAC1Fare().get(i)));
+            if(!displayTrainsResponse.getFirst_AC().get(i).equalsIgnoreCase("N/A"))
+                train.getChildren().add(coachInfo);
+            coachInfo = new TreeItem<>(new AvailableSeats("Second AC", displayTrainsResponse.getSecond_AC().get(i),
+                    displayTrainsResponse.getAC2Fare().get(i)));
+            if(!displayTrainsResponse.getSecond_AC().get(i).equalsIgnoreCase("N/A"))
+                train.getChildren().add(coachInfo);
+            coachInfo = new TreeItem<>(new AvailableSeats("Third AC", displayTrainsResponse.getThird_AC().get(i),
+                    displayTrainsResponse.getAC3Fare().get(i)));
+            if(!displayTrainsResponse.getThird_AC().get(i).equalsIgnoreCase("N/A"))
+                train.getChildren().add(coachInfo);
+            coachInfo = new TreeItem<>(new AvailableSeats("Sleeper", displayTrainsResponse.getSleeper().get(i),
+                    displayTrainsResponse.getSLFare().get(i)));
+            if(!displayTrainsResponse.getSleeper().get(i).equalsIgnoreCase("N/A"))
             train.getChildren().add(coachInfo);
         }
         trainHolder.setRoot(rootNode);
