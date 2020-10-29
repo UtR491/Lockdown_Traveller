@@ -12,7 +12,8 @@ import java.io.IOException;
 public class LandingPageController {
 
     @FXML
-    public Button findTrainsButton, historyButton, notificationButton, reroutedTrainsButton, cancelBookingButton;
+    public Button findTrainsButton, historyButton, notificationButton, reroutedTrainsButton, cancelBookingButton,
+            cancelledTrainsButton;
     @FXML
     public Hyperlink logoutLink, homeLink;
     @FXML
@@ -108,5 +109,20 @@ public class LandingPageController {
         stage.setScene(scene);
         ViewReroutedTrainsController viewReroutedTrainsController = loader.getController();
         viewReroutedTrainsController.initData(homeScene, viewReroutedTrainsResponse);
+    }
+
+    public void cancelledTrains(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewCancelledTrains.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = (Stage) logoutLink.getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("View Cancelled Trains");
+        ViewCancelledTrainsController viewCancelledTrainsController = loader.getController();
+        viewCancelledTrainsController.initData(homeScene);
     }
 }

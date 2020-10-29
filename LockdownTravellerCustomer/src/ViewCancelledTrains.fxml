@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewCancelledTrainsController">
+   <children>
+      <Label layoutX="200.0" layoutY="14.0" text="Cancelled Trains">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <DatePicker fx:id="dateDatePicker" layoutX="40.0" layoutY="69.0" promptText="Date to check" />
+      <Button fx:id="viewTrainsButton" layoutX="144.0" layoutY="95.0" mnemonicParsing="false" onAction="#cancelledTrains" text="View Trains" />
+      <ListView fx:id="cancelledTrainsHolder" layoutY="129.0" prefHeight="259.0" prefWidth="600.0" />
+      <Hyperlink fx:id="homeLink" layoutX="509.0" layoutY="389.0" onAction="#goToHome" text="Go to home." />
+   </children>
+</AnchorPane>
