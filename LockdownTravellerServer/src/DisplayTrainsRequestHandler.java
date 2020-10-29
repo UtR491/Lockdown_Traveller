@@ -34,86 +34,86 @@ public class DisplayTrainsRequestHandler extends Handler {
         sDate = LocalDate.parse(sDate, dtf).format(dtf2);
         // query to check the expiration of reroute period
         String q1="select Rerouted_Till,Train_ID from Basic_Train_Info where Rerouted_Till is not null;";
-String q2="select Train_ID from Basic_Train_Info where Train_ID=?";
-String q3="delete from Route_Info where Train_ID=? and inCurrentRoute=1;";
-String q4="update Route_Info set inCurrentRoute=1 where Train_ID=? and inCurrentRoute=0;";
-String q5="update Basic_Train_Info set Rerouted_Till = null where Train_ID=?;";
-checkRerouteStatus(q1,q2,q3,q4,q5);
+        String q2="select Train_ID from Basic_Train_Info where Train_ID=?";
+        String q3="delete from Route_Info where Train_ID=? and inCurrentRoute=1;";
+        String q4="update Route_Info set inCurrentRoute=1 where Train_ID=? and inCurrentRoute=0;";
+        String q5="update Basic_Train_Info set Rerouted_Till = null where Train_ID=?;";
+        checkRerouteStatus(q1,q2,q3,q4,q5);
 
 
-    //create a query to find the trains between source and destination
-    String query1 = "select x.*, y.Days_Running from\n" +
-            "(select a.Train_ID, a.Train_Name, b.Arrival, a.Departure, a.Day_No from \n" +
-            "(select * from Route_Info\n" +
-            "where Station=? and inCurrentRoute=1) as a\n" +
-            "join \n" +
-            "(select * from Route_Info\n" +
-            "where Station=? and inCurrentRoute=1) as b\n" +
-            "where a.Train_ID = b.Train_ID) as x\n" +
-            "join \n" +
-            "Basic_Train_Info as y\n" +
-            "on x.Train_ID = y.Train_ID;\n" +
-            "\n";
-    //create query to find total seats in each class
-    String query2 = "select Sleeper_Coaches,Sleeper_Seats,FirstAC_Coaches,FirstAC_Seats,SecondAC_Coaches,SecondAC_Seats,ThirdAC_Coaches,ThirdAC_Seats,Sleeper_Fare,FirstAC_Fare,SecondAC_Fare,ThirdAC_Fare from Basic_Train_Info where Train_ID=?;";
+        //create a query to find the trains between source and destination
+        String query1 = "select x.*, y.Days_Running from\n" +
+                "(select a.Train_ID, a.Train_Name, b.Arrival, a.Departure, a.Day_No from \n" +
+                "(select * from Route_Info\n" +
+                "where Station=? and inCurrentRoute=1) as a\n" +
+                "join \n" +
+                "(select * from Route_Info\n" +
+                "where Station=? and inCurrentRoute=1) as b\n" +
+                "where a.Train_ID = b.Train_ID) as x\n" +
+                "join \n" +
+                "Basic_Train_Info as y\n" +
+                "on x.Train_ID = y.Train_ID;\n" +
+                "\n";
+        //create query to find total seats in each class
+        String query2 = "select Sleeper_Coaches,Sleeper_Seats,FirstAC_Coaches,FirstAC_Seats,SecondAC_Coaches,SecondAC_Seats,ThirdAC_Coaches,ThirdAC_Seats,Sleeper_Fare,FirstAC_Fare,SecondAC_Fare,ThirdAC_Fare from Basic_Train_Info where Train_ID=?;";
 
-    String query3 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like 'SL%'));";
-    String query4 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in  (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
-    String query5 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like '2A%'));";
-    String query6 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
-    String query7 = "select Added_Till,Cancelled_Till from Basic_Train_Info where Train_ID=?;";
-    String query8="select Distance_Covered from Route_Info where Train_ID=? and inCurrentRoute=1 and Station in (?,?);";
-    DisplayTrainsResponse displayTrainsResponse = DisplayTrains(query1, query2, query3, query4, query5, query6, query7,query8, sDate, source, dest);
-    Server.SendResponse(oos, displayTrainsResponse);
+        String query3 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like 'SL%'));";
+        String query4 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in  (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '1A%'));";
+        String query5 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=? and Seat_No like '2A%'));";
+        String query6 = "select count(Booking_ID) from Booking_Info where Booking_Status<>'Cancelled' and Booking_ID in(select distinct Booking_ID from Vacancy_Info where Train_ID=? and Station_No in (select Station_No from Route_Info where Train_ID= ? and Station_No between (select Station_No from Route_Info where Train_ID=? and Station=?) and (select Station_No from Route_Info where Train_ID=? and Station=?) and Date=?and Seat_No like '3A%'));";
+        String query7 = "select Added_Till,Cancelled_Till from Basic_Train_Info where Train_ID=?;";
+        String query8="select Distance_Covered from Route_Info where Train_ID=? and inCurrentRoute=1 and Station in (?,?);";
+        DisplayTrainsResponse displayTrainsResponse = DisplayTrains(query1, query2, query3, query4, query5, query6, query7,query8, sDate, source, dest);
+        Server.SendResponse(oos, displayTrainsResponse);
 
     }
-void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) throws SQLException {
-    PreparedStatement preparedStatement=connection.prepareStatement(q1);
-    ResultSet resultSet=preparedStatement.executeQuery();
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String s=sdf.format(new Date());
-    Date currDate = null;
-    try {
-        currDate=sdf.parse(s);
-    } catch (ParseException e) {
-        e.printStackTrace();
-    }
-    Date reroutedDate = null;
-    preparedStatement=connection.prepareStatement(q2);
-    while (resultSet.next())
-    {
+    void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) throws SQLException {
+        PreparedStatement preparedStatement=connection.prepareStatement(q1);
+        ResultSet resultSet=preparedStatement.executeQuery();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String s=sdf.format(new Date());
+        Date currDate = null;
         try {
-             reroutedDate=sdf.parse(resultSet.getString(1));
+            currDate=sdf.parse(s);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        assert reroutedDate != null;
-        assert currDate != null;
-        int compare=currDate.compareTo(reroutedDate);
-        if(compare>0)
+        Date reroutedDate = null;
+        preparedStatement=connection.prepareStatement(q2);
+        while (resultSet.next())
         {
-            preparedStatement.setString(1,resultSet.getString(2));
-            ResultSet trainID=preparedStatement.executeQuery();
-            while (trainID.next())
+            try {
+                reroutedDate=sdf.parse(resultSet.getString(1));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            assert reroutedDate != null;
+            assert currDate != null;
+            int compare=currDate.compareTo(reroutedDate);
+            if(compare>0)
             {
-                preparedStatement=connection.prepareStatement(q3);
-                preparedStatement.setString(1,trainID.getString(1));
-                preparedStatement.executeUpdate();
+                preparedStatement.setString(1,resultSet.getString(2));
+                ResultSet trainID=preparedStatement.executeQuery();
+                while (trainID.next())
+                {
+                    preparedStatement=connection.prepareStatement(q3);
+                    preparedStatement.setString(1,trainID.getString(1));
+                    preparedStatement.executeUpdate();
 
-                preparedStatement=connection.prepareStatement(q4);
-                preparedStatement.setString(1,trainID.getString(1));
-                preparedStatement.executeUpdate();
+                    preparedStatement=connection.prepareStatement(q4);
+                    preparedStatement.setString(1,trainID.getString(1));
+                    preparedStatement.executeUpdate();
 
-                preparedStatement=connection.prepareStatement(q5);
-                preparedStatement.setString(1,trainID.getString(1));
-                preparedStatement.executeUpdate();
+                    preparedStatement=connection.prepareStatement(q5);
+                    preparedStatement.setString(1,trainID.getString(1));
+                    preparedStatement.executeUpdate();
+                }
+
             }
 
+
         }
-
-
     }
-}
     private static int DayToDate(String sDate) {
         String[] date = sDate.split("-");
         LocalDate localDate = LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
@@ -121,7 +121,7 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
         return dayOfWeek.getValue();
     }
 
-   DisplayTrainsResponse DisplayTrains(String query1, String query2, String query3, String query4, String query5, String query6, String query7,String query8, String sDate, String source, String dest) {
+    DisplayTrainsResponse DisplayTrains(String query1, String query2, String query3, String query4, String query5, String query6, String query7,String query8, String sDate, String source, String dest) {
         char[] Days_Running = null;
         ResultSet result = null;
         int required_day = DisplayTrainsRequestHandler.DayToDate(sDate);
@@ -140,7 +140,7 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
 
         ArrayList<String> Train_ID = new ArrayList<>(), Train_Name = new ArrayList<>(), Departure = new ArrayList<>(), Arrival = new ArrayList<>(), First_AC = new ArrayList<>(), Second_AC = new ArrayList<>(), Third_AC = new ArrayList<>(), Sleeper = new ArrayList<>();
         int i = 0;
-       ArrayList<Integer>AC3Fare=new ArrayList<>(),AC2Fare=new ArrayList<>(),AC1Fare=new ArrayList<>(),SLFare=new ArrayList<>();
+        ArrayList<Integer>AC3Fare=new ArrayList<>(),AC2Fare=new ArrayList<>(),AC1Fare=new ArrayList<>(),SLFare=new ArrayList<>();
         while (true) {
             try {
                 assert result != null;
@@ -330,7 +330,7 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                     e.printStackTrace();
                 }
             }
-            }
+        }
         return new DisplayTrainsResponse(Train_ID,Train_Name,Departure,Arrival,First_AC,Second_AC,Third_AC,Sleeper,sDate,source,dest,AC1Fare,AC2Fare,AC3Fare,SLFare);
 
     }

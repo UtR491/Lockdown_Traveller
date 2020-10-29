@@ -1,83 +1,101 @@
-
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class DisplayTrainsResponse extends Response implements Serializable
 {
-    final private String [] Train_ID,Train_Name,Departure,Arrival,First_AC,Second_AC,Third_AC,Sleeper;
+    final private ArrayList<String> Train_ID,Train_Name,Departure,Arrival,First_AC,Second_AC,Third_AC,Sleeper;
     final private String sDate,Source,Destination;
-    final private int i;
+    final private ArrayList<Integer>AC1Fare, AC2Fare,AC3Fare,SLFare;
 
-    DisplayTrainsResponse(String [] Train_ID,String [] Train_Name,String  Source,String [] Departure,String  Destination,String [] Arrival,String [] First_AC,String [] Second_AC,String [] Third_AC,String [] Sleeper,String sDate,int i){
-        this.Train_ID=Train_ID;
-        this.Train_Name=Train_Name;
-        this.Source=Source;
-        this.Departure=Departure;
-        this.Destination=Destination;
-        this.Arrival=Arrival;
-        this.First_AC=First_AC;
-        this.Second_AC=Second_AC;
-        this.Third_AC=Third_AC;
-        this.Sleeper=Sleeper;
-        this.sDate=sDate;
-        this.i=i;
-
+    public DisplayTrainsResponse(ArrayList<String> train_ID, ArrayList<String> train_Name, ArrayList<String> departure, ArrayList<String> arrival, ArrayList<String> first_AC, ArrayList<String> second_AC, ArrayList<String> third_AC, ArrayList<String> sleeper, String sDate, String source, String destination,ArrayList<Integer>AC1Fare,ArrayList<Integer> AC2Fare,ArrayList<Integer>AC3Fare,ArrayList<Integer> SLFare) {
+        Train_ID = train_ID;
+        Train_Name = train_Name;
+        Departure = departure;
+        Arrival = arrival;
+        First_AC = first_AC;
+        Second_AC = second_AC;
+        Third_AC = third_AC;
+        Sleeper = sleeper;
+        this.sDate = sDate;
+        Source = source;
+        Destination = destination;
+        this.AC1Fare=AC1Fare;
+        this.AC2Fare=AC2Fare;
+        this.AC3Fare=AC3Fare;
+        this.SLFare=SLFare;
     }
 
-    public String[] getTrain_ID() {
+    public ArrayList<Integer> getAC1Fare() {
+        return AC1Fare;
+    }
+
+    public ArrayList<Integer> getAC2Fare() {
+        return AC2Fare;
+    }
+
+    public ArrayList<Integer> getAC3Fare() {
+        return AC3Fare;
+    }
+
+    public ArrayList<Integer> getSLFare() {
+        return SLFare;
+    }
+
+    public ArrayList<String> getTrain_ID() {
         return Train_ID;
     }
 
-    public String[] getTrain_Name() {
+    public ArrayList<String> getTrain_Name() {
         return Train_Name;
     }
 
-    public String getSource() {
-        return Source;
-    }
-
-    public String[] getDeparture() {
+    public ArrayList<String> getDeparture() {
         return Departure;
     }
 
-    public String getDestination() {
-        return Destination;
+    public ArrayList<String> getArrival() {
+        return Arrival;
     }
 
-    public String[] getArrival() {
-        return Arrival;
+    public ArrayList<String> getFirst_AC() {
+        return First_AC;
+    }
+
+    public ArrayList<String> getSecond_AC() {
+        return Second_AC;
+    }
+
+    public ArrayList<String> getThird_AC() {
+        return Third_AC;
+    }
+
+    public ArrayList<String> getSleeper() {
+        return Sleeper;
     }
 
     public String getsDate() {
         return sDate;
     }
 
-    public String[] getFirst_AC() {
-        return First_AC;
+    public String getSource() {
+        return Source;
     }
 
-    public String[] getSecond_AC() {
-        return Second_AC;
-    }
-
-    public String[] getThird_AC() {
-        return Third_AC;
-    }
-
-    public String[] getSleeper() {
-        return Sleeper;
-    }
-
-    public int getI() {
-        return i;
+    public String getDestination() {
+        return Destination;
     }
 }
+
+
 class AvailableSeats implements Serializable
 {
     private String Coach,Seats;
-    AvailableSeats(String Coach,String Seats)
+    private int fare;
+    AvailableSeats(String Coach,String Seats, int fare)
     {
         this.Coach=Coach;
         this.Seats=Seats;
+        this.fare = fare;
     }
 
     public String getCoach() {
@@ -86,5 +104,9 @@ class AvailableSeats implements Serializable
 
     public String getSeats() {
         return Seats;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
