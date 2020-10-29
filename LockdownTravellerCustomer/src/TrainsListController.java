@@ -88,7 +88,7 @@ public class TrainsListController {
         trainHolder.getColumns().addAll(coach, availability, book);
         TreeItem<AvailableSeats> rootNode = new TreeItem<>(new AvailableSeats("Trains", ""));
         rootNode.setExpanded(true);
-        for(int i = 0; i <  displayTrainsResponse.getI(); i++) {
+        for(int i = 0; i < displayTrainsResponse.getTrain_Name().size(); i++) {
             TreeItem<AvailableSeats> train = new TreeItem<>(new AvailableSeats(
                     displayTrainsResponse.getTrain_ID().get(i) + " " +
                             displayTrainsResponse.getTrain_Name().get(i), ""));

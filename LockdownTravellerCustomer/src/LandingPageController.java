@@ -73,8 +73,11 @@ public class LandingPageController {
         }
         stage.setTitle("Notifications.");
         stage.setScene(scene);
-        NotificatonsController notificatonsController = loader.getController();
-        notificatonsController.initData(homeScene, userId);
+        NotificationsController notificationsController = loader.getController();
+        NotificationRequest notificationRequest = new NotificationRequest(userId);
+        Main.SendRequest(notificationRequest);
+        NotificationResponse notificationResponse = (NotificationResponse) Main.ReceiveResponse();
+        notificationsController.initData(homeScene, userId, notificationResponse);
     }
     public void cancelBooking(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CancelBooking.fxml"));

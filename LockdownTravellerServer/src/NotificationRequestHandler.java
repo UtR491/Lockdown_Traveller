@@ -19,7 +19,7 @@ public class NotificationRequestHandler extends Handler {
 
     @Override
     void sendQuery() throws IOException, SQLException {
-        String query1="select Message from Notification where User_ID=? and Pending_Status=1;";
+        String query1="select Message, Pending_Status from Notification where User_ID=?;";
         String query2="update Notification set Pending_Status=0 where User_ID=?;";
         NotificationResponse notificationResponse=notification(query1,query2,notificationRequest);
         Server.SendResponse(oos,notificationResponse);
@@ -28,7 +28,8 @@ public class NotificationRequestHandler extends Handler {
     {
         PreparedStatement preparedStatement= null;
         ResultSet resultSet=null;
-        ArrayList<String>message = null;
+        ArrayList<String>message = new ArrayList<>();
+        ArrayList<Integer> pendingStatus = new ArrayList<>();
 
         try {
             preparedStatement = connection.prepareStatement(query1);
@@ -41,11 +42,12 @@ public class NotificationRequestHandler extends Handler {
              {
                  assert message != null;
                  message.add(resultSet.getString(1));
+                 pendingStatus.add(resultSet.getInt("Pending_Status"));
              }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new NotificationResponse(message,notificationRequest.getUserID());
+        return new NotificationResponse(message,notificationRequest.getUserID(), pendingStatus);
     }
 }
 
