@@ -16,13 +16,10 @@ public class Client {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Client created.");
         System.out.println("Enter username.");
-        System.out.println("Enter userID.");
-
         String name = null;
-        String userId = null;
         try {
             name = bufferedReader.readLine();
-            userId = bufferedReader.readLine();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,6 +27,7 @@ public class Client {
             ReceiveMsg receiveMsg = new ReceiveMsg(socket);
             Thread thread=new Thread(receiveMsg);
             thread.start();
+            System.out.println("receive message thread started");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,12 +36,14 @@ public class Client {
             outputStream.writeObject(name);
             while (true){
                 String message;
+                System.out.println("Enter message");
                 message=bufferedReader.readLine();
                 String to;
                 to =bufferedReader.readLine();
                 Message sendMsg =new Message(message,name,to);
                 outputStream.writeObject(sendMsg);
                 outputStream.flush();
+                System.out.println("message sent to: "+to);
             }
 
         } catch (IOException e){

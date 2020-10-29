@@ -8,7 +8,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 public class DisplayTrainsController {
@@ -28,6 +27,7 @@ public class DisplayTrainsController {
                     destinationTextfield.getText());
             Main.SendRequest(displayTrainsRequest);
             DisplayTrainsResponse displayTrainsResponse = (DisplayTrainsResponse) Main.ReceiveResponse();
+            assert displayTrainsResponse != null;
             for (String trainID : displayTrainsResponse.getTrain_ID())
                 System.out.println("Train ID - " + trainID);
         }
