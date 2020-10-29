@@ -196,7 +196,6 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                     if (counter == 1) {
 
 
-
                         Train_ID.add(result.getString("Train_ID"));
                         Train_Name.add(result.getString("Train_Name"));
                         Departure.add(result.getString("Departure"));
@@ -206,6 +205,19 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                         preparedStatement = connection.prepareStatement(query2);
                         preparedStatement.setString(1, Train_ID.get(i));
                         ResultSet resultSet = preparedStatement.executeQuery();
+
+
+//getting the tkt cost for each class
+                        preparedStatement=connection.prepareStatement(query8);
+                        preparedStatement.setString(1,result.getString("Train_ID"));
+                        preparedStatement.setString(2,source);
+                        preparedStatement.setString(3,dest);
+                        ResultSet d=preparedStatement.executeQuery();
+                        d.next();
+                        int d1=d.getInt(1);
+                        d.next();
+                        int d2=d.getInt(1);
+                        int distance=d2-d1;
 
 
                         preparedStatement = connection.prepareStatement(query3);
@@ -224,6 +236,8 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                             available_seats = Integer.parseInt(resultSet.getString("Sleeper_Seats")) - Integer.parseInt(SL_Seats.getString(1));
                             Sleeper.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("Sleeper_Coaches"))));
                         } else Sleeper.add("N/A");
+                        if(resultSet.getString(9)!=null)SLFare.add(resultSet.getInt(9)*distance);
+                        else SLFare.add(-1);
 
 
                         preparedStatement = connection.prepareStatement(query4);
@@ -240,6 +254,8 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                             available_seats = Integer.parseInt(resultSet.getString("FirstAC_Seats")) - Integer.parseInt(AC1_Seats.getString(1));
                             First_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("FirstAC_Coaches"))));
                         } else First_AC.add("N/A");
+                        if(resultSet.getString(10)!=null)AC1Fare.add(resultSet.getInt(10)*distance);
+                        else AC1Fare.add(-1);
 
 
                         preparedStatement = connection.prepareStatement(query5);
@@ -256,6 +272,8 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                             available_seats = Integer.parseInt(resultSet.getString("SecondAC_Seats")) - Integer.parseInt(AC2_Seats.getString(1));
                             Second_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("SecondAC_Coaches"))));
                         } else Second_AC.add("N/A");
+                        if(resultSet.getString(11)!=null)AC2Fare.add(resultSet.getInt(11)*distance);
+                        else AC2Fare.add(-1);
 
                         preparedStatement = connection.prepareStatement(query6);
                         preparedStatement.setString(1, Train_ID.get(i));
@@ -271,25 +289,13 @@ void checkRerouteStatus(String q1, String q2, String q3, String q4, String q5) t
                             available_seats = Integer.parseInt(resultSet.getString("ThirdAC_Seats")) - Integer.parseInt(AC3_Seats.getString(1));
                             Third_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("ThirdAC_Coaches"))));
                         } else Third_AC.add("N/A");
+                        if(resultSet.getString(12)!=null)AC3Fare.add(resultSet.getInt(12)*distance);
+                        else AC3Fare.add(-1);
                         i++;
 
 
 
-                        //getting the tkt cost for each class
-                        preparedStatement=connection.prepareStatement(query8);
-                        preparedStatement.setString(1,result.getString("Train_ID"));
-                        preparedStatement.setString(2,source);
-                        preparedStatement.setString(3,dest);
-                        ResultSet d=preparedStatement.executeQuery();
-                        Integer distance=d.getInt(2)-d.getInt(1);
-                        if(result.getString(12)!=null)AC3Fare.add(result.getInt(12)*distance);
-                        else AC3Fare.add(-1);
-                        if(result.getString(11)!=null)AC2Fare.add(result.getInt(11)*distance);
-                        else AC2Fare.add(-1);
-                        if(result.getString(10)!=null)AC1Fare.add(result.getInt(10)*distance);
-                        else AC1Fare.add(-1);
-                        if(result.getString(9)!=null)SLFare.add(result.getInt(9)*distance);
-                        else SLFare.add(-1);
+
 
 
 
