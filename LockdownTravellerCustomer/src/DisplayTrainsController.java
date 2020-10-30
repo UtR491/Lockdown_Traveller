@@ -29,6 +29,7 @@ public class DisplayTrainsController {
                     destinationTextfield.getText());
             Main.SendRequest(displayTrainsRequest);
             DisplayTrainsResponse displayTrainsResponse = (DisplayTrainsResponse) Main.ReceiveResponse();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("TrainsList.fxml"));
             Scene scene = null;
             try {
@@ -42,6 +43,7 @@ public class DisplayTrainsController {
             TrainsListController trainsListController = loader.getController();
             trainsListController.initData(homeScene, displayTrainsResponse, userID, sourceTextfield.getText(),
                     destinationTextfield.getText(), dateDatePicker.getValue().toString());
+
         }
 
         public void goToHome (ActionEvent actionEvent){

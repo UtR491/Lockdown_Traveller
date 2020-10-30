@@ -8,6 +8,7 @@ public class DisplayTrainsResponse extends Response implements Serializable
     final private ArrayList<Integer>AC1Fare, AC2Fare,AC3Fare,SLFare;
 
     public DisplayTrainsResponse(ArrayList<String> train_ID, ArrayList<String> train_Name, ArrayList<String> departure, ArrayList<String> arrival, ArrayList<String> first_AC, ArrayList<String> second_AC, ArrayList<String> third_AC, ArrayList<String> sleeper, String sDate, String source, String destination,ArrayList<Integer>AC1Fare,ArrayList<Integer> AC2Fare,ArrayList<Integer>AC3Fare,ArrayList<Integer> SLFare) {
+
         Train_ID = train_ID;
         Train_Name = train_Name;
         Departure = departure;
@@ -75,6 +76,7 @@ public class DisplayTrainsResponse extends Response implements Serializable
 
     public String getsDate() {
         return sDate;
+
     }
 
     public String getSource() {
@@ -96,17 +98,19 @@ class AvailableSeats implements Serializable
         this.Coach=Coach;
         this.Seats=Seats;
         this.fare = fare;
-    }
 
-    public String getCoach() {
-        return Coach;
     }
 
     public String getSeats() {
         return Seats;
     }
 
+    public String getCoach() {
+        return Coach;
+    }
+
     public int getFare() {
         return fare;
     }
 }
+

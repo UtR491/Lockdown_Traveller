@@ -1,7 +1,6 @@
 package com.company;
 
-import java.awt.font.TextHitInfo;
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -25,8 +24,9 @@ public class Server {
 
         while (true) {
             try {
+                assert serverSocket != null;
                 socket = serverSocket.accept();
-
+                System.out.println("Client connected");
                 HandleClient handleClient = new HandleClient(socket);
                 Thread thread = new Thread(handleClient);
                 thread.start();

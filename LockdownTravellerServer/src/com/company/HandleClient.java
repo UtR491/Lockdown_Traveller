@@ -24,6 +24,7 @@ public class HandleClient implements Runnable {
         String username=null;
         try {
             username= (String) this.objectInputStream.readObject();
+            System.out.println("Username of the client is "+username);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Disconnected");
@@ -36,7 +37,8 @@ public class HandleClient implements Runnable {
         while (true) {
             Message message=null;
             try {
-                message = (Message) this.objectInputStream.readObject();
+                message = (Message) objectInputStream. readObject();
+                System.out.println("Message sent by user is: "+message);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Disconnected");
@@ -63,6 +65,7 @@ public class HandleClient implements Runnable {
                 continue;
             }
             try {
+                System.out.println("Receiver is not null,trying to send a message to receiver");
                 ObjectOutputStream receiverStream = new ObjectOutputStream(receiver.getOutputStream());
                 receiverStream.writeObject(message);
                 receiverStream.flush();
