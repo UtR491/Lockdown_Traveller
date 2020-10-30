@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BookingHistoryController">
+   <children>
+      <Label layoutX="199.0" layoutY="14.0" text="Your Bookings">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+      <ListView fx:id="upcomingHolder" layoutY="82.0" prefHeight="127.0" prefWidth="570.0" />
+      <ListView fx:id="previousHolder" layoutY="248.0" prefHeight="142.0" prefWidth="570.0" />
+      <Label layoutY="66.0" text="Upcoming Travels" />
+      <Label layoutX="6.0" layoutY="232.0" text="Previous Travels" />
+      <Hyperlink fx:id="homeLink" layoutX="479.0" layoutY="389.0" onAction="#goToHome" text="Go to home." />
+   </children>
+</AnchorPane>

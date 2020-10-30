@@ -12,7 +12,7 @@ import java.io.IOException;
 public class LandingPageController {
 
     @FXML
-    public Button findTrainsButton, historyButton, notificationButton, reroutedTrainsButton, cancelBookingButton,
+    public Button findTrainsButton, travelsButton, notificationButton, reroutedTrainsButton, cancelBookingButton,
             cancelledTrainsButton;
     @FXML
     public Hyperlink logoutLink, homeLink;
@@ -61,8 +61,7 @@ public class LandingPageController {
         DisplayTrainsController displayTrainsController = loader.getController();
         displayTrainsController.initData(homeScene, userId);
     }
-    public void history(ActionEvent actionEvent) {
-    }
+
     public void notifications(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Notifications.fxml"));
         Scene scene = null;
@@ -124,5 +123,23 @@ public class LandingPageController {
         stage.setTitle("View Cancelled Trains");
         ViewCancelledTrainsController viewCancelledTrainsController = loader.getController();
         viewCancelledTrainsController.initData(homeScene);
+    }
+
+    public void travels(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("BookingHistory.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = (Stage) logoutLink.getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Your Travels");
+        BookingHistoryRequest bookingHistoryRequest = new BookingHistoryRequest(userId);
+        Main.SendRequest(bookingHistoryRequest);
+        BookingHistoryResponse bookingHistoryResponse = (BookingHistoryResponse) Main.ReceiveResponse();
+        BookingHistoryController bookingHistoryController = loader.getController();
+        bookingHistoryController.initData(homeScene, bookingHistoryResponse);
     }
 }
