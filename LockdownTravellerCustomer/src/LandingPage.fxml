@@ -8,12 +8,12 @@
    <children>
       <ToolBar prefHeight="28.0" prefWidth="572.0">
         <items>
-          <Button fx:id="findTrainsButton" mnemonicParsing="false" onAction="#displayTrains" text="Find Trains" />
-            <Button fx:id="historyButton" mnemonicParsing="false" onAction="#history" text="History" />
-            <Button fx:id="notificationButton" mnemonicParsing="false" onAction="#notifications" text="Notifications" />
+          <Button fx:id="findTrainsButton" mnemonicParsing="false" onAction="#displayTrains" text="Trains" />
+            <Button fx:id="travelsButton" mnemonicParsing="false" onAction="#travels" text="Travels" />
+            <Button fx:id="notificationButton" mnemonicParsing="false" onAction="#notifications" text="Notification" />
             <Button fx:id="cancelBookingButton" mnemonicParsing="false" onAction="#cancelBooking" text="Cancel" />
-            <Button fx:id="reroutedTrainsButton" mnemonicParsing="false" onAction="#reroutedTrains" text="Rerouted Trains" />
-            <Button fx:id="cancelledTrainsButton" mnemonicParsing="false" onAction="#cancelledTrains" text="Cancelled Trains" />
+            <Button fx:id="reroutedTrainsButton" mnemonicParsing="false" onAction="#reroutedTrains" text="Rerouted" />
+            <Button fx:id="cancelledTrainsButton" mnemonicParsing="false" onAction="#cancelledTrains" text="Cancelled" />
         </items>
       </ToolBar>
       <Hyperlink fx:id="logoutLink" layoutX="494.0" layoutY="377.0" onAction="#logout" text="Log out." />

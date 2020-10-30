@@ -44,7 +44,7 @@ public class CancelTrainsRequestHandler  extends Handler{
                 while (resultSet.next())
                 {
                     preparedStatement=connection.prepareStatement(query3);
-                    preparedStatement.setString(1,resultSet.getString("USer_ID"));
+                    preparedStatement.setString(1,resultSet.getString("User_ID"));
                     preparedStatement.setString(2,"As of 11:59 PM today the train number"+train_ID+"has been cancelled untill"+date);
                     c=preparedStatement.executeUpdate();
                 }

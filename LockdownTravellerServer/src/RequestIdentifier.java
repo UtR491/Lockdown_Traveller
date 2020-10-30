@@ -162,6 +162,11 @@ public class RequestIdentifier implements Runnable{
                     e.printStackTrace();
                 }
             }
+            else if(request instanceof BookingHistoryRequest)
+            {
+                BookingHistoryHandler bookingHistoryHandler = new BookingHistoryHandler(Server.getConnection(), oos, (BookingHistoryRequest) request);
+                bookingHistoryHandler.sendQuery();
+            }
         }
     }
 }
