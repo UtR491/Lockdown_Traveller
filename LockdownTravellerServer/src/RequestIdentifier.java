@@ -162,6 +162,15 @@ public class RequestIdentifier implements Runnable{
                     e.printStackTrace();
                 }
             }
+            else if(request instanceof DisplayTrainsRunningTodayRequest)
+            {
+                DisplayTrainsRunningTodayRequestHandler displayTrainsRunningTodayRequestHandler=new DisplayTrainsRunningTodayRequestHandler(Server.getConnection(),oos,(DisplayTrainsRunningTodayRequest)request);
+                try {
+                    displayTrainsRunningTodayRequestHandler.sendQuery();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
