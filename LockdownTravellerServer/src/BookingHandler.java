@@ -169,6 +169,7 @@ public class BookingHandler {
         return null;
     }
 
+    int p = 0;
     private BookingResponse allot() {
         int[] age = bookingRequest.getAge();
         String[] preference = bookingRequest.getPreference();
@@ -181,6 +182,7 @@ public class BookingHandler {
         if(coachCode.equals("SL") || coachCode.equals("A3")) {
             // Upper, Middle, Lower, Side Upper and Side Lower.
             for(int i = 0; i < Math.min(availableSeats, numSeats); i++) {
+                p = i;
                 if(age[i] <= 15) {
                     // Male Female does not matter.
                     if(preference[i].equals("Lower")) {
@@ -225,6 +227,7 @@ public class BookingHandler {
         } else if(coachCode.equals("A2")) {
             // Upper, Lower, Side Upper and Side Lower.
             for(int i = 0; i < Math.min(availableSeats, numSeats); i++) {
+                p = i;
                 if(age[i] <= 15) {
                     // Male Female does not matter.
                     if(preference[i].equals("Lower")) {
@@ -262,7 +265,7 @@ public class BookingHandler {
             }
         } else if(coachCode.equals("A1")){
             for(int i = 0; i < Math.min(availableSeats, numSeats); i++) {
-
+                p = i;
                 if(age[i] <= 15) {
                     // Male Female does not matter.
                     if(preference[i].equals("Lower")) {
@@ -328,7 +331,7 @@ public class BookingHandler {
         for(int x : order) {
             for(int i = 1; i <= numCoaches; i++) {
                 for(int j = x; j <= seatsPerCoach; j+=8) {
-                    if(!notVacant[(i-1)*seatsPerCoach + j]) {
+                    if(!notVacant[(i-1)*seatsPerCoach + j] && (j != 1 || bookingRequest.getQuota()[p].equals("Viklang"))) {
                         notVacant[(i-1)*seatsPerCoach + j] = true;
                         return String.valueOf(i) + (j > 9 ? j : "0"+j);
                     }
@@ -353,7 +356,7 @@ public class BookingHandler {
         for(int x : order) {
             for(int i = 1; i <= numCoaches; i++) {
                 for(int j = x; j <= seatsPerCoach; j+=8) {
-                    if(!notVacant[(i-1)*seatsPerCoach + j]) {
+                    if(!notVacant[(i-1)*seatsPerCoach + j] && (j != 1 || bookingRequest.getQuota()[p].equals("Viklang"))) {
                         System.out.println("alloting seat " + j + " in coach " + i + " since notVacant is " + notVacant[(i-1)*seatsPerCoach + j]);
                         notVacant[(i-1)*seatsPerCoach + j] = true;
                         return String.valueOf(i) + (j > 9 ? j : "0"+j);

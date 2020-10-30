@@ -49,15 +49,17 @@ public class BookingRequestController {
         String preference[] = new String[counter];
         int age[] = new int[counter];
         char gender[] = new char[counter];
+        String quota[] = new String[counter];
         for(int i = 0; i < counter; i++) {
             name[i] = ((TextField)passengers.get(i).getChildren().get(0)).getText();
             age[i] = Integer.parseInt(((TextField)passengers.get(i).getChildren().get(1)).getText());
             gender[i] = ((ComboBox<String>)passengers.get(i).getChildren().get(2)).getValue().charAt(0);
             preference[i] = ((ComboBox<String>)passengers.get(i).getChildren().get(3)).getValue();
+            quota[i] = ((ComboBox<String>)passengers.get(i).getChildren().get(4)).getValue();
         }
         LocalDate date1 = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         BookingRequest bookingRequest = new BookingRequest(source, destination, trainID.substring(0, trainID.indexOf(" ")),
-                coach.replace(" ", ""), date1, name, age, gender, userID, seats, preference, Math.min(counter, 6),
+                coach.replace(" ", ""), date1, name, age, gender, userID, seats, preference, quota, Math.min(counter, 6),
                 fare * preference.length);
         Main.SendRequest(bookingRequest);
         BookingResponse bookingResponse = (BookingResponse) Main.ReceiveResponse();
@@ -92,8 +94,8 @@ public class BookingRequestController {
         }
         root.setVgap(20);
         HBox passenger = new HBox();
-        passenger.setSpacing(20);
-        passenger.setPadding(new Insets(0, 0, 0 ,20));
+        passenger.setSpacing(5);
+        passenger.setPadding(new Insets(0, 0, 0 ,5));
         TextField name = new TextField();
         TextField age = new TextField();
         name.setMinWidth(200);
@@ -111,9 +113,12 @@ public class BookingRequestController {
         } else if(coach.equals("Third AC") || coach.equals("Sleeper")) {
             preference.getItems().addAll("Middle", "Side Lower", "Side Upper");
         }
+        ComboBox<String> quota = new ComboBox<>();
+        quota.setPromptText("Quota");
+        quota.getItems().addAll("General", "Viklang");
         name.setPromptText("Passenger name");
         age.setPromptText("Age");
-        passenger.getChildren().addAll(name, age, gender, preference);
+        passenger.getChildren().addAll(name, age, gender, preference, quota);
         passengers.add(passenger);
         root.add(passenger, 0, passengers.size() + 1);
     }

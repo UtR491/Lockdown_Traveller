@@ -11,13 +11,14 @@ public class BookingRequest extends Request implements Serializable {
     final private int availableSeat, totalCost;
     final private String[] preference;
     final private String[] name;
+    final private String[] quota;
     final private int[] age;
     final private int numSeat;
     final private char[] gender;
 
     public BookingRequest(String source, String destination, String trainId, String coach, LocalDate date, String[] name,
-                          int[] age, char[] gender, String userId, int availableSeat, String[] preference, int numSeat,
-                          int totalCost) {
+                          int[] age, char[] gender, String userId, int availableSeat, String[] preference, String[] quota,
+                          int numSeat, int totalCost) {
         this.source = source;
         this.destination = destination;
         this.trainId = trainId;
@@ -27,6 +28,7 @@ public class BookingRequest extends Request implements Serializable {
         this.name = name;
         this.age = age;
         this.gender = gender;
+        this.quota = quota;
         this.userId = userId;
         this.availableSeat = availableSeat;
         this.numSeat = numSeat;
@@ -73,5 +75,9 @@ public class BookingRequest extends Request implements Serializable {
 
     public int getTotalCost() {
         return totalCost;
+    }
+
+    public String[] getQuota() {
+        return quota;
     }
 }
