@@ -18,6 +18,7 @@ public class LandingPageController {
     public Hyperlink logoutLink, homeLink;
     @FXML
     public Label phoneLabel, emailLabel, nameLabel, usernameLabel, userIdLabel;
+    public Hyperlink chatLink;
     private String userId, name, username, email, phone;
     private Scene homeScene;
     public void initData(Scene homeScene, String userId, String name, String username, String email, String phone) {
@@ -141,5 +142,20 @@ public class LandingPageController {
         BookingHistoryResponse bookingHistoryResponse = (BookingHistoryResponse) Main.ReceiveResponse();
         BookingHistoryController bookingHistoryController = loader.getController();
         bookingHistoryController.initData(homeScene, bookingHistoryResponse);
+    }
+
+    public void chat(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Chat.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = (Stage) logoutLink.getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Contact Us");
+        ChatController chatController = loader.getController();
+        chatController.initData(homeScene, userId);
     }
 }

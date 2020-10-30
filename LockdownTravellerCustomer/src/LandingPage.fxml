@@ -67,5 +67,6 @@
             <Font size="16.0" />
          </font>
       </Label>
+      <Hyperlink fx:id="chatLink" layoutY="377.0" onAction="#chat" text="Contact us." />
    </children>
 </AnchorPane>

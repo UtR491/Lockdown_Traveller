@@ -45,12 +45,12 @@ public class BookingRequestController {
     }
 
     public void sendRequestButton(ActionEvent actionEvent) {
-        String name[] = new String[counter];
-        String preference[] = new String[counter];
-        int age[] = new int[counter];
-        char gender[] = new char[counter];
-        String quota[] = new String[counter];
-        for(int i = 0; i < counter; i++) {
+        String name[] = new String[Math.min(counter, 6)];
+        String preference[] = new String[Math.min(counter, 6)];
+        int age[] = new int[Math.min(counter, 6)];
+        char gender[] = new char[Math.min(counter, 6)];
+        String quota[] = new String[Math.min(counter, 6)];
+        for(int i = 0; i < Math.min(counter, 6); i++) {
             name[i] = ((TextField)passengers.get(i).getChildren().get(0)).getText();
             age[i] = Integer.parseInt(((TextField)passengers.get(i).getChildren().get(1)).getText());
             gender[i] = ((ComboBox<String>)passengers.get(i).getChildren().get(2)).getValue().charAt(0);

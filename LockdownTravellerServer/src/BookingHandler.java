@@ -15,6 +15,7 @@ public class BookingHandler {
     private boolean[] notVacant;
     private int numCoaches, seatsPerCoach, numSeats, availableSeats, sourceStationNumber=-1, totalCost;
     private ArrayList<String> stationsOnRoute = new ArrayList<>();
+    private int currentWaiting = 0;
     public BookingHandler(Connection connection, BookingRequest bookingRequest, ObjectOutputStream oos) {
         this.connection = connection;
         this.bookingRequest = bookingRequest;
@@ -23,6 +24,8 @@ public class BookingHandler {
         coach = this.bookingRequest.getCoach();
         userID = this.bookingRequest.getUserId();
         totalCost = this.bookingRequest.getTotalCost();
+        currentWaiting = Math.max(0, -bookingRequest.getAvailableSeat());
+        System.out.println(currentWaiting);
     }
 
     public void sendQuery() {
@@ -149,17 +152,15 @@ public class BookingHandler {
                 updateBookingInfo.setString(7, i < Math.min(numSeats, availableSeats) ? "Confirmed"
                         : "Waiting");
                 c *= updateBookingInfo.executeUpdate();
-                if(i < Math.min(numSeats, availableSeats)) {
-                    int st = sourceStationNumber;
-                    for(String station : stationsOnRoute) {
-                        updateVacancyInfo.setString(1, trainID);
-                        updateVacancyInfo.setString(2, bookingResponse.getBookingIds()[i]);
-                        updateVacancyInfo.setString(3, bookingRequest.getDate().toString());
-                        updateVacancyInfo.setString(4, station);
-                        updateVacancyInfo.setInt(5, st++);
-                        updateVacancyInfo.setString(6, bookingResponse.getSeatsAlloted()[i]);
-                        c *= updateVacancyInfo.executeUpdate();
-                    }
+                int st = sourceStationNumber;
+                for(String station : stationsOnRoute) {
+                    updateVacancyInfo.setString(1, trainID);
+                    updateVacancyInfo.setString(2, bookingResponse.getBookingIds()[i]);
+                    updateVacancyInfo.setString(3, bookingRequest.getDate().toString());
+                    updateVacancyInfo.setString(4, station);
+                    updateVacancyInfo.setInt(5, st++);
+                    updateVacancyInfo.setString(6, bookingResponse.getSeatsAlloted()[i]);
+                    c *= updateVacancyInfo.executeUpdate();
                 }
             }
             return bookingResponse;
@@ -181,7 +182,7 @@ public class BookingHandler {
 
         if(coachCode.equals("SL") || coachCode.equals("A3")) {
             // Upper, Middle, Lower, Side Upper and Side Lower.
-            for(int i = 0; i < Math.min(availableSeats, numSeats); i++) {
+            for(int i = 0; i < numSeats; i++) {
                 p = i;
                 if(age[i] <= 15) {
                     // Male Female does not matter.
@@ -198,7 +199,9 @@ public class BookingHandler {
                     }
                 } else if(age[i] <= 50) {
                     if(preference[i].equals("Lower")) {
+                        System.out.println("SL lower between 50 and 15");
                         seatNo[i] = coachCode + allot8(1, 6, 2, 8, 5, 7, 4, 3);
+                        System.out.println("Alloted seat was " + seatNo[i]);
                     } else if(preference[i].equals("Upper")) {
                         seatNo[i] = coachCode + allot8(2, 8, 5, 7, 4, 1, 6, 3);
                     } else if(preference[i].equals("Side Lower")) {
@@ -223,10 +226,11 @@ public class BookingHandler {
                     }
                 }
                 bookingID[i] = randomBookingIDGenerator() + seatNo[i];
+                System.out.println("Booking id was " + bookingID[i]);
             }
         } else if(coachCode.equals("A2")) {
             // Upper, Lower, Side Upper and Side Lower.
-            for(int i = 0; i < Math.min(availableSeats, numSeats); i++) {
+            for(int i = 0; i < numSeats; i++) {
                 p = i;
                 if(age[i] <= 15) {
                     // Male Female does not matter.
@@ -264,7 +268,7 @@ public class BookingHandler {
                 bookingID[i] = randomBookingIDGenerator() + seatNo[i];
             }
         } else if(coachCode.equals("A1")){
-            for(int i = 0; i < Math.min(availableSeats, numSeats); i++) {
+            for(int i = 0; i < numSeats; i++) {
                 p = i;
                 if(age[i] <= 15) {
                     // Male Female does not matter.
@@ -295,7 +299,7 @@ public class BookingHandler {
             }
         }
         for(int i = Math.min(Math.max(0, availableSeats), numSeats); i < numSeats; i++) {
-            bookingID[i] = randomBookingIDGenerator() + coachCode + "XXX";
+            bookingID[i] = randomBookingIDGenerator() + seatNo[i];
         }
         return new BookingResponse(bookingID, seatNo, confirmedSeats, pnr, totalCost);
     }
@@ -317,7 +321,7 @@ public class BookingHandler {
                 }
             }
         }
-        return null;
+        return "WL" + currentWaiting++;
     }
 
     private String allot6(int a, int b, int c, int d, int e, int f) {
@@ -338,7 +342,7 @@ public class BookingHandler {
                 }
             }
         }
-        return null;
+        return "WL" + currentWaiting++;
     }
 
     private String allot8(int a, int b, int c, int d, int e, int f, int g, int h) {
@@ -364,7 +368,8 @@ public class BookingHandler {
                 }
             }
         }
-        return null;
+        System.out.println("Could not allot a seat so returning WL");
+        return "WL" + currentWaiting++;
     }
 
     private BookingResponse allotSingleFemale() {
@@ -382,7 +387,13 @@ public class BookingHandler {
                 }
             }
         }
-        return new BookingResponse(bookingID, seat, confirmedSeats, pnr, totalCost);
+        if(confirmedSeats > 0)
+            return new BookingResponse(bookingID, seat, confirmedSeats, pnr, totalCost);
+        else {
+            seat[0] = coachCode + "WL" + currentWaiting++;
+            bookingID[0] = randomBookingIDGenerator() + seat[0];
+            return new BookingResponse(bookingID, seat, confirmedSeats, pnr, totalCost);
+        }
     }
     final private static char[] base36Char = "1234567890qwertyuiopasdfghjklzxcvbnm".toCharArray();
     final private static Random random = new Random();

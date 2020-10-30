@@ -30,7 +30,7 @@ public class TicketController {
                     " Gender: " + gender[i] +
                     " Seat: " + bookingResponse.getSeatsAlloted()[i] +
                     " Booking ID: " + bookingResponse.getBookingIds()[i] +
-                    " Status: " + (bookingResponse.getSeatsAlloted()[i].substring(3).equals("XXX") ? "Waiting" :
+                    " Status: " + (bookingResponse.getSeatsAlloted()[i].startsWith("WL", 2) ? "Waiting" :
                                         "Confirmed"));
             ticketHolder.getItems().add(passi);
         }
