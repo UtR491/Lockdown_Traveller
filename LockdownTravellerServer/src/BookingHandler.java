@@ -15,6 +15,7 @@ public class BookingHandler {
     private boolean[] notVacant;
     private int numCoaches, seatsPerCoach, numSeats, availableSeats, sourceStationNumber=-1, totalCost;
     private ArrayList<String> stationsOnRoute = new ArrayList<>();
+    private int currentWaiting = 0;
     public BookingHandler(Connection connection, BookingRequest bookingRequest, ObjectOutputStream oos) {
         this.connection = connection;
         this.bookingRequest = bookingRequest;
@@ -23,6 +24,8 @@ public class BookingHandler {
         coach = this.bookingRequest.getCoach();
         userID = this.bookingRequest.getUserId();
         totalCost = this.bookingRequest.getTotalCost();
+        currentWaiting = Math.max(0, -bookingRequest.getAvailableSeat());
+        System.out.println(currentWaiting);
     }
 
     public void sendQuery() {
@@ -109,23 +112,27 @@ public class BookingHandler {
                     notVacant[0] = true;
                 }
             }
-            // Discounting from total cost.
-            PreparedStatement getPreviousSpent = connection.prepareStatement(query6);
-            getPreviousSpent.setString(1, userID);
-            ResultSet previousSpent = getPreviousSpent.executeQuery();
-            previousSpent.next();
-            int prev = previousSpent.getInt("Total_Spend");
-            if(prev < 5000) {
-                // no discount
-            } else if(prev < 20000) {
-                // 10%
-                totalCost = (int) (0.9 * totalCost);
-            } else if(prev < 40000) {
-                // 20%
-                totalCost = (int) (0.8 * totalCost);
-            } else {
-                // 30%
-                totalCost = (int) (0.7 * totalCost);
+            try {
+                // Discounting from total cost.
+                PreparedStatement getPreviousSpent = connection.prepareStatement(query6);
+                getPreviousSpent.setString(1, userID);
+                ResultSet previousSpent = getPreviousSpent.executeQuery();
+                previousSpent.next();
+                int prev = previousSpent.getInt("Total_Spend");
+                if(prev < 5000) {
+                    // no discount
+                } else if(prev < 20000) {
+                    // 10%
+                    totalCost = (int) (0.9 * totalCost);
+                } else if(prev < 40000) {
+                    // 20%
+                    totalCost = (int) (0.8 * totalCost);
+                } else {
+                    // 30%
+                    totalCost = (int) (0.7 * totalCost);
+                }
+            } catch (SQLException e) {
+                totalCost = totalCost;
             }
             PreparedStatement updateSpent = connection.prepareStatement(query7);
             updateSpent.setInt(1, totalCost);
@@ -149,17 +156,15 @@ public class BookingHandler {
                 updateBookingInfo.setString(7, i < Math.min(numSeats, availableSeats) ? "Confirmed"
                         : "Waiting");
                 c *= updateBookingInfo.executeUpdate();
-                if(i < Math.min(numSeats, availableSeats)) {
-                    int st = sourceStationNumber;
-                    for(String station : stationsOnRoute) {
-                        updateVacancyInfo.setString(1, trainID);
-                        updateVacancyInfo.setString(2, bookingResponse.getBookingIds()[i]);
-                        updateVacancyInfo.setString(3, bookingRequest.getDate().toString());
-                        updateVacancyInfo.setString(4, station);
-                        updateVacancyInfo.setInt(5, st++);
-                        updateVacancyInfo.setString(6, bookingResponse.getSeatsAlloted()[i]);
-                        c *= updateVacancyInfo.executeUpdate();
-                    }
+                int st = sourceStationNumber;
+                for(String station : stationsOnRoute) {
+                    updateVacancyInfo.setString(1, trainID);
+                    updateVacancyInfo.setString(2, bookingResponse.getBookingIds()[i]);
+                    updateVacancyInfo.setString(3, bookingRequest.getDate().toString());
+                    updateVacancyInfo.setString(4, station);
+                    updateVacancyInfo.setInt(5, st++);
+                    updateVacancyInfo.setString(6, bookingResponse.getSeatsAlloted()[i]);
+                    c *= updateVacancyInfo.executeUpdate();
                 }
             }
             return bookingResponse;
@@ -169,6 +174,7 @@ public class BookingHandler {
         return null;
     }
 
+    int p = 0;
     private BookingResponse allot() {
         int[] age = bookingRequest.getAge();
         String[] preference = bookingRequest.getPreference();
@@ -180,7 +186,8 @@ public class BookingHandler {
 
         if(coachCode.equals("SL") || coachCode.equals("A3")) {
             // Upper, Middle, Lower, Side Upper and Side Lower.
-            for(int i = 0; i < Math.min(availableSeats, numSeats); i++) {
+            for(int i = 0; i < numSeats; i++) {
+                p = i;
                 if(age[i] <= 15) {
                     // Male Female does not matter.
                     if(preference[i].equals("Lower")) {
@@ -196,7 +203,9 @@ public class BookingHandler {
                     }
                 } else if(age[i] <= 50) {
                     if(preference[i].equals("Lower")) {
+                        System.out.println("SL lower between 50 and 15");
                         seatNo[i] = coachCode + allot8(1, 6, 2, 8, 5, 7, 4, 3);
+                        System.out.println("Alloted seat was " + seatNo[i]);
                     } else if(preference[i].equals("Upper")) {
                         seatNo[i] = coachCode + allot8(2, 8, 5, 7, 4, 1, 6, 3);
                     } else if(preference[i].equals("Side Lower")) {
@@ -221,10 +230,12 @@ public class BookingHandler {
                     }
                 }
                 bookingID[i] = randomBookingIDGenerator() + seatNo[i];
+                System.out.println("Booking id was " + bookingID[i]);
             }
         } else if(coachCode.equals("A2")) {
             // Upper, Lower, Side Upper and Side Lower.
-            for(int i = 0; i < Math.min(availableSeats, numSeats); i++) {
+            for(int i = 0; i < numSeats; i++) {
+                p = i;
                 if(age[i] <= 15) {
                     // Male Female does not matter.
                     if(preference[i].equals("Lower")) {
@@ -261,8 +272,8 @@ public class BookingHandler {
                 bookingID[i] = randomBookingIDGenerator() + seatNo[i];
             }
         } else if(coachCode.equals("A1")){
-            for(int i = 0; i < Math.min(availableSeats, numSeats); i++) {
-
+            for(int i = 0; i < numSeats; i++) {
+                p = i;
                 if(age[i] <= 15) {
                     // Male Female does not matter.
                     if(preference[i].equals("Lower")) {
@@ -292,7 +303,7 @@ public class BookingHandler {
             }
         }
         for(int i = Math.min(Math.max(0, availableSeats), numSeats); i < numSeats; i++) {
-            bookingID[i] = randomBookingIDGenerator() + coachCode + "XXX";
+            bookingID[i] = randomBookingIDGenerator() + seatNo[i];
         }
         return new BookingResponse(bookingID, seatNo, confirmedSeats, pnr, totalCost);
     }
@@ -314,7 +325,7 @@ public class BookingHandler {
                 }
             }
         }
-        return null;
+        return "WL" + currentWaiting++;
     }
 
     private String allot6(int a, int b, int c, int d, int e, int f) {
@@ -328,14 +339,14 @@ public class BookingHandler {
         for(int x : order) {
             for(int i = 1; i <= numCoaches; i++) {
                 for(int j = x; j <= seatsPerCoach; j+=8) {
-                    if(!notVacant[(i-1)*seatsPerCoach + j]) {
+                    if(!notVacant[(i-1)*seatsPerCoach + j] && (j != 1 || bookingRequest.getQuota()[p].equals("Viklang"))) {
                         notVacant[(i-1)*seatsPerCoach + j] = true;
                         return String.valueOf(i) + (j > 9 ? j : "0"+j);
                     }
                 }
             }
         }
-        return null;
+        return "WL" + currentWaiting++;
     }
 
     private String allot8(int a, int b, int c, int d, int e, int f, int g, int h) {
@@ -353,7 +364,7 @@ public class BookingHandler {
         for(int x : order) {
             for(int i = 1; i <= numCoaches; i++) {
                 for(int j = x; j <= seatsPerCoach; j+=8) {
-                    if(!notVacant[(i-1)*seatsPerCoach + j]) {
+                    if(!notVacant[(i-1)*seatsPerCoach + j] && (j != 1 || bookingRequest.getQuota()[p].equals("Viklang"))) {
                         System.out.println("alloting seat " + j + " in coach " + i + " since notVacant is " + notVacant[(i-1)*seatsPerCoach + j]);
                         notVacant[(i-1)*seatsPerCoach + j] = true;
                         return String.valueOf(i) + (j > 9 ? j : "0"+j);
@@ -361,7 +372,8 @@ public class BookingHandler {
                 }
             }
         }
-        return null;
+        System.out.println("Could not allot a seat so returning WL");
+        return "WL" + currentWaiting++;
     }
 
     private BookingResponse allotSingleFemale() {
@@ -379,7 +391,13 @@ public class BookingHandler {
                 }
             }
         }
-        return new BookingResponse(bookingID, seat, confirmedSeats, pnr, totalCost);
+        if(confirmedSeats > 0)
+            return new BookingResponse(bookingID, seat, confirmedSeats, pnr, totalCost);
+        else {
+            seat[0] = coachCode + "WL" + currentWaiting++;
+            bookingID[0] = randomBookingIDGenerator() + seat[0];
+            return new BookingResponse(bookingID, seat, confirmedSeats, pnr, totalCost);
+        }
     }
     final private static char[] base36Char = "1234567890qwertyuiopasdfghjklzxcvbnm".toCharArray();
     final private static Random random = new Random();
