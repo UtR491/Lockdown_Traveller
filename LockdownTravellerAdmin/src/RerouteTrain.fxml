@@ -24,8 +24,10 @@
       <TextField fx:id="currentStationTextfield" layoutX="76.0" layoutY="214.0" prefHeight="26.0" prefWidth="118.0" promptText="Current Station" />
       <TextField fx:id="previousStationTextfield" layoutX="217.0" layoutY="214.0" prefHeight="26.0" prefWidth="118.0" promptText="Prev Station" />
       <TextField fx:id="nextStationTextfield" layoutX="363.0" layoutY="214.0" prefHeight="26.0" prefWidth="118.0" promptText="Next Station" />
-      <ComboBox fx:id="typeComboBox" layoutX="76.0" layoutY="254.0" prefHeight="26.0" prefWidth="403.0" promptText="Type Of Reroute" />
-      <Button fx:id="rerouteButton" layoutX="232.0" layoutY="320.0" mnemonicParsing="false" onAction="#sendRequest" text="Reroute Train" />
+      <ComboBox fx:id="typeComboBox" layoutX="75.0" layoutY="302.0" prefHeight="26.0" prefWidth="403.0" promptText="Type Of Reroute" />
+      <Button fx:id="rerouteButton" layoutX="236.0" layoutY="345.0" mnemonicParsing="false" onAction="#sendRequest" text="Reroute Train" />
       <Hyperlink fx:id="homeLink" layoutX="469.0" layoutY="377.0" onAction="#goToHome" text="Go to home" />
+      <TextField fx:id="nextStationArrival" layoutX="76.0" layoutY="257.0" promptText="Next Station New Arrival" />
+      <TextField fx:id="currentStationDeparture" layoutX="311.0" layoutY="257.0" promptText="Departure from current station" />
    </children>
 </AnchorPane>

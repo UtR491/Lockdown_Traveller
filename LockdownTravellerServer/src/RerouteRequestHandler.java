@@ -36,7 +36,7 @@ public class RerouteRequestHandler extends Handler {
         //updating the first  station after the rerouted station is added,i.e, if we change thr route from A B C to A D C or A B D C, the following query will update Station C
         String query4="update Route_Info set Distance_Covered=?,Arrival=?,Station_No=Station_No+? where Station=? and Train_ID=? and inCurrentRoute=2;";
         //updating the values of all the stations after station C (mentioned in the comment above)
-        String query5="update Route_Info set Distance_Covered=Distance_Covered+? and Station_No=Station_No+1 where Station in (select Station from route_info where Train_ID=? and Station_No>?) and Train_ID=? and inCurrentRoute=2;";
+        String query5="update Route_Info set Distance_Covered=Distance_Covered+? and Station_No=Station_No+1 where Station in (select Station from Route_Info where Train_ID=? and Station_No>?) and Train_ID=? and inCurrentRoute=2;";
         //changing the inCurrentRoute of the old Route to 0
         String query6="update Route_Info set inCurrentRoute=0 where Train_ID=? and inCurrentRoute=1;";
         //changing the inCurrentRoute of the new Route to 1
@@ -66,10 +66,11 @@ public class RerouteRequestHandler extends Handler {
         ResultSet resultSet;
         if (rerouteRequest.getInplace()) {
             if (rerouteRequest.getNextStation() != null) {
-                preparedStatement.setString(2, rerouteRequest.getOldStation());
-                preparedStatement.setString(3, rerouteRequest.getNextStation());
+                preparedStatement.setString(1, rerouteRequest.getTrain_ID());
+                preparedStatement.setString(3, rerouteRequest.getOldStation());
+                preparedStatement.setString(4, rerouteRequest.getNextStation());
                 if (rerouteRequest.getPrevStation() != null) {
-                    preparedStatement.setString(1, rerouteRequest.getPrevStation());
+                    preparedStatement.setString(2, rerouteRequest.getPrevStation());
                     resultSet=preparedStatement.executeQuery();
                     resultSet.next();
 
