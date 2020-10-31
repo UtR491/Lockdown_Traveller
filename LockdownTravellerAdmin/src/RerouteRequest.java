@@ -1,20 +1,17 @@
 import java.io.Serializable;
 
 public class RerouteRequest extends Request implements Serializable {
-    String sDate,Train_ID,Station,Arrival,Departure,City_Code,oldStation,prevStation,nextStation;
+    String sDate,Train_ID,Station,City_Code,oldStation,prevStation,nextStation,arrivalD,departureD,arrivalC,departureB;
     Boolean inplace;
-    int Day_No,distancePrev,distanceOld,distanceNext;
+    int distancePrev,distanceOld,distanceNext,dayNo;
 
-    public RerouteRequest(String sDate, String Train_ID, String Station, String Arrival, String Departure,
-                          String City_Code, int Day_No, int distancePrev, int distanceOld, int distanceNext,
-                          String oldStation, String prevStation, String nextStation, Boolean inplace) {
+    public RerouteRequest(String sDate, String Train_ID, String Station, String City_Code,int distancePrev,
+                          int distanceOld, int distanceNext, String oldStation, String prevStation, String nextStation,
+                          Boolean inplace,String arrivalD,String departureD,String arrivalC,String departureB,int dayNo) {
         this.sDate = sDate;
         this.Train_ID = Train_ID;
         this.Station = Station;
-        this.Arrival = Arrival;
-        this.Departure = Departure;
         this.City_Code = City_Code;
-        this.Day_No = Day_No;
         this.distancePrev = distancePrev;
         this.distanceOld = distanceOld;
         this.distanceNext = distanceNext;
@@ -22,6 +19,19 @@ public class RerouteRequest extends Request implements Serializable {
         this.prevStation = prevStation;
         this.nextStation = nextStation;
         this.inplace = inplace;
+        this.arrivalD=arrivalD;
+        this.departureD=departureD;
+        this.arrivalC=arrivalC;
+        this.dayNo=dayNo;
+        this.departureB=departureB;
+    }
+
+    public String getDepartureB() {
+        return departureB;
+    }
+
+    public int getDayNo() {
+        return dayNo;
     }
 
     public String getsDate() {
@@ -35,21 +45,8 @@ public class RerouteRequest extends Request implements Serializable {
     public String getStation() {
         return Station;
     }
-
-    public String getArrival() {
-        return Arrival;
-    }
-
-    public String getDeparture() {
-        return Departure;
-    }
-
     public String getCity_Code() {
         return City_Code;
-    }
-
-    public int getDay_No() {
-        return Day_No;
     }
 
     public int getDistancePrev() {
@@ -78,5 +75,17 @@ public class RerouteRequest extends Request implements Serializable {
 
     public Boolean getInplace() {
         return inplace;
+    }
+
+    public String getArrivalC() {
+        return arrivalC;
+    }
+
+    public String getArrivalD() {
+        return arrivalD;
+    }
+
+    public String getDepartureD() {
+        return departureD;
     }
 }

@@ -112,23 +112,27 @@ public class BookingHandler {
                     notVacant[0] = true;
                 }
             }
-            // Discounting from total cost.
-            PreparedStatement getPreviousSpent = connection.prepareStatement(query6);
-            getPreviousSpent.setString(1, userID);
-            ResultSet previousSpent = getPreviousSpent.executeQuery();
-            previousSpent.next();
-            int prev = previousSpent.getInt("Total_Spend");
-            if(prev < 5000) {
-                // no discount
-            } else if(prev < 20000) {
-                // 10%
-                totalCost = (int) (0.9 * totalCost);
-            } else if(prev < 40000) {
-                // 20%
-                totalCost = (int) (0.8 * totalCost);
-            } else {
-                // 30%
-                totalCost = (int) (0.7 * totalCost);
+            try {
+                // Discounting from total cost.
+                PreparedStatement getPreviousSpent = connection.prepareStatement(query6);
+                getPreviousSpent.setString(1, userID);
+                ResultSet previousSpent = getPreviousSpent.executeQuery();
+                previousSpent.next();
+                int prev = previousSpent.getInt("Total_Spend");
+                if(prev < 5000) {
+                    // no discount
+                } else if(prev < 20000) {
+                    // 10%
+                    totalCost = (int) (0.9 * totalCost);
+                } else if(prev < 40000) {
+                    // 20%
+                    totalCost = (int) (0.8 * totalCost);
+                } else {
+                    // 30%
+                    totalCost = (int) (0.7 * totalCost);
+                }
+            } catch (SQLException e) {
+                totalCost = totalCost;
             }
             PreparedStatement updateSpent = connection.prepareStatement(query7);
             updateSpent.setInt(1, totalCost);

@@ -31,11 +31,11 @@ public class AdminLoginRequestHandler extends Handler{
             ResultSet adminCredentials = validateLogin.executeQuery();
             if (!adminCredentials.next()) {
                 System.out.println("fail");
-                return new AdminLoginResponse("failure");
+                return new AdminLoginResponse("failure", "");
             } else {
                 do {
                     System.out.println("success");
-                    return new AdminLoginResponse("success");
+                    return new AdminLoginResponse("success", adminCredentials.getString("Admin_ID"));
                 } while (adminCredentials.next());
             }
         } catch (SQLException e) {

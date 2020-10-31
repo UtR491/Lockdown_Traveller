@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane prefHeight="415.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="TrainsListController">
+   <children>
+      <TreeTableView fx:id="trainHolder" layoutY="-2.0" prefHeight="393.0" prefWidth="570.0" />
+      <Hyperlink fx:id="homeLink" layoutX="483.0" layoutY="389.0" onAction="#goToHome" text="Go to home" />
+   </children>
+</AnchorPane>
