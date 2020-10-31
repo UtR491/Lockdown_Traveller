@@ -11,15 +11,14 @@ import java.util.Map;
 
 
 public class Server {
-    public static Connection connection;
-    public static Map<String,Socket> map;
+    public static Map<String,Socket> chat_map;
+    private static Connection connection;
 
 
     public static void main(String[] args) {
         ServerSocket serverSocket = null;
         Socket socket;
-
-        map= new HashMap<>();
+        chat_map= new HashMap<>();
 
         try {
             serverSocket = new ServerSocket(12000);
@@ -36,6 +35,7 @@ public class Server {
                 System.out.println("customer connected now creating database connection");
                 System.out.println("database connected now going to request identifier.");
                 Thread t = new Thread(new RequestIdentifier(socket));
+
                 t.start();
             } catch (IOException e) {
                 e.printStackTrace();

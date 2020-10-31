@@ -138,6 +138,21 @@ public class RequestIdentifier implements Runnable {
                 BookingHistoryHandler bookingHistoryHandler = new BookingHistoryHandler(Server.getConnection(), oos, (BookingHistoryRequest) request);
                 bookingHistoryHandler.sendQuery();
             }
+            else if(request instanceof SetPlatformRequest)
+            {
+                SetPlatformRequestHandler setPlatformRequestHandler=new SetPlatformRequestHandler(Server.getConnection(),oos,(SetPlatformRequest)request);
+                setPlatformRequestHandler.sendQuery();
+            }
+            else if(request instanceof ViewPlatformRequest)
+            {
+                ViewPlatformRequestHandler viewPlatformRequestHandler=new ViewPlatformRequestHandler(Server.getConnection(),oos,(ViewPlatformRequest)request);
+                viewPlatformRequestHandler.sendQuery();
+            }
+//            else if(request instanceof  ChatMessageRequest)
+//            {
+//                ChatHandleClient chatHandleClient=new ChatHandleClient(oos,(ChatMessageRequest)request,socket);
+//
+//            }
         }
     }
 }
