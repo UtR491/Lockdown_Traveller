@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SetPlatformController">
+   <children>
+      <Label layoutX="226.0" layoutY="14.0" text="Set Platform">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <ListView fx:id="holder" layoutY="54.0" prefHeight="284.0" prefWidth="600.0" />
+      <Button fx:id="setButton" layoutX="251.0" layoutY="349.0" mnemonicParsing="false" onAction="#setPlatform" text="Set Platform" />
+      <Hyperlink fx:id="homeLink" layoutX="502.0" layoutY="374.0" onAction="#goToHome" text="Go to home." />
+   </children>
+</AnchorPane>

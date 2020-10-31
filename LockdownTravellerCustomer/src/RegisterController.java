@@ -34,7 +34,7 @@ public class RegisterController {
         int age = Period.between(dobDatePicker.getValue(), today).getYears();
         RegisterRequest registerRequest=new RegisterRequest(firstNameField.getText(), emailField.getText(),
                 lastNameField.getText(), mobileField.getText(), genderComboBox.getValue(), age, usernameField.getText(),
-                passwordField.getText(), userId);
+                EncryptPassword.getHash(passwordField.getText()), userId);
         Main.SendRequest(registerRequest);
         RegisterResponse registerResponse = (RegisterResponse) Main.ReceiveResponse();
         if(registerResponse.getResponse().equals("success")) {

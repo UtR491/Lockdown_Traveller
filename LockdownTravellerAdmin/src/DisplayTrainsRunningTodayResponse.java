@@ -39,3 +39,38 @@ public class DisplayTrainsRunningTodayResponse extends Response implements Seria
         return arrival;
     }
 }
+
+class TrainsToday {
+    private final String train;
+    private final ArrayList<String> stations, arrival, departure;
+    private final ArrayList<Integer> stationNo;
+
+    public TrainsToday(String trainID, String trainName, ArrayList<String> stations, ArrayList<String> arrival,
+                       ArrayList<String> departure, ArrayList<Integer> stationNo) {
+        this.stations = stations;
+        this.arrival = arrival;
+        this.departure = departure;
+        this.stationNo = stationNo;
+        this.train = trainID + " " + trainName;
+    }
+
+    public ArrayList<String> getStations() {
+        return stations;
+    }
+
+    public ArrayList<String> getArrival() {
+        return arrival;
+    }
+
+    public ArrayList<String> getDeparture() {
+        return departure;
+    }
+
+    public ArrayList<Integer> getStationNo() {
+        return stationNo;
+    }
+
+    public String getTrain() {
+        return train;
+    }
+}
