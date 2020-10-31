@@ -23,6 +23,7 @@ public class SetPlatformRequestHandler extends Handler {
         String query2="select distinct User_ID from Booking_Info where Booking_ID in (select distinct Booking_ID from Vacancy_Info where Train_ID=? and Date=?);";
         String query3="insert into Notification values(?,?,1);";
         SetPlatformResponse setPlatformResponse=setPlatform(query1,query2,query3,setPlatformRequest);
+        System.out.println("Sending the set platform request.");
         Server.SendResponse(oos,setPlatformResponse);
     }
     public SetPlatformResponse setPlatform(String query1,String query2,String query3,SetPlatformRequest setPlatformRequest){
@@ -40,7 +41,7 @@ public class SetPlatformRequestHandler extends Handler {
                     preparedStatement.setInt(2,setPlatformRequest.getStationNo().get(i).get(j));
                     preparedStatement.setInt(3,setPlatformRequest.getPlatformNo().get(i).get(j));
                     int c=preparedStatement.executeUpdate();
-                    if(c==0){return new SetPlatformResponse("Failure");}
+                    if(c==0){return new SetPlatformResponse("failure");}
                 }
 
                 preparedStatement=connection.prepareStatement(query2);
@@ -53,13 +54,13 @@ public class SetPlatformRequestHandler extends Handler {
                     preparedStatement.setString(1,resultSet.getString(1));
                     preparedStatement.setString(2,"Platforms for Train Number "+setPlatformRequest.getTrainID().get(i)+"have been updated");
                     int d=preparedStatement.executeUpdate();
-                    if(d==0){return  new SetPlatformResponse("Failure");}
+                    if(d==0){return  new SetPlatformResponse("failure");}
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return new SetPlatformResponse("Success");
+        return new SetPlatformResponse("success");
 
     }
 }
