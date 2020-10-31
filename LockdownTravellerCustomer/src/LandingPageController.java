@@ -13,7 +13,7 @@ public class LandingPageController {
 
     @FXML
     public Button findTrainsButton, travelsButton, notificationButton, reroutedTrainsButton, cancelBookingButton,
-            cancelledTrainsButton;
+            cancelledTrainsButton, platformButton;
     @FXML
     public Hyperlink logoutLink, homeLink;
     @FXML
@@ -157,5 +157,20 @@ public class LandingPageController {
         stage.setTitle("Contact Us");
         ChatController chatController = loader.getController();
         chatController.initData(homeScene, userId);
+    }
+
+    public void platform(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewPlatform.fxml"));
+        Scene scene = null;
+        try {
+            scene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = (Stage) logoutLink.getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("View Platform");
+        ViewPlatformController viewPlatformController = loader.getController();
+        viewPlatformController.initData(homeScene, userId);
     }
 }
