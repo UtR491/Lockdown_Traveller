@@ -18,8 +18,6 @@ public class MaintainCustomerRequestHandler {
     public void sendQuery() {
         String query = "select * from User;";
         MaintainCustomerResponse maintainCustomerResponse = maintainCustomerRequest(query);
-        for(int i = 0; i < 2; i++)
-        System.out.println(maintainCustomerResponse.getCustomers().get(i).getEmailId());
         System.out.println("Sending the maintainCustomerResponse object over the socket");
         Server.SendResponse(oos, maintainCustomerResponse);
     }
@@ -43,8 +41,6 @@ public class MaintainCustomerRequestHandler {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        for(int i = 0; i < 2; i++)
-        System.out.println(customers.get(i).getName());
         return new MaintainCustomerResponse(customers);
     }
 }

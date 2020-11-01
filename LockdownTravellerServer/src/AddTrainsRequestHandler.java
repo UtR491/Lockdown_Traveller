@@ -25,7 +25,7 @@ public class AddTrainsRequestHandler extends Handler {
         if(date != null)
         date= LocalDate.parse(date,dtf).format(dtf2);
         String query1 = "insert into Basic_Train_Info values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String query2 = "insert into Route_Info values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        String query2 = "insert into Route_Info values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1);";
         AddTrainsResponse addTrainsResponse=addTrains(query1, query2);
         Server.SendResponse(oos,addTrainsResponse);
     }
