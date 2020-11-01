@@ -28,7 +28,6 @@ public class NotificationHandleClient {
         }
 
         public void run() {
-
             Server.map.put(userid,socket);
             while (true) {
                 Notification message=null;

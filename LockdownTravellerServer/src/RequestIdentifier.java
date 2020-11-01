@@ -4,14 +4,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RequestIdentifier implements Runnable {
     Socket socket;
-
+    Socket adminSocket;
+    Map<String,Socket>customerSocket= new HashMap<>();
     public RequestIdentifier(Socket socket) {
         this.socket = socket;
     }
-
     @Override
     public void run() {
 
@@ -60,6 +62,7 @@ public class RequestIdentifier implements Runnable {
                 System.out.println("Admin login request");
                 AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos, Server.getConnection());
                 adminLoginRequestHandler.sendQuery();
+                adminSocket=socket;
             } else if (request instanceof MaintainTrainsRequest) {
                 System.out.println("Maintain trains request");
                 MaintainTrainsRequestHandler maintainTrainsRequestHandler = new MaintainTrainsRequestHandler(oos, Server.getConnection(), (MaintainTrainsRequest) request);
@@ -140,6 +143,40 @@ public class RequestIdentifier implements Runnable {
             } else if (request instanceof SetPlatformRequest) {
                 SetPlatformRequestHandler setPlatformRequestHandler = new SetPlatformRequestHandler(Server.getConnection(), oos, (SetPlatformRequest) request);
                 setPlatformRequestHandler.sendQuery();
+            }
+            else if(request instanceof SetPlatformRequest)
+            {
+                SetPlatformRequestHandler setPlatformRequestHandler=new SetPlatformRequestHandler(Server.getConnection(),oos,(SetPlatformRequest)request);
+                setPlatformRequestHandler.sendQuery();
+            }
+            else if(request instanceof ViewPlatformRequest)
+            {
+                ViewPlatformRequestHandler viewPlatformRequestHandler=new ViewPlatformRequestHandler(Server.getConnection(),oos,(ViewPlatformRequest)request);
+                viewPlatformRequestHandler.sendQuery();
+            }
+            else if(request instanceof  ChatMessageRequest)
+            {
+                //checking if the map already contains a socket for that ID(user)
+                if(customerSocket.containsKey(((ChatMessageRequest) request).getID()))//if yes then we will replace it with the current socket
+                {
+                   customerSocket.replace(((ChatMessageRequest) request).getID(),socket);
+                }
+                else //else we will add the key value pair
+                    customerSocket.put(((ChatMessageRequest) request).getID(),socket);
+
+                //now from the request object we will get the "to" field and get the corresponding socket
+                //if yes then it means the admin is sending the message TO a user
+                if(customerSocket.containsKey(((ChatMessageRequest) request).getTo()))
+                {
+                    ChatMessageHandler chatMessageHandler=new ChatMessageHandler(customerSocket.get(((ChatMessageRequest) request).getTo()),(ChatMessageRequest)request,customerSocket.get(((ChatMessageRequest) request).getID()));
+                }
+                else //if it is the first connection
+                {
+                    ChatMessageHandler chatMessageHandler=new ChatMessageHandler(adminSocket,(ChatMessageRequest)request,customerSocket.get(((ChatMessageRequest) request).getID()));
+                }
+
+
+
             }
         }
     }

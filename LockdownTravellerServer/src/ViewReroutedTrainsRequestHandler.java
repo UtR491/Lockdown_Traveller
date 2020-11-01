@@ -1,5 +1,4 @@
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,21 +8,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ViewReroutedTrainsRequestHandler extends Handler implements Serializable {
-    Connection connection;
-    ObjectOutputStream oos;
-    ViewReroutedTrainsRequest viewReroutedTrainsRequest;
-
+public class ViewReroutedTrainsRequestHandler extends Handler  {
+   private Connection connection;
+   private ObjectOutputStream oos;
+    protected ViewReroutedTrainsRequest viewReroutedTrainsRequest;
     public ViewReroutedTrainsRequestHandler(Connection connection, ObjectOutputStream oos, ViewReroutedTrainsRequest viewReroutedTrainsRequest) {
         this.connection = connection;
         this.oos = oos;
-        this.viewReroutedTrainsRequest = viewReroutedTrainsRequest;
+        this.viewReroutedTrainsRequest=viewReroutedTrainsRequest;
     }
 
     @Override
     void sendQuery() throws  SQLException {
         String q1 = "select Rerouted_Till,Train_ID from Basic_Train_Info where Rerouted_Till is not null;";
-        String q2 = "select * from Route_Info where Train_ID=? and inCurrentRoute=1;";
+         String q2 = "select * from Route_Info where Train_ID=? and inCurrentRoute=1;";
         ViewReroutedTrainsResponse viewReroutedTrainsResponse=viewReroutedTrains(q1,q2);
         Server.SendResponse(oos,viewReroutedTrainsResponse);
     }
@@ -68,12 +66,12 @@ public class ViewReroutedTrainsRequestHandler extends Handler implements Seriali
                     preparedStatement=connection.prepareStatement(q2);
                     preparedStatement.setString(1,resultSet.getString(2));
                     reroutedTrains=preparedStatement.executeQuery();
-                    int count=0;
                     ArrayList<String> Station =new ArrayList<>(),CityCode=new ArrayList<>(),Arrival=new ArrayList<>(),Departure=new ArrayList<>();
                     ArrayList<Integer>StationNo = new ArrayList<>(),DaNo=new ArrayList<>(),DistanceCovered=new ArrayList<>();
+                    int count=0;
                     while (reroutedTrains.next())
                     {
-                        if(count==0)
+                        while (count!=1)
                         {
                             trainID.add(reroutedTrains.getString(1));
                             trainName.add(reroutedTrains.getString(2));

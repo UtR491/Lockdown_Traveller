@@ -61,7 +61,7 @@ public class RerouteTrainController {
         Main.SendRequest(rerouteRequest);
         RerouteResponse rerouteResponse = (RerouteResponse) Main.ReceiveResponse();
 
-        if(rerouteResponse.getResponse().equals("success")) {
+            if(rerouteResponse.getResponse().equals("SUCCESS")) {
             resultDialog.setAlertType(Alert.AlertType.CONFIRMATION);
             resultDialog.setContentText("Rerouted the train successfully.");
             resultDialog.setHeaderText("Success");
