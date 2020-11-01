@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class DisplayTrainsRunningTodayRequestHandler extends Handler{
-Connection connection;
-ObjectOutputStream oos;
-DisplayTrainsRunningTodayRequest displayTrainsRunningTodayRequest;
+private Connection connection;
+private ObjectOutputStream oos;
+private DisplayTrainsRunningTodayRequest displayTrainsRunningTodayRequest;
 
     public DisplayTrainsRunningTodayRequestHandler(Connection connection, ObjectOutputStream oos, DisplayTrainsRunningTodayRequest displayTrainsRunningTodayRequest) {
         this.connection = connection;
@@ -96,6 +96,7 @@ DisplayTrainsRunningTodayRequest displayTrainsRunningTodayRequest;
         ResultSet resultSet;
         ArrayList<String>trainID=new ArrayList<>();
         ArrayList<String>trainName=new ArrayList<>();
+        ArrayList<Integer>setPlatform=new ArrayList<>();
         ArrayList<ArrayList<String>>station= new ArrayList<>();
         ArrayList<ArrayList<Integer>>stationNo=new ArrayList<>();
         ArrayList<ArrayList<String>>arrival=new ArrayList<>();
@@ -151,6 +152,14 @@ DisplayTrainsRunningTodayRequest displayTrainsRunningTodayRequest;
                             if(count==0) {
                                 trainID.add(trainsRunningToday.getString(1));
                                 trainName.add(trainsRunningToday.getString(2));
+                                //comparing the current time with the departure time,if the train is yet to depart we can set platform number
+                                Date time;
+                                SimpleDateFormat formatter = new SimpleDateFormat("HHmm");
+                                //current time to 24 hour format
+                                String strDate= formatter.format(new Date());
+                                time=formatter.parse(strDate);
+                                Date departingTime=formatter.parse(trainsRunningToday.getString(5));
+                                setPlatform.add(departingTime.compareTo(time));
                                 count=1;
                             }
                             Station.add(trainsRunningToday.getString(3));
@@ -168,6 +177,6 @@ DisplayTrainsRunningTodayRequest displayTrainsRunningTodayRequest;
         } catch (SQLException | ParseException e) {
             e.printStackTrace();
         }
-        return new DisplayTrainsRunningTodayResponse(trainID,trainName,station,stationNo,departure,arrival);
+        return new DisplayTrainsRunningTodayResponse(trainID,trainName,station,stationNo,departure,arrival,setPlatform);
     }
 }

@@ -12,7 +12,7 @@ import java.util.Date;
 public class ViewCancelledTrainsRequestHandler extends Handler {
     private Connection connection;
     private ObjectOutputStream oos;
-    private ViewCancelledTrainsRequest viewCancelledTrainsRequest;
+     ViewCancelledTrainsRequest viewCancelledTrainsRequest;
     ViewCancelledTrainsRequestHandler(Connection connection,ViewCancelledTrainsRequest viewCancelledTrainsRequest,ObjectOutputStream oos)
     {
         this.connection=connection;

@@ -15,6 +15,8 @@ public class DisplayTrainsRequestHandler extends Handler {
     Connection connection;
     DisplayTrainsRequest displayTrainsRequest;
     ObjectOutputStream oos;
+    DisplayTrainsRequestHandler()
+    { }
 
     DisplayTrainsRequestHandler(Connection connection, DisplayTrainsRequest displayTrainsRequest, ObjectOutputStream oos) {
         this.connection = connection;
