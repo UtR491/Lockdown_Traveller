@@ -164,4 +164,22 @@ public class LandingPageController {
     public void initData(String adminID) {
         this.adminID = adminID;
     }
+
+    public void setPlatform(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("DisplayTrainsRunningToday.fxml"));
+        Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
+        Scene newScene = null;
+        try {
+            newScene = new Scene(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.setScene(newScene);
+        stage.setTitle("Reroute Train");
+        DisplayTrainsRunningTodayRequest displayTrainsRunningTodayRequest = new DisplayTrainsRunningTodayRequest();
+        Main.SendRequest(displayTrainsRunningTodayRequest);
+        DisplayTrainsRunningTodayResponse displayTrainsRunningTodayResponse = (DisplayTrainsRunningTodayResponse) Main.ReceiveResponse();
+       DisplayTrainsRunningTodayController displayTrainsRunningTodayController = loader.getController();
+       displayTrainsRunningTodayController.initData(addTrainsHyperlink.getScene(), adminID, displayTrainsRunningTodayResponse);
+    }
 }

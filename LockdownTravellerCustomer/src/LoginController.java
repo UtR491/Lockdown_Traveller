@@ -32,7 +32,7 @@ public class LoginController implements Initializable {
 
     public void login(ActionEvent actionEvent) {
         System.out.println("Creating a login request object in thread " + Thread.currentThread());
-        LoginRequest loginRequest=new LoginRequest(usernameField.getText(), passwordField.getText());
+        LoginRequest loginRequest=new LoginRequest(usernameField.getText(), EncryptPassword.getHash(passwordField.getText()));
         System.out.println("Sending the object in thread " + Thread.currentThread());
         Main.SendRequest(loginRequest);
 
