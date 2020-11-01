@@ -143,6 +143,9 @@ public class RequestIdentifier implements Runnable {
             } else if (request instanceof SetPlatformRequest) {
                 SetPlatformRequestHandler setPlatformRequestHandler = new SetPlatformRequestHandler(Server.getConnection(), oos, (SetPlatformRequest) request);
                 setPlatformRequestHandler.sendQuery();
+            } else if (request instanceof ViewPlatformRequest) {
+                ViewPlatformRequestHandler viewPlatformRequestHandler = new ViewPlatformRequestHandler(Server.getConnection(), oos, (ViewPlatformRequest) request);
+                viewPlatformRequestHandler.sendQuery();
             }
             else if(request instanceof SetPlatformRequest)
             {
