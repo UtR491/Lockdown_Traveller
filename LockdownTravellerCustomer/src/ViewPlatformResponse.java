@@ -6,7 +6,7 @@ public class ViewPlatformResponse extends Response implements Serializable {
   private ArrayList<String>station;
   private ArrayList<Integer>stationNo,platformNo;
 
-    public ViewPlatformResponse(String trainID,ArrayList<String> station, ArrayList<Integer> platformNo,ArrayList<Integer>stationNo) {
+    public ViewPlatformResponse(String trainID, ArrayList<String> station, ArrayList<Integer> platformNo, ArrayList<Integer>stationNo) {
         this.trainID=trainID;
         this.station = station;
         this.stationNo=stationNo;

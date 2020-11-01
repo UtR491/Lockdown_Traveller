@@ -1,13 +1,11 @@
 import java.io.Serializable;
 
 public class RerouteRequest extends Request implements Serializable {
-    String sDate,Train_ID,Station,City_Code,oldStation,prevStation,nextStation,arrivalD,departureD,arrivalC,departureB;
-    Boolean inplace;
-    int distancePrev,distanceOld,distanceNext,dayNo;
+    private String sDate,Train_ID,Station,City_Code,oldStation,prevStation,nextStation,arrivalD,departureD,arrivalC,departureB;
+   private Boolean inplace;
+   private int distancePrev,distanceOld,distanceNext,dayNo;
 
-    public RerouteRequest(String sDate, String Train_ID, String Station, String City_Code,int distancePrev,
-                          int distanceOld, int distanceNext, String oldStation, String prevStation, String nextStation,
-                          Boolean inplace,String arrivalD,String departureD,String arrivalC,String departureB,int dayNo) {
+    public RerouteRequest(String sDate, String Train_ID, String Station, String City_Code, int distancePrev, int distanceOld, int distanceNext, String oldStation, String prevStation, String nextStation, Boolean inplace, String arrivalD, String departureD, String arrivalC, String departureB, int dayNo) {
         this.sDate = sDate;
         this.Train_ID = Train_ID;
         this.Station = Station;

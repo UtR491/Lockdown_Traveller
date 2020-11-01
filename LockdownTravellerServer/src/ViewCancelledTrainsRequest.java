@@ -1,7 +1,7 @@
 import java.io.Serializable;
 
 public class ViewCancelledTrainsRequest extends Request implements Serializable {
-    private String date;
+    String date;
 
     public ViewCancelledTrainsRequest(String date) {
         this.date = date;
