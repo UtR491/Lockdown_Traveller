@@ -46,5 +46,5 @@ the next month.
 To be implemented soon:
 1. Have a chat feature to handle complaints from users.
 2. Notify users of their upcoming journey a couple of hours before the scheduled
-time
+time.
 
