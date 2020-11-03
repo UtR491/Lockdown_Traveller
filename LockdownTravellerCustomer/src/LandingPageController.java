@@ -12,13 +12,11 @@ import java.io.IOException;
 public class LandingPageController {
 
     @FXML
-    public Button findTrainsButton, travelsButton, notificationButton, reroutedTrainsButton, cancelBookingButton,
-            cancelledTrainsButton, platformButton;
+    public Button findTrainsButton, travelsButton, notificationButton, cancelBookingButton;
     @FXML
     public Hyperlink logoutLink, homeLink;
     @FXML
     public Label phoneLabel, emailLabel, nameLabel, usernameLabel, userIdLabel;
-    public Hyperlink chatLink;
     private String userId, name, username, email, phone;
     private Scene homeScene;
     public void initData(Scene homeScene, String userId, String name, String username, String email, String phone) {
@@ -94,38 +92,6 @@ public class LandingPageController {
         CancelBookingController cancelBookingController = loader.getController();
         cancelBookingController.initData(homeScene, userId);
     }
-    public void reroutedTrains(ActionEvent actionEvent) {
-        ViewReroutedTrainsRequest viewReroutedTrainsRequest = new ViewReroutedTrainsRequest();
-        Main.SendRequest(viewReroutedTrainsRequest);
-        ViewReroutedTrainsResponse viewReroutedTrainsResponse = (ViewReroutedTrainsResponse) Main.ReceiveResponse();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewReroutedTrains.fxml"));
-        Scene scene = null;
-        try {
-            scene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Stage stage = (Stage) logoutLink.getScene().getWindow();
-        stage.setScene(scene);
-        ViewReroutedTrainsController viewReroutedTrainsController = loader.getController();
-        viewReroutedTrainsController.initData(homeScene, viewReroutedTrainsResponse);
-    }
-
-    public void cancelledTrains(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewCancelledTrains.fxml"));
-        Scene scene = null;
-        try {
-            scene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Stage stage = (Stage) logoutLink.getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("View Cancelled Trains");
-        ViewCancelledTrainsController viewCancelledTrainsController = loader.getController();
-        viewCancelledTrainsController.initData(homeScene);
-    }
-
     public void travels(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("BookingHistory.fxml"));
         Scene scene = null;
@@ -142,35 +108,5 @@ public class LandingPageController {
         BookingHistoryResponse bookingHistoryResponse = (BookingHistoryResponse) Main.ReceiveResponse();
         BookingHistoryController bookingHistoryController = loader.getController();
         bookingHistoryController.initData(homeScene, bookingHistoryResponse);
-    }
-
-    public void chat(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Chat.fxml"));
-        Scene scene = null;
-        try {
-            scene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Stage stage = (Stage) logoutLink.getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Contact Us");
-        ChatController chatController = loader.getController();
-        chatController.initData(homeScene, userId);
-    }
-
-    public void platform(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewPlatform.fxml"));
-        Scene scene = null;
-        try {
-            scene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Stage stage = (Stage) logoutLink.getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("View Platform");
-        ViewPlatformController viewPlatformController = loader.getController();
-        viewPlatformController.initData(homeScene, userId);
     }
 }

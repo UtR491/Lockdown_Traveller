@@ -4,6 +4,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -12,14 +14,10 @@ public class LandingPageController {
     public Hyperlink maintainCustomerHyperlink,
             maintainTrainsHyperlink,
             maintainSeatsHyperlink,
-            addTrainsHyperlink,
-            removeTrainsHyperlink,
-            modifySeatsHyperlink,
-            cancelTrainsHyperlink,
-            rerouteTrainHyperlink,
             bookHyperlink;
 
-    private String adminID = "";
+    @Nullable
+    private String adminID = null;
     public void maintainCustomer(ActionEvent actionEvent) {
         System.out.println("maintain customer info clicked");
         MaintainCustomerRequest maintainCustomerRequest = new MaintainCustomerRequest();
@@ -80,73 +78,6 @@ public class LandingPageController {
         MaintainSeatsController maintainSeatsController = loader.getController();
         maintainSeatsController.initData(maintainSeatsResponse);
     }
-    public void addTrains(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("AddTrain.fxml"));
-        Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
-        Scene newScene = null;
-        try {
-            newScene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setScene(newScene);
-        stage.setTitle("Add Train");
-    }
-    public void removeTrains(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("RemoveTrain.fxml"));
-        Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
-        Scene newScene = null;
-        try {
-            newScene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setScene(newScene);
-        stage.setTitle("Remove Train");
-    }
-    public void modifySeats(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ModifySeats.fxml"));
-        Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
-        Scene newScene = null;
-        try {
-            newScene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setScene(newScene);
-        stage.setTitle("Modify Seat");
-        ModifySeatsController modifySeatsController = loader.getController();
-        modifySeatsController.executeFirst();
-    }
-    public void cancelTrains(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("CancelTrain.fxml"));
-        Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
-        Scene newScene = null;
-        try {
-            newScene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setScene(newScene);
-        stage.setTitle("Cancel Train");
-    }
-
-    public void rerouteTrain(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("RerouteTrain.fxml"));
-        Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
-        Scene newScene = null;
-        try {
-            newScene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setScene(newScene);
-        stage.setTitle("Reroute Train");
-        RerouteTrainController rerouteTrainController = loader.getController();
-        rerouteTrainController.typeComboBox.getItems().setAll("Insert new station at the end.",
-                "Replace the current station with new station");
-    }
-
     public void bookTickets(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DisplayTrains.fxml"));
         Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
@@ -159,27 +90,13 @@ public class LandingPageController {
         stage.setScene(newScene);
         stage.setTitle("Reroute Train");
         DisplayTrainsController displayTrainsController = loader.getController();
-        displayTrainsController.initData(addTrainsHyperlink.getScene(), adminID);
+        displayTrainsController.initData(maintainSeatsHyperlink.getScene(), adminID);
     }
-    public void initData(String adminID) {
+    public void initData(@Nullable String adminID) {
+        hello(adminID);
         this.adminID = adminID;
     }
-
-    public void setPlatform(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("DisplayTrainsRunningToday.fxml"));
-        Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
-        Scene newScene = null;
-        try {
-            newScene = new Scene(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setScene(newScene);
-        stage.setTitle("Reroute Train");
-        DisplayTrainsRunningTodayRequest displayTrainsRunningTodayRequest = new DisplayTrainsRunningTodayRequest();
-        Main.SendRequest(displayTrainsRunningTodayRequest);
-        DisplayTrainsRunningTodayResponse displayTrainsRunningTodayResponse = (DisplayTrainsRunningTodayResponse) Main.ReceiveResponse();
-       DisplayTrainsRunningTodayController displayTrainsRunningTodayController = loader.getController();
-       displayTrainsRunningTodayController.initData(addTrainsHyperlink.getScene(), adminID, displayTrainsRunningTodayResponse);
+    public @NotNull String hello(@Nullable String s) {
+        return s;
     }
 }

@@ -67,27 +67,6 @@ public class RequestIdentifier implements Runnable {
                 System.out.println("Maintain trains request");
                 MaintainTrainsRequestHandler maintainTrainsRequestHandler = new MaintainTrainsRequestHandler(oos, Server.getConnection(), (MaintainTrainsRequest) request);
                 maintainTrainsRequestHandler.sendQuery();
-            } else if (request instanceof RemoveTrainsRequest) {
-                RemoveTrainsRequestHandler removeTrainsRequestHandler = new RemoveTrainsRequestHandler(Server.getConnection(), (RemoveTrainsRequest) request, oos);
-                removeTrainsRequestHandler.sendQuery();
-            } else if (request instanceof CancelTrainsRequest) {
-                CancelTrainsRequestHandler cancelTrainsRequestHandler = new CancelTrainsRequestHandler(Server.getConnection(), (CancelTrainsRequest) request, oos);
-                cancelTrainsRequestHandler.sendQuery();
-            } else if (request instanceof AddTrainsRequest) {
-                AddTrainsRequestHandler addTrainsRequestHandler = new AddTrainsRequestHandler(Server.getConnection(), (AddTrainsRequest) request, oos);
-                addTrainsRequestHandler.sendQuery();
-            } else if (request instanceof AddSeatsRequest) {
-                AddSeatsRequestHandler addSeatsRequestHandler = new AddSeatsRequestHandler(Server.getConnection(), (AddSeatsRequest) request, oos);
-                addSeatsRequestHandler.sendQuery();
-            } else if (request instanceof RemoveSeatsRequest) {
-                RemoveSeatsRequestHandler removeSeatsRequestHandler = new RemoveSeatsRequestHandler(Server.getConnection(), (RemoveSeatsRequest) request, oos);
-                removeSeatsRequestHandler.sendQuery();
-            } else if (request instanceof AddCoachesRequest) {
-                AddCoachesRequestHandler addCoachesRequestHandler = new AddCoachesRequestHandler(Server.getConnection(), (AddCoachesRequest) request, oos);
-                addCoachesRequestHandler.sendQuery();
-            } else if (request instanceof RemoveCoachesRequest) {
-                RemoveCoachesRequestHandler removeCoachesRequestHandler = new RemoveCoachesRequestHandler(Server.getConnection(), (RemoveCoachesRequest) request, oos);
-                removeCoachesRequestHandler.sendQuery();
             } else if (request instanceof MaintainCustomerRequest) {
                 System.out.println("Maintain customer request");
                 MaintainCustomerRequestHandler maintainCustomerRequestHandler = new MaintainCustomerRequestHandler(oos, Server.getConnection(), (MaintainCustomerRequest) request);
@@ -96,26 +75,6 @@ public class RequestIdentifier implements Runnable {
                 System.out.println("Maintain seats request");
                 MaintainSeatsRequestHandler maintainSeatsRequestHandler = new MaintainSeatsRequestHandler(oos, Server.getConnection(), (MaintainSeatsRequest) request);
                 maintainSeatsRequestHandler.sendQuery();
-            } else if (request instanceof RerouteRequest) {
-                RerouteRequestHandler rerouteRequestHandler = new RerouteRequestHandler(Server.getConnection(), (RerouteRequest) request, oos);
-                try {
-                    rerouteRequestHandler.sendQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            } else if (request instanceof ViewCancelledTrainsRequest) {
-                ViewCancelledTrainsRequestHandler viewCancelledTrainsRequestHandler = new ViewCancelledTrainsRequestHandler(Server.getConnection(), (ViewCancelledTrainsRequest) request, oos);
-                viewCancelledTrainsRequestHandler.sendQuery();
-            } else if (request instanceof DisplayTouristPackageRequest) {
-                DisplayTouristPackageRequestHandler displayTouristPackageRequestHandler = new DisplayTouristPackageRequestHandler(oos, Server.getConnection(), (DisplayTouristPackageRequest) request);
-                try {
-                    displayTouristPackageRequestHandler.sendQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            } else if (request instanceof BookTouristPackageRequest) {
-                BookTouristPackageRequestHandler bookTouristPackageRequestHandler = new BookTouristPackageRequestHandler(Server.getConnection(), oos, (BookTouristPackageRequest) request);
-                bookTouristPackageRequestHandler.sendQuery();
             } else if (request instanceof NotificationRequest) {
                 NotificationRequestHandler notificationRequestHandler = new NotificationRequestHandler(Server.getConnection(), (NotificationRequest) request, oos);
                 try {
@@ -123,63 +82,9 @@ public class RequestIdentifier implements Runnable {
                 } catch (IOException | SQLException e) {
                     e.printStackTrace();
                 }
-            } else if (request instanceof ViewReroutedTrainsRequest) {
-                ViewReroutedTrainsRequestHandler viewReroutedTrainsRequestHandler = new ViewReroutedTrainsRequestHandler(Server.getConnection(), oos, (ViewReroutedTrainsRequest) request);
-                try {
-                    viewReroutedTrainsRequestHandler.sendQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            } else if (request instanceof DisplayTrainsRunningTodayRequest) {
-                DisplayTrainsRunningTodayRequestHandler displayTrainsRunningTodayRequestHandler = new DisplayTrainsRunningTodayRequestHandler(Server.getConnection(), oos, (DisplayTrainsRunningTodayRequest) request);
-                try {
-                    displayTrainsRunningTodayRequestHandler.sendQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
             } else if (request instanceof BookingHistoryRequest) {
                 BookingHistoryHandler bookingHistoryHandler = new BookingHistoryHandler(Server.getConnection(), oos, (BookingHistoryRequest) request);
                 bookingHistoryHandler.sendQuery();
-            } else if (request instanceof SetPlatformRequest) {
-                SetPlatformRequestHandler setPlatformRequestHandler = new SetPlatformRequestHandler(Server.getConnection(), oos, (SetPlatformRequest) request);
-                setPlatformRequestHandler.sendQuery();
-            } else if (request instanceof ViewPlatformRequest) {
-                ViewPlatformRequestHandler viewPlatformRequestHandler = new ViewPlatformRequestHandler(Server.getConnection(), oos, (ViewPlatformRequest) request);
-                viewPlatformRequestHandler.sendQuery();
-            }
-            else if(request instanceof SetPlatformRequest)
-            {
-                SetPlatformRequestHandler setPlatformRequestHandler=new SetPlatformRequestHandler(Server.getConnection(),oos,(SetPlatformRequest)request);
-                setPlatformRequestHandler.sendQuery();
-            }
-            else if(request instanceof ViewPlatformRequest)
-            {
-                ViewPlatformRequestHandler viewPlatformRequestHandler=new ViewPlatformRequestHandler(Server.getConnection(),oos,(ViewPlatformRequest)request);
-                viewPlatformRequestHandler.sendQuery();
-            }
-            else if(request instanceof  ChatMessageRequest)
-            {
-                //checking if the map already contains a socket for that ID(user)
-                if(customerSocket.containsKey(((ChatMessageRequest) request).getID()))//if yes then we will replace it with the current socket
-                {
-                   customerSocket.replace(((ChatMessageRequest) request).getID(),socket);
-                }
-                else //else we will add the key value pair
-                    customerSocket.put(((ChatMessageRequest) request).getID(),socket);
-
-                //now from the request object we will get the "to" field and get the corresponding socket
-                //if yes then it means the admin is sending the message TO a user
-                if(customerSocket.containsKey(((ChatMessageRequest) request).getTo()))
-                {
-                    ChatMessageHandler chatMessageHandler=new ChatMessageHandler(customerSocket.get(((ChatMessageRequest) request).getTo()),(ChatMessageRequest)request,customerSocket.get(((ChatMessageRequest) request).getID()));
-                }
-                else //if it is the first connection
-                {
-                    ChatMessageHandler chatMessageHandler=new ChatMessageHandler(adminSocket,(ChatMessageRequest)request,customerSocket.get(((ChatMessageRequest) request).getID()));
-                }
-
-
-
             }
         }
     }

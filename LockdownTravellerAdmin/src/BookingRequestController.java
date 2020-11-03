@@ -46,16 +46,24 @@ public class BookingRequestController {
         int age[] = new int[Math.min(counter, 6)];
         char gender[] = new char[Math.min(counter, 6)];
         String quota[] = new String[Math.min(counter, 6)];
+        int meal[] = new int[Math.min(counter, 6)];
         for(int i = 0; i < Math.min(counter, 6); i++) {
             name[i] = ((TextField)passengers.get(i).getChildren().get(0)).getText();
             age[i] = Integer.parseInt(((TextField)passengers.get(i).getChildren().get(1)).getText());
             gender[i] = ((ComboBox<String>)passengers.get(i).getChildren().get(2)).getValue().charAt(0);
             preference[i] = ((ComboBox<String>)passengers.get(i).getChildren().get(3)).getValue();
             quota[i] = ((ComboBox<String>)passengers.get(i).getChildren().get(4)).getValue();
+            String m = ((ComboBox<String>)passengers.get(i).getChildren().get(5)).getValue();
+            if(m.equals("None"))
+                meal[i] = 0;
+            else if(m.equals("Veg"))
+                meal[i] = 1;
+            else
+                meal[i] = 2;
         }
         LocalDate date1 = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         BookingRequest bookingRequest = new BookingRequest(source, destination, trainID.substring(0, trainID.indexOf(" ")),
-                coach.replace(" ", ""), date1, name, age, gender, userID, seats, preference, quota, Math.min(counter, 6),
+                coach.replace(" ", ""), date1, name, age, gender, userID, seats, preference, quota, meal, Math.min(counter, 6),
                 fare * preference.length);
         Main.SendRequest(bookingRequest);
         BookingResponse bookingResponse = (BookingResponse) Main.ReceiveResponse();
@@ -113,8 +121,12 @@ public class BookingRequestController {
         quota.setPromptText("Quota");
         quota.getItems().addAll("General", "Viklang");
         name.setPromptText("Passenger name");
+        ComboBox<String> meal = new ComboBox<>();
+        meal.setPromptText("Meal");
+        meal.getItems().addAll("None", "Veg", "Non-veg");
+        name.setPromptText("Passenger name");
         age.setPromptText("Age");
-        passenger.getChildren().addAll(name, age, gender, preference, quota);
+        passenger.getChildren().addAll(name, age, gender, preference, quota, meal);
         passengers.add(passenger);
         root.add(passenger, 0, passengers.size() + 1);
     }

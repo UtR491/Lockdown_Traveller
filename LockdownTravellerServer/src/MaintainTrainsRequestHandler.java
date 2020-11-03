@@ -17,7 +17,7 @@ public class MaintainTrainsRequestHandler extends Handler{
     public void sendQuery() {
         System.out.println("Inside sendQuery of maintainTrainsResponse");
         String query1 = "select * from Basic_Train_Info;";
-        String query2 = "select * from Route_Info where Train_ID = ?;";
+        String query2 = "select * from Route_Info where Train_ID = ? and inCurrentRoute = 1;";
         MaintainTrainsResponse maintainTrainsResponse = maintainTrainsRequest(query1, query2);
         Server.SendResponse(oos, maintainTrainsResponse);
     }
