@@ -1,7 +1,6 @@
-
-import java.io.IOException;
-import java.sql.SQLException;
-
+/**
+ * Abstract class. Every Handler extends this.
+ */
 abstract class Handler {
-    void sendQuery() throws IOException, SQLException {}
+    void sendQuery() {}
 }

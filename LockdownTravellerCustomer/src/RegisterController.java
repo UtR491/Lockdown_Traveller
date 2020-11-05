@@ -11,12 +11,11 @@ import java.time.LocalDate;
 import java.time.Period;
 
 public class RegisterController {
+    // Field names explain what they accept or do.
     @FXML
     private TextField lastNameField, firstNameField, emailField, mobileField, usernameField, stationTextfield;
     @FXML
-    private AnchorPane signupPane;
-    @FXML
-    private Label signupLabel, orLabel, mobileInvalidLabel, passwordMismatchLabel;
+    private Label mobileInvalidLabel, passwordMismatchLabel;
     @FXML
     private DatePicker dobDatePicker;
     @FXML
@@ -26,8 +25,14 @@ public class RegisterController {
     @FXML
     private Button signupButton, signinButton;
 
+    // To alert if the desired username was already occupied or the register was unsuccessful for some reason.
     Alert dialog = new Alert(Alert.AlertType.WARNING);
 
+    /**
+     * Triggered on clicking the signup button. Packs the provided information in a request object and reads the
+     * server's response and either directs to the home screen or shows a popup.
+     * @param actionEvent
+     */
     public void signup(ActionEvent actionEvent) {
         LocalDate today = LocalDate.now();
         String userId = Main.randomIDGenerator();
@@ -64,6 +69,10 @@ public class RegisterController {
         }
     }
 
+    /**
+     * Triggered on clicking the sign in button if an account exists. Switches to the sign in screen.
+     * @param actionEvent
+     */
     public void switchToSignin(ActionEvent actionEvent) {
         FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("Login.fxml"));
         Stage stage = (Stage) signinButton.getScene().getWindow();
@@ -76,6 +85,10 @@ public class RegisterController {
         stage.setScene(loginScene);
     }
 
+    /**
+     * Check if the mobile entered is 10 digits or not.
+     * @param keyEvent
+     */
     public void validateMobile(javafx.scene.input.KeyEvent keyEvent) {
         if(mobileField.getText().length()==10 && mobileField.getText().matches("[0-9]+"))
             mobileInvalidLabel.setText("");
@@ -83,6 +96,10 @@ public class RegisterController {
             mobileInvalidLabel.setText("Invalid mobile number.");
     }
 
+    /**
+     * Check if the password entered in the confirm password fields matches the one entered in the password field.
+     * @param keyEvent
+     */
     public void validatePassword(javafx.scene.input.KeyEvent keyEvent) {
         if(null != passwordField.getText() && confirmPasswordField.getText() != null && passwordField.getText().equals(confirmPasswordField.getText()))
             passwordMismatchLabel.setText("");
@@ -90,6 +107,9 @@ public class RegisterController {
             passwordMismatchLabel.setText("Passwords don't match!");
     }
 
+    /**
+     * Populates the combo box.
+     */
     public void executeFirst() {
         genderComboBox.getItems().addAll("Male", "Female", "Other");
     }

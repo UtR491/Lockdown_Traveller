@@ -7,9 +7,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class BookingHistoryController {
@@ -25,7 +23,6 @@ public class BookingHistoryController {
         stage.setTitle("Welcome");
     }
 
-    private BookingHistoryRequest bookingHistoryRequest;
     public void initData(Scene homeScene, BookingHistoryResponse bookingHistoryResponse) {
         this.homeScene = homeScene;
         final int n = bookingHistoryResponse.getDestination().size();

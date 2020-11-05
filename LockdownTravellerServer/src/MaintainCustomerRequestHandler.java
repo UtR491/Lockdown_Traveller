@@ -5,23 +5,43 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class MaintainCustomerRequestHandler {
-    private Connection connection;
-    private ObjectOutputStream oos;
-    private MaintainCustomerRequest request;
+public class MaintainCustomerRequestHandler extends Handler{
+
+    final private Connection connection;
+    final private ObjectOutputStream oos;
+    final private MaintainCustomerRequest request;
+
+    /**
+     * Constructor. Initializes the object with the database connection, request object and output stream to send the
+     * response.
+     * @param connection The connection to the database to execute updates and queries.
+     * @param request The booking request object with relevant information.
+     * @param oos The output stream to send the object.
+     */
     public MaintainCustomerRequestHandler(ObjectOutputStream oos, Connection connection, MaintainCustomerRequest request) {
         System.out.println("Constructor of Maintain Customer Request Handler");
         this.connection = connection;
         this.oos = oos;
         this.request = request;
     }
+
+    /**
+     * This is the first function that is called inside the request identifier. In this function, we form the relevant
+     * sql queries and pass it to another function to execute.
+     */
+    @Override
     public void sendQuery() {
+        // Get all details about all users.
         String query = "select * from User;";
         MaintainCustomerResponse maintainCustomerResponse = maintainCustomerRequest(query);
-        System.out.println("Sending the maintainCustomerResponse object over the socket");
         Server.SendResponse(oos, maintainCustomerResponse);
     }
 
+    /**
+     * Execute the query.
+     * @param query Query to get all user info.
+     * @return Response to maintain customer request.
+     */
     private MaintainCustomerResponse maintainCustomerRequest(String query) {
         ArrayList<Customer> customers = new ArrayList<>();
         try {

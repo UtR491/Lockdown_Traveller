@@ -10,21 +10,34 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 
 public class LandingPageController {
+    // Hyperlinks to various admin related features. See list of registered users, trains, seats in trains and book seats
+    // on behalf a passenger.
     @FXML
     public Hyperlink maintainCustomerHyperlink,
             maintainTrainsHyperlink,
             maintainSeatsHyperlink,
             bookHyperlink;
 
-    @Nullable
+    // Stores identifier for the admin.
     private String adminID = null;
+
+    /**
+     * Triggered on clicking the maintain customer link.
+     * @param actionEvent
+     */
     public void maintainCustomer(ActionEvent actionEvent) {
+
+        // The request object.
         System.out.println("maintain customer info clicked");
         MaintainCustomerRequest maintainCustomerRequest = new MaintainCustomerRequest();
-        System.out.println("maintain customer rquest sending");
+        // Send the request object to the server side.
+        System.out.println("maintain customer request sending");
         Main.SendRequest(maintainCustomerRequest);
+        // Response received from the server.
         System.out.println("waiting for maintain customer response");
         MaintainCustomerResponse maintainCustomerResponse = (MaintainCustomerResponse) Main.ReceiveResponse();
+
+        // Load maintain customer screen.
         System.out.println("wait for maintain customer response over ");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MaintainCustomer.fxml"));
         Stage stage = (Stage) maintainCustomerHyperlink.getScene().getWindow();
@@ -36,6 +49,8 @@ public class LandingPageController {
         }
         stage.setScene(newScene);
         stage.setTitle("Customer Information");
+
+        // Send the response object to the controller to display the received response object.
         MaintainCustomerController maintainCustomerController = loader.getController();
         maintainCustomerController.initData(maintainCustomerResponse);
     }

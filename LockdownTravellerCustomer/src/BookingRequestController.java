@@ -18,15 +18,43 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class BookingRequestController {
+    // Holds the HBoxes. Each HBox has fields and combo boxes to get all information about the user.
     @FXML
     public GridPane root;
+    // addPassengerLink Adds an HBox to the grid pane to add another passenger to the booking.
+    // homeLink Goes to the home screen.
     @FXML
     public Hyperlink addPassengerLink, homeLink;
+    // Button to send all the information to the server.
+    @FXML
     public Button bookTicketsButton;
+    // The home scene. Needed because the home screen shows some user related data obtained from the server at the time
+    // of login.
     private Scene homeScene = null;
+
+    // Various information related to booking. Variable names describe what they store.
     private String coach, trainID, userID, source, destination, date;
+
+    // Number of seats available before the booking. Fare per seat in the desired Coach.
     private int seats, fare;
-    private ArrayList<HBox> passengers = new ArrayList<>();
+
+    // Storing the passenger information holder. The HBox has TextFields like name and age and ComboBoxes like Meal,
+    // berth preference and gender.
+    private final ArrayList<HBox> passengers = new ArrayList<>();
+
+    /**
+     * Takes the data related to the desired train and coach from the trains list screen to store into the request
+     * object.
+     * @param homeScene Home screen information.
+     * @param coach Selected coach.
+     * @param trainID Identifier for the selected train.
+     * @param userID User ID for doing the booking.
+     * @param source Boarding station entered by the user.
+     * @param destination De-boarding station entered by the user.
+     * @param date Date of boarding entered by the user.
+     * @param seats Number of seats available at the time of booking.
+     * @param fare Per seat fare for the specified journey in the specified train.
+     */
     public void initData(Scene homeScene, String coach, String trainID, String userID, String source, String destination,
                          String date, int seats, int fare) {
         this.homeScene = homeScene;
@@ -44,13 +72,17 @@ public class BookingRequestController {
         System.out.println("From - " + source + " to " + destination + " on " + date + " by user " + userID);
     }
 
+    /**
+     * Triggered on clicking the book seats button.
+     * @param actionEvent
+     */
     public void sendRequestButton(ActionEvent actionEvent) {
-        String name[] = new String[Math.min(counter, 6)];
-        String preference[] = new String[Math.min(counter, 6)];
-        int age[] = new int[Math.min(counter, 6)];
-        char gender[] = new char[Math.min(counter, 6)];
-        String quota[] = new String[Math.min(counter, 6)];
-        int meal[] = new int[Math.min(counter, 6)];
+        String[] name = new String[Math.min(counter, 6)];
+        String[] preference = new String[Math.min(counter, 6)];
+        int[] age = new int[Math.min(counter, 6)];
+        char[] gender = new char[Math.min(counter, 6)];
+        String[] quota = new String[Math.min(counter, 6)];
+        int[] meal = new int[Math.min(counter, 6)];
         for(int i = 0; i < Math.min(counter, 6); i++) {
             name[i] = ((TextField)passengers.get(i).getChildren().get(0)).getText();
             age[i] = Integer.parseInt(((TextField)passengers.get(i).getChildren().get(1)).getText());
@@ -85,6 +117,10 @@ public class BookingRequestController {
         ticketController.initData(homeScene, bookingResponse, name, age, gender);
     }
 
+    /**
+     * Triggered on clicking the Go to home link.
+     * @param actionEvent
+     */
     public void goToHome (ActionEvent actionEvent){
         Stage stage = (Stage) homeLink.getScene().getWindow();
         stage.setScene(homeScene);
@@ -92,6 +128,11 @@ public class BookingRequestController {
     }
 
     private int counter = 0;
+
+    /**
+     * Triggered on clicking the add passenger button. Adds an HBox to the GridPaneView.
+     * @param actionEvent
+     */
     public void addPassenger(ActionEvent actionEvent) {
         counter+=1;
         if(counter > 6) {

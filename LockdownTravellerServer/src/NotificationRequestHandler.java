@@ -18,7 +18,7 @@ public class NotificationRequestHandler extends Handler {
     }
 
     @Override
-    void sendQuery() throws IOException, SQLException {
+    void sendQuery() {
         String query1="select Message, Pending_Status from Notification where User_ID=?;";
         String query2="update Notification set Pending_Status=0 where User_ID=?;";
         NotificationResponse notificationResponse=notification(query1,query2,notificationRequest);

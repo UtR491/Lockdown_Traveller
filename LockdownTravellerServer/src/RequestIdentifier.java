@@ -3,17 +3,27 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * RequestIdentifier class. Listens for different types of requests and directs them to the relevant handler. There is
+ * an instance of this class for every server-client thread.
+ */
 public class RequestIdentifier implements Runnable {
-    Socket socket;
-    Socket adminSocket;
-    Map<String,Socket>customerSocket= new HashMap<>();
+
+    final private Socket socket;
+
+    /**
+     * Initializes the RequestIdentifier object with the socket that was used to connect to the server.
+     * @param socket The server side end-point.
+     */
     public RequestIdentifier(Socket socket) {
         this.socket = socket;
     }
+
+    /**
+     * Overloaded function. This is the point from which the thread forks from the main thread to handle the
+     * server-client interaction.
+     */
     @Override
     public void run() {
 
@@ -31,29 +41,22 @@ public class RequestIdentifier implements Runnable {
             if (request == null)
                 break;
 
+            // Finding what kind of request has been sent and then sending the request and database connection to the
+            // relevant handler.
             if (request instanceof LoginRequest) {
                 System.out.println("Login Request");
                 LoginRequestHandler loginRequestHandler = new LoginRequestHandler(oos, Server.getConnection(), (LoginRequest) request);
                 loginRequestHandler.sendQuery();
             } else if (request instanceof BookingRequest) {
                 System.out.println("Booking Request");
-                BookingHandler brh = new BookingHandler(Server.getConnection(), (BookingRequest) request, oos);
+                BookingRequestHandler brh = new BookingRequestHandler(Server.getConnection(), (BookingRequest) request, oos);
                 brh.sendQuery();
             } else if (request instanceof DisplayTrainsRequest) {
                 DisplayTrainsRequestHandler dtrh = new DisplayTrainsRequestHandler(Server.getConnection(), (DisplayTrainsRequest) request, oos);
-                try {
-                    dtrh.sendQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
+                dtrh.sendQuery();
             } else if (request instanceof CancelBookingRequest) {
                 CancelBookingRequestHandler c = new CancelBookingRequestHandler(Server.getConnection(), (CancelBookingRequest) request, oos);
-                try {
-                    c.sendQuery();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                c.sendQuery();
             } else if (request instanceof RegisterRequest) {
                 System.out.println("Register Request");
                 RegisterRequestHandler registerRequestHandler = new RegisterRequestHandler(Server.getConnection(), (RegisterRequest) request, oos);
@@ -62,7 +65,6 @@ public class RequestIdentifier implements Runnable {
                 System.out.println("Admin login request");
                 AdminLoginRequestHandler adminLoginRequestHandler = new AdminLoginRequestHandler((AdminLoginRequest) request, oos, Server.getConnection());
                 adminLoginRequestHandler.sendQuery();
-                adminSocket=socket;
             } else if (request instanceof MaintainTrainsRequest) {
                 System.out.println("Maintain trains request");
                 MaintainTrainsRequestHandler maintainTrainsRequestHandler = new MaintainTrainsRequestHandler(oos, Server.getConnection(), (MaintainTrainsRequest) request);
@@ -77,14 +79,10 @@ public class RequestIdentifier implements Runnable {
                 maintainSeatsRequestHandler.sendQuery();
             } else if (request instanceof NotificationRequest) {
                 NotificationRequestHandler notificationRequestHandler = new NotificationRequestHandler(Server.getConnection(), (NotificationRequest) request, oos);
-                try {
                     notificationRequestHandler.sendQuery();
-                } catch (IOException | SQLException e) {
-                    e.printStackTrace();
-                }
             } else if (request instanceof BookingHistoryRequest) {
-                BookingHistoryHandler bookingHistoryHandler = new BookingHistoryHandler(Server.getConnection(), oos, (BookingHistoryRequest) request);
-                bookingHistoryHandler.sendQuery();
+                BookingHistoryRequestHandler bookingHistoryRequestHandler = new BookingHistoryRequestHandler(Server.getConnection(), oos, (BookingHistoryRequest) request);
+                bookingHistoryRequestHandler.sendQuery();
             }
         }
     }
