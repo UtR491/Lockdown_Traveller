@@ -4,8 +4,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -107,11 +105,11 @@ public class LandingPageController {
         DisplayTrainsController displayTrainsController = loader.getController();
         displayTrainsController.initData(maintainSeatsHyperlink.getScene(), adminID);
     }
-    public void initData(@Nullable String adminID) {
+    public void initData(String adminID) {
         hello(adminID);
         this.adminID = adminID;
     }
-    public @NotNull String hello(@Nullable String s) {
+    public String hello(String s) {
         return s;
     }
 }

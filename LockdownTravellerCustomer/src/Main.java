@@ -1,16 +1,14 @@
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.Random;
 
+// Read the documentation for the main class in the admin module.
 public class Main extends Application {
     Socket socket=null;
     static ObjectOutputStream outputStream=null;
