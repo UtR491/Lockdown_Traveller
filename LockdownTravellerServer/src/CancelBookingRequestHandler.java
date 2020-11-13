@@ -1,3 +1,7 @@
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,9 +61,9 @@ public class CancelBookingRequestHandler extends Handler {
      * @params Queries.
      * @return Reponse object.
      */
-    private CancelBookingResponse CancelBooking(String query1, String query2, String query3, String query4, String query5, String query6) {
+    private @Nullable CancelBookingResponse CancelBooking(String query1, String query2, String query3, String query4, String query5, String query6) {
 
-        String seatType, trainID, date, query7;
+        @MonotonicNonNull String seatType, trainID, date, query7;
         int numCoaches, seatsPerCoach;
         boolean[] notVacant;
 
@@ -70,9 +74,17 @@ public class CancelBookingRequestHandler extends Handler {
             ResultSet pnrDetail = getCancelledBooking.executeQuery();
 
             if(pnrDetail.next()) {
-                seatType = pnrDetail.getString("Seat_No").substring(0, 2);
-                trainID = pnrDetail.getString("Train_ID");
-                date = pnrDetail.getString("Date");
+                @SuppressWarnings("assignment.type.incompatible") // Seat_No cannot be null. Refer the README.
+                @NonNull String s = pnrDetail.getString("Seat_No");
+                seatType = s.substring(0, 2);
+
+                @SuppressWarnings("assignment.type.incompatible") // Train_ID cannot be null. Refer the README.
+                @NonNull String pTrainID = pnrDetail.getString("Train_ID");
+                trainID = pTrainID;
+
+                @SuppressWarnings("assignment.type.incompatible") // Date cannot be null. Refer the README.
+                @NonNull String pDate = pnrDetail.getString("Date");
+                date = pDate;
                 query7 = "select " + coach(seatType) + "_Coaches, " + coach(seatType) + "_Seats from " +
                         "Basic_Train_Info where Train_ID = ?";
                 PreparedStatement changeStatus = connection.prepareStatement(query2);
@@ -118,8 +130,10 @@ public class CancelBookingRequestHandler extends Handler {
                     while(occupied.next()) {
                         int coachNumber = 0, seat = 0;
                         try {
-                            coachNumber = Integer.parseInt(String.valueOf(occupied.getString("Seat_No").charAt(2)));
-                            seat = Integer.parseInt(occupied.getString("Seat_No").substring(3));
+                            @SuppressWarnings("assignment.type.incompatible") // Seat_No cannot be null. Refer the README.
+                            @NonNull String s = occupied.getString("Seat_No");
+                            coachNumber = Integer.parseInt(String.valueOf(s.charAt(2)));
+                            seat = Integer.parseInt(s.substring(3));
                             System.out.println(coachNumber + " " + seat);
                         } catch (NumberFormatException e) {
                             notVacant[0] = true;

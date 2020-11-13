@@ -1,3 +1,6 @@
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,14 +25,11 @@ public class MaintainTrainsRequestHandler extends Handler{
         MaintainTrainsResponse maintainTrainsResponse = maintainTrainsRequest(query1, query2);
         Server.SendResponse(oos, maintainTrainsResponse);
     }
-    private MaintainTrainsResponse maintainTrainsRequest(String query1, String query2) {
+    private @Nullable MaintainTrainsResponse maintainTrainsRequest(String query1, String query2) {
         try {
             PreparedStatement basicInfoQuery = connection.prepareStatement(query1);
             ResultSet basicTrainInfo = basicInfoQuery.executeQuery();
             ArrayList<Train> trains = new ArrayList<>();
-            String trainId;
-            String trainName;
-            String days;
             ArrayList<String> route;
             ArrayList<String> arrival;
             ArrayList<String> departure;
@@ -41,9 +41,10 @@ public class MaintainTrainsRequestHandler extends Handler{
                 PreparedStatement routeQuery = connection.prepareStatement(query2);
                 routeQuery.setString(1, basicTrainInfo.getString("Train_ID"));
 
-                trainId=(basicTrainInfo.getString("Train_ID"));
-                trainName=(basicTrainInfo.getString("Train_Name"));
-                days=(basicTrainInfo.getString("Days_Running"));
+                @SuppressWarnings("assignment.type.incompatible") // Train_ID, Train_Name, Days_Running cannot be null. Refer the README.
+                @NonNull String trainId = basicTrainInfo.getString("Train_ID"),
+                        trainName = basicTrainInfo.getString("Train_Name"),
+                        days = basicTrainInfo.getString("Days_Running");
 
                 ResultSet routeInfo = routeQuery.executeQuery();
                 route = (new ArrayList<>());
@@ -52,9 +53,13 @@ public class MaintainTrainsRequestHandler extends Handler{
                 day = new ArrayList<>();
                 stationNumber = new ArrayList<>();
                 while(routeInfo.next()) {
-                    route.add(routeInfo.getString("Station"));
-                    arrival.add(routeInfo.getString("Arrival"));
-                    departure.add(routeInfo.getString("Departure"));
+                    @SuppressWarnings("assignment.type.incompatible") // Station cannot be null. Refer the README.
+                    @NonNull String pRoute = routeInfo.getString("Station");
+                    @Nullable String pArrival = routeInfo.getString("Arrival"),
+                            pDeparture = routeInfo.getString("Departure");
+                    route.add(pRoute);
+                    arrival.add(pArrival != null ? pArrival : "Start");
+                    departure.add(pDeparture != null ? pDeparture : "End");
                     day.add(routeInfo.getInt("Day_No"));
                     stationNumber.add(routeInfo.getInt("Station_No"));
                 }

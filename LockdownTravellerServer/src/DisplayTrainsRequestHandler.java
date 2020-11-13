@@ -1,3 +1,7 @@
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +13,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DisplayTrainsRequestHandler extends Handler {
 
@@ -95,43 +100,28 @@ public class DisplayTrainsRequestHandler extends Handler {
      * @param dest Destination.
      * @return The response to the request.
      */
-    private DisplayTrainsResponse DisplayTrains(String query1, String query2, String query3, String query4, String query5, String query6, String query7,String query8, String sDate, String source, String dest) {
+    private @Nullable DisplayTrainsResponse DisplayTrains(String query1, String query2, String query3, String query4, String query5, String query6, String query7,String query8, String sDate, String source, String dest) {
         char[] Days_Running = null;
-        ResultSet result = null;
+        @MonotonicNonNull ResultSet result = null;
         int required_day = DisplayTrainsRequestHandler.DayToDate(sDate);
         PreparedStatement preparedStatement;
         try {
-            assert null != connection;
             preparedStatement = connection.prepareStatement(query1, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             preparedStatement.setString(1,source);
             preparedStatement.setString(2,dest);
             System.out.println(preparedStatement.toString());
 
             result = preparedStatement.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         ArrayList<String> Train_ID = new ArrayList<>(), Train_Name = new ArrayList<>(), Departure = new ArrayList<>(), Arrival = new ArrayList<>(), First_AC = new ArrayList<>(), Second_AC = new ArrayList<>(), Third_AC = new ArrayList<>(), Sleeper = new ArrayList<>();
         int i = 0;
         ArrayList<Integer>AC3Fare=new ArrayList<>(),AC2Fare=new ArrayList<>(),AC1Fare=new ArrayList<>(),SLFare=new ArrayList<>();
         while (true) {
-            try {
-                assert result != null;
-                if (!result.next()) break;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            String Day_No = null;
-            try {
-                Day_No = result.getString("Day_No");
-                Days_Running = result.getString("Days_Running").toCharArray();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            assert Days_Running != null;
-            assert Day_No != null;
+            if (!result.next())
+                break;
+            @SuppressWarnings("assignment.type.incompatible") // Day_No cannot be null. Refer the README.
+            @NonNull String Day_No = result.getString("Day_No"),
+                    s = result.getString("Days_Running");
+            Days_Running = s.toCharArray();
             char value = Days_Running[required_day - Integer.parseInt(Day_No)];
             if (value == '1') {
                 try {
@@ -144,20 +134,22 @@ public class DisplayTrainsRequestHandler extends Handler {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     try {
                         java.util.Date date = sdf.parse(sDate);
-                        if (resultSet1.getString("Added_Till") != null) {
-                            java.util.Date date1 = sdf.parse(resultSet1.getString("Added_Till"));
+                        @Nullable String addedTill = resultSet1.getString("Added_Till"),
+                                cancelledTill = resultSet1.getString("Cancelled_Till");
+                        if (addedTill != null) {
+                            java.util.Date date1 = sdf.parse(addedTill);
                             compare1 = date.compareTo(date1);
                             if (compare1 < 0) {
-                                if (resultSet1.getString("Cancelled_Till") != null) {
-                                    java.util.Date date2 = sdf.parse(resultSet1.getString("Cancelled_Till"));
+                                if (cancelledTill != null) {
+                                    java.util.Date date2 = sdf.parse(cancelledTill);
                                     compare2 = date.compareTo(date2);
                                     if (compare2 > 0) {
                                         counter = 1;
                                     }
                                 } else counter = 1;
                             }
-                        } else if (resultSet1.getString("Cancelled_Till") != null) {
-                            java.util.Date date2 = sdf.parse(resultSet1.getString("Cancelled_Till"));
+                        } else if (cancelledTill != null) {
+                            java.util.Date date2 = sdf.parse(cancelledTill);
                             compare2 = date.compareTo(date2);
                             if (compare2 > 0) {
                                 counter = 1;
@@ -167,12 +159,23 @@ public class DisplayTrainsRequestHandler extends Handler {
                         e.printStackTrace();
                     }
                     if (counter == 1) {
+                        @SuppressWarnings("assignment.type.incompatible") // Train_ID cannot be null. Refer the README.
+                        @NonNull String trainID = result.getString("Train_ID"),
+                                trainName = result.getString("Train_Name");
+                        Train_ID.add(trainID);
+                        Train_Name.add(trainName);
 
+                        @Nullable String time = result.getString("Departure");
+                        if(time != null)
+                            Departure.add(time);
+                        else
+                            Departure.add("End");
 
-                        Train_ID.add(result.getString("Train_ID"));
-                        Train_Name.add(result.getString("Train_Name"));
-                        Departure.add(result.getString("Departure"));
-                        Arrival.add(result.getString("Arrival"));
+                        time = result.getString("Arrival");
+                        if(time != null)
+                            Arrival.add(time);
+                        else
+                            Arrival.add("Start");
 
                         preparedStatement = connection.prepareStatement(query2);
                         preparedStatement.setString(1, Train_ID.get(i));
@@ -201,16 +204,29 @@ public class DisplayTrainsRequestHandler extends Handler {
                         ResultSet SL_Seats = preparedStatement.executeQuery();
                         resultSet.next();
                         SL_Seats.next();
-                        int available_seats ;
-                        if (resultSet.getString("Sleeper_Seats") != null) {
-                            available_seats = Integer.parseInt(resultSet.getString("Sleeper_Seats")) - Integer.parseInt(SL_Seats.getString(1));
-                            Sleeper.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("Sleeper_Coaches"))));
+                        int available_seats = 0;
+                        @Nullable String number = resultSet.getString("Sleeper_Seats");
+                        if (number != null) {
+                            @SuppressWarnings("assignment.type.incompatible") // If number of seats is not null,
+                            // number of coaches will not be null either.
+                            @NonNull String coaches = resultSet.getString("Sleeper_Coaches");
+
+                            @Nullable String occupiedCount = SL_Seats.getString(1);
+                            available_seats = Integer.parseInt(number) - Integer.parseInt(
+                                    (occupiedCount == null)? "0" : occupiedCount);
+                            Sleeper.add(String.valueOf(available_seats * Integer.parseInt(coaches)));
                         } else Sleeper.add("N/A");
                         if(resultSet.getString(9)!=null)
                         {
-                            if(result.getString("Train_ID").equals("22209")&&resultSet.getString("FirstAC_Seats") != null)//dynamic pricing for garib rath train
+                            if(Objects.equals(result.getString("Train_ID"), "22209") &&
+                                    resultSet.getString("FirstAC_Seats") != null)//dynamic pricing for garib rath train
                             {
-                                float percentageBooked=Float.parseFloat(SL_Seats.getString(1))/(Float.parseFloat(resultSet.getString("Sleeper_Seats"))*Float.parseFloat(resultSet.getString("Sleeper_Coaches")));
+                                @Nullable String coaches = resultSet.getString("Sleeper_Coaches");
+
+                                @Nullable String occupiedCount = SL_Seats.getString(1);
+                                float percentageBooked=Float.parseFloat((occupiedCount != null)? occupiedCount :
+                                        "0")/(Float.parseFloat(number != null ? number : "9999999") *
+                                        Float.parseFloat(coaches != null ? coaches : "9999999"));
                                 SLFare.add((int) (resultSet.getInt(9)*distance*(1+percentageBooked)));
                             }
                             SLFare.add(resultSet.getInt(9)*distance);
@@ -227,15 +243,23 @@ public class DisplayTrainsRequestHandler extends Handler {
                         preparedStatement.setString(7, sDate);
                         ResultSet AC1_Seats = preparedStatement.executeQuery();
                         AC1_Seats.next();
-                        if (resultSet.getString("FirstAC_Seats") != null) {
-                            available_seats = Integer.parseInt(resultSet.getString("FirstAC_Seats")) - Integer.parseInt(AC1_Seats.getString(1));
-                            First_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("FirstAC_Coaches"))));
+                        number = resultSet.getString("FirstAC_Seats");
+                        if (number != null) {
+                            @SuppressWarnings("assignment.type.incompatible") // If number of seats is not null,
+                            // number of coaches will be non null too.
+                            @NonNull String coach = resultSet.getString("FirstAC_Coaches");
+                            @Nullable String occupiedCount = AC1_Seats.getString(1);
+                            available_seats = Integer.parseInt(number) - Integer.parseInt(occupiedCount != null ? occupiedCount : "0");
+                            First_AC.add(String.valueOf(available_seats * Integer.parseInt(coach)));
                         } else First_AC.add("N/A");
                         if(resultSet.getString(10)!=null)
                         {
-                            if(result.getString("Train_ID").equals("22209")&&resultSet.getString("FirstAC_Seats") != null)//dynamic pricing for garib rath train
+                            if(Objects.equals(result.getString("Train_ID"), "22209") &&resultSet.getString("FirstAC_Seats") != null)//dynamic pricing for garib rath train
                             {
-                                float percentageBooked=Float.parseFloat(AC1_Seats.getString(1))/(Float.parseFloat(resultSet.getString("FirstAC_Seats"))*Float.parseFloat(resultSet.getString("FirstAC_Coaches")));
+                                @Nullable String occupiedCount = AC1_Seats.getString(1);
+                                @Nullable String coaches = resultSet.getString("FirstAC_Coaches");
+                                float percentageBooked=Float.parseFloat(occupiedCount != null ? occupiedCount : "0")/
+                                        (Float.parseFloat(number != null ? number : "99999")*Float.parseFloat(coaches != null ? coaches : "99999"));
                                 AC1Fare.add((int) (resultSet.getInt(10)*distance*(1+percentageBooked)));
                             }
                             else AC1Fare.add(resultSet.getInt(10)*distance);
@@ -252,15 +276,23 @@ public class DisplayTrainsRequestHandler extends Handler {
                         preparedStatement.setString(7, sDate);
                         ResultSet AC2_Seats = preparedStatement.executeQuery();
                         AC2_Seats.next();
-                        if (resultSet.getString("SecondAC_Seats") != null) {
-                            available_seats = Integer.parseInt(resultSet.getString("SecondAC_Seats")) - Integer.parseInt(AC2_Seats.getString(1));
-                            Second_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("SecondAC_Coaches"))));
+                        number = resultSet.getString("SecondAC_Seats");
+                        if (number != null) {
+                            @SuppressWarnings("assignment.type.incompatible") // If number of seats is not null, number
+                            // of coaches will not be null either.
+                            @NonNull String coach = resultSet.getString("SecondAC_Coaches");
+                            @Nullable String occupiedCount = AC2_Seats.getString(1);
+                            available_seats = Integer.parseInt(number) - Integer.parseInt(occupiedCount != null ? occupiedCount : "0");
+                            Second_AC.add(String.valueOf(available_seats * Integer.parseInt(coach)));
                         } else Second_AC.add("N/A");
                         if(resultSet.getString(11)!=null)
                         {
-                            if(result.getString("Train_ID").equals("22209")&&resultSet.getString("SecondAC_Seats") != null)//dynamic pricing for garib rath train
+                            if(Objects.equals(result.getString("Train_ID"), "22209") &&resultSet.getString("SecondAC_Seats") != null)//dynamic pricing for garib rath train
                             {
-                                float percentageBooked=Float.parseFloat(AC2_Seats.getString(1))/(Float.parseFloat(resultSet.getString("SecondAC_Seats"))*Float.parseFloat(resultSet.getString("SecondAC_Coaches")));
+                                @Nullable String coach = resultSet.getString("SecondAC_Coaches");
+                                @Nullable String occupiedCount = AC2_Seats.getString(1);
+                                float percentageBooked=Float.parseFloat(occupiedCount != null ? occupiedCount : "0")
+                                        /(Float.parseFloat(number != null ? number : "99999")*Float.parseFloat(coach != null ? coach : "99999"));
                                 AC2Fare.add((int) (resultSet.getInt(11)*distance*(1+percentageBooked)));
                             }
                             else AC2Fare.add(resultSet.getInt(11)*distance);
@@ -277,15 +309,24 @@ public class DisplayTrainsRequestHandler extends Handler {
                         preparedStatement.setString(7, sDate);
                         ResultSet AC3_Seats = preparedStatement.executeQuery();
                         AC3_Seats.next();
-                        if (resultSet.getString("ThirdAC_Seats") != null) {
-                            available_seats = Integer.parseInt(resultSet.getString("ThirdAC_Seats")) - Integer.parseInt(AC3_Seats.getString(1));
-                            Third_AC.add(String.valueOf(available_seats * Integer.parseInt(resultSet.getString("ThirdAC_Coaches"))));
+                        number = resultSet.getString("ThirdAC_Seats");
+                        if (number != null) {
+                            @SuppressWarnings("assignment.type.incompatible") // If number of seats is not null, number
+                            // of coaches will not be null either.
+                            @NonNull String coach = resultSet.getString("ThirdAC_Coaches");
+                            @Nullable String occupiedCount = AC3_Seats.getString(1);
+                            available_seats = Integer.parseInt(number) - Integer.parseInt(occupiedCount != null ? occupiedCount : "0");
+                            Third_AC.add(String.valueOf(available_seats * Integer.parseInt(coach)));
                         } else Third_AC.add("N/A");
                         if(resultSet.getString(12)!=null)
                         {
-                            if(result.getString("Train_ID").equals("22209")&&resultSet.getString("ThirdAC_Seats") != null)//dynamic pricing for garib rath train
+                            if(Objects.equals(result.getString("Train_ID"), "22209") &&resultSet.getString("ThirdAC_Seats") != null)//dynamic pricing for garib rath train
                             {
-                                float percentageBooked=Float.parseFloat(AC3_Seats.getString(1))/(Float.parseFloat(resultSet.getString("ThirdAC_Seats"))*Float.parseFloat(resultSet.getString("ThirdAC_Coaches")));
+                                @Nullable String coach = resultSet.getString("ThirdAC_Coaches");
+                                @Nullable String occupiedCount = AC3_Seats.getString(1);
+                                float percentageBooked=Float.parseFloat(occupiedCount != null ? occupiedCount :
+                                        "0")/(Float.parseFloat(number != null ? number : "99999")*
+                                        Float.parseFloat(coach != null ? coach : "99999"));
                                 AC3Fare.add((int) (resultSet.getInt(12)*distance*(1+percentageBooked)));
                             }
                             else AC3Fare.add(resultSet.getInt(12)*distance);
@@ -300,5 +341,9 @@ public class DisplayTrainsRequestHandler extends Handler {
             }
         }
         return new DisplayTrainsResponse(Train_ID,Train_Name,Departure,Arrival,First_AC,Second_AC,Third_AC,Sleeper,sDate,source,dest,AC1Fare,AC2Fare,AC3Fare,SLFare);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

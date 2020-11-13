@@ -1,3 +1,7 @@
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -53,7 +57,7 @@ public class BookingHistoryRequestHandler extends Handler {
      * @params Queries.
      * @return Response to the Booking history request.
      */
-    public BookingHistoryResponse bookinghistory(BookingHistoryRequest historyRequest, String query1, String query2, String query3) {
+    public @Nullable BookingHistoryResponse bookinghistory(BookingHistoryRequest historyRequest, String query1, String query2, String query3) {
 
         // All fields that will be a part of the response object.
         ArrayList<ArrayList<String>> bookingID = new ArrayList<>();
@@ -71,13 +75,16 @@ public class BookingHistoryRequestHandler extends Handler {
             getPnr.setString(1, historyRequest.getUserid());
             resultSet = getPnr.executeQuery();
             while(resultSet.next()) {
-                pnr.add(resultSet.getString("PNR"));
+
+                @SuppressWarnings("assignment.type.incompatible") // PNR cannot be null. Refer the README.
+                @NonNull String s = resultSet.getString("PNR");
+                pnr.add(s);
             }
             final int n = pnr.size();
             for(int i = 0; i < n; i++) {
                 System.out.println(pnr.get(i));
                 PreparedStatement perPnrQuery = connection.prepareStatement(query2);
-                String confirmedBookingID = "";
+                @MonotonicNonNull String confirmedBookingID = null;
                 perPnrQuery.setString(1, pnr.get(i));
                 ResultSet bookingForPnr = perPnrQuery.executeQuery();
                 bookingID.add(new ArrayList<>());
@@ -85,25 +92,50 @@ public class BookingHistoryRequestHandler extends Handler {
                 age.add(new ArrayList<>());
                 gender.add(new ArrayList<>());
                 while(bookingForPnr.next()) {
-                    bookingID.get(i).add(bookingForPnr.getString("Booking_ID"));
-                    if(bookingForPnr.getString("Booking_Status").equals("Confirmed"))
-                        confirmedBookingID = bookingForPnr.getString("Booking_ID");
-                    name.get(i).add(bookingForPnr.getString("Passenger_Name"));
+                    @SuppressWarnings("assignment.type.incompatible") // Booking_ID cannot be null. Refer the README.
+                    @NonNull String s = bookingForPnr.getString("Booking_ID");
+                    bookingID.get(i).add(s);
+
+                    @SuppressWarnings("assignment.type.incompatible") // Booking_Status cannot be null. Refer the README.
+                    @NonNull String bookingStatus = bookingForPnr.getString("Booking_Status");
+                    if(bookingStatus.equals("Confirmed")) {
+                        @SuppressWarnings("assignment.type.incompatible") // Booking ID cannot be null. Refer the README.
+                        @NonNull String confirmedId = bookingForPnr.getString("Booking_ID");
+                        confirmedBookingID = confirmedId;
+                    }
+
+                    @SuppressWarnings("assignment.type.incompatible") // Passenger_Name cannot be null. Refer the README.
+                    @NonNull String pName = bookingForPnr.getString("Passenger_Name");
+                    name.get(i).add(pName);
+
                     age.get(i).add(bookingForPnr.getInt("Passenger_Age"));
-                    gender.get(i).add(bookingForPnr.getString("Passenger_Gender"));
+
+                    @SuppressWarnings("assignment.type.incompatible") // Gender cannot be null. Refer the README.
+                    @NonNull String pGender = bookingForPnr.getString("Passenger_Gender");
+                    gender.get(i).add(pGender);
                 }
                 PreparedStatement otherDetails = connection.prepareStatement(query3);
-                if(!confirmedBookingID.equals("")) {
+                if(confirmedBookingID != null) {
                     otherDetails.setString(1, confirmedBookingID);
                     otherDetails.setString(2, confirmedBookingID);
                     otherDetails.setString(3, confirmedBookingID);
                     System.out.println(otherDetails.toString());
                     ResultSet others = otherDetails.executeQuery();
                     others.next();
-                    source.add(others.getString("Station"));
-                    date.add(others.getString("Date"));
+                    System.out.println(query3);
+                    @SuppressWarnings("assignment.type.incompatible") // Station cannot be null. Refer the README.
+                    @NonNull String s = others.getString("Station");
+                    source.add(s);
+
+                    @SuppressWarnings("assignment.type.incompatible") // Date cannot be null. Refer the README.
+                    @NonNull String pDate = others.getString("Date");
+                    date.add(pDate);
+
                     others.next();
-                    destination.add("Station");
+
+                    @SuppressWarnings("assignment.type.incompatible") // Station cannot be null. Refer the README.
+                    @NonNull String pDestination = others.getString("Station");
+                    destination.add(pDestination);
                 } else {
                     source.add("N/A");
                     destination.add("N/A");
