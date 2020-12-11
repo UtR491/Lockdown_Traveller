@@ -1,3 +1,5 @@
+import org.checkerframework.checker.nullness.qual.*;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,18 +15,21 @@ import java.sql.SQLException;
  */
 public class Server {
 
-    private static Connection connection;
+    // static with monotonic non null! TODO Make Connection non static somehow.
+    private static @MonotonicNonNull Connection connection;
 
     public static void main(String[] args) {
-        ServerSocket serverSocket = null;
-        Socket socket;
+        @MonotonicNonNull ServerSocket serverSocket = null;
+        @MonotonicNonNull Socket socket;
         try {
             serverSocket = new ServerSocket(12000);
 
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
 
+        getConnection();
         // Infinite loop. After a client connects to the server, the server client interaction is assigned a thread and
         // the server loops back to the serverSocket.accept() line to listen for other connection attempts.
         while (true) {
@@ -48,18 +53,21 @@ public class Server {
      * Connects the server side to the database to make queries.
      * @return Connection to the database.
      */
-    public static Connection getConnection() {
-        if (connection != null) {
+    @SuppressWarnings("return.type.incompatible") // Null can only be returned when the lines in the try block
+    // throw some exception. Since these are hard coded, there is no need to worry about the connection object being
+    // null.
+    public static @NonNull Connection getConnection() {
+        if(connection != null)
             return connection;
-        }
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://127.0.0.1:3306/lockdown_traveller";
             connection = DriverManager.getConnection(url, "utkarsh", "Hello@123");
+            return connection;
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+            return null;
         }
-        return connection;
     }
 
     /**
@@ -67,7 +75,7 @@ public class Server {
      * @param oos Reference to the output stream of the thread that called the function.
      * @param response The object to be sent via tha output stream.
      */
-    public static void SendResponse(ObjectOutputStream oos, Response response) {
+    public static void SendResponse(ObjectOutputStream oos, @Nullable Response response) {
         try {
             System.out.println("Sending the object now " + response);
             if (response == null)
@@ -86,7 +94,7 @@ public class Server {
      * @param objectInputStream The input stream in the thread.
      * @return The object read from the input stream.
      */
-    public static Object ReceiveRequest(ObjectInputStream objectInputStream)
+    public static @Nullable Object ReceiveRequest(ObjectInputStream objectInputStream)
     {
         try {
             return objectInputStream.readObject();

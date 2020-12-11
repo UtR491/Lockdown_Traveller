@@ -1,3 +1,6 @@
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
@@ -26,8 +29,8 @@ public class NotificationRequestHandler extends Handler {
     }
     public NotificationResponse notification(String query1,String query2,NotificationRequest notificationRequest)
     {
-        PreparedStatement preparedStatement= null;
-        ResultSet resultSet=null;
+        @MonotonicNonNull PreparedStatement preparedStatement ;
+        @MonotonicNonNull ResultSet resultSet;
         ArrayList<String>message = new ArrayList<>();
         ArrayList<Integer> pendingStatus = new ArrayList<>();
 
@@ -40,8 +43,9 @@ public class NotificationRequestHandler extends Handler {
              preparedStatement.executeUpdate();
              while (resultSet.next())
              {
-                 assert message != null;
-                 message.add(resultSet.getString(1));
+                 @SuppressWarnings("assignment.type.incompatible") // Message cannot be null. Refer the README.
+                 @NonNull String s = resultSet.getString(1);
+                 message.add(s);
                  pendingStatus.add(resultSet.getInt("Pending_Status"));
              }
         } catch (SQLException e) {

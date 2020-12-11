@@ -1,4 +1,6 @@
 
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -27,16 +29,16 @@ public class RequestIdentifier implements Runnable {
     @Override
     public void run() {
 
-        ObjectInputStream ois = null;
-        ObjectOutputStream oos = null;
+        @MonotonicNonNull ObjectInputStream ois = null;
+        @MonotonicNonNull ObjectOutputStream oos = null;
         try {
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
         while (socket.isConnected()) {
-            assert ois != null;
             Object request = Server.ReceiveRequest(ois);
             if (request == null)
                 break;

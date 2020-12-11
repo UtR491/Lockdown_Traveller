@@ -1,3 +1,6 @@
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,7 +43,7 @@ public class MaintainSeatsRequestHandler extends Handler {
      * @param query Query to get all the information.
      * @return Response to the maitatin seats request.
      */
-    private MaintainSeatsResponse maintainSeatsRequest(String query) {
+    private @Nullable MaintainSeatsResponse maintainSeatsRequest(String query) {
         try {
             PreparedStatement seatInquiry = connection.prepareStatement(query);
             ResultSet seatInformation = seatInquiry.executeQuery();
@@ -51,8 +54,10 @@ public class MaintainSeatsRequestHandler extends Handler {
                 coaches.add(new Coach("First AC", seatInformation.getInt("FirstAC_Coaches"), seatInformation.getInt("FirstAC_Seats")));
                 coaches.add(new Coach("Second AC", seatInformation.getInt("SecondAC_Coaches"), seatInformation.getInt("SecondAC_Seats")));
                 coaches.add(new Coach("Third AC", seatInformation.getInt("ThirdAC_Coaches"), seatInformation.getInt("ThirdAC_Seats")));
-
-                trains.add(new Train2(seatInformation.getString("Train_ID"), seatInformation.getString("Train_Name"), coaches));
+                @SuppressWarnings("assignment.type.incompatible") // Train_ID cannot be null. Refer the README.
+                @NonNull String trainId = seatInformation.getString("Train_ID"),
+                        trainName = seatInformation.getString("Train_Name");
+                trains.add(new Train2(trainId, trainName, coaches));
             }
             return new MaintainSeatsResponse(trains);
         } catch (SQLException throwables) {

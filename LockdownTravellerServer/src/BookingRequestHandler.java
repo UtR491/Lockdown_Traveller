@@ -1,3 +1,6 @@
+import org.checkerframework.checker.nullness.qual.*;
+import org.checkerframework.common.util.report.qual.ReportWrite;
+
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,8 +15,8 @@ public class BookingRequestHandler extends Handler {
     private final BookingRequest bookingRequest;
     private final ObjectOutputStream oos;
     private final String coach, trainID, userID;
-    private String coachCode;
-    private boolean[] notVacant;
+    private @NonNull String coachCode;
+    private boolean @MonotonicNonNull [] notVacant;
     private int numCoaches, seatsPerCoach, numSeats, availableSeats, sourceStationNumber=-1, totalCost;
     private ArrayList<String> stationsOnRoute = new ArrayList<>();
     private int currentWaiting = 0;
@@ -36,17 +39,6 @@ public class BookingRequestHandler extends Handler {
         userID = this.bookingRequest.getUserId();
         totalCost = this.bookingRequest.getTotalCost();
         currentWaiting = Math.max(0, -bookingRequest.getAvailableSeat());
-        System.out.println(currentWaiting);
-    }
-
-    /**
-     * This is the first function that is called inside the request identifier. In this function, we form the relevant
-     * sql queries and pass it to another function to execute.
-     */
-    @Override
-    public void sendQuery() {
-        numSeats = bookingRequest.getNumSeat();
-        availableSeats = bookingRequest.getAvailableSeat();
         // Station which are in the route.
         switch (coach) {
             case "Sleeper":
@@ -62,6 +54,17 @@ public class BookingRequestHandler extends Handler {
                 coachCode = "A3";
                 break;
         }
+        System.out.println(currentWaiting);
+    }
+
+    /**
+     * This is the first function that is called inside the request identifier. In this function, we form the relevant
+     * sql queries and pass it to another function to execute.
+     */
+    @Override
+    public void sendQuery() {
+        numSeats = bookingRequest.getNumSeat();
+        availableSeats = bookingRequest.getAvailableSeat();
 
         // Select stations on that the journey takes from the specified Source and Destination.
         // TODO Can be made more efficient.
@@ -93,8 +96,8 @@ public class BookingRequestHandler extends Handler {
      * This is where the statements are executed.
      * @return Response to the booking request.
      */
-    private BookingResponse bookSeats(String query1, String query2, String query3, String query4, String query5,
-                                      String query6, String query7) {
+    private @Nullable BookingResponse bookSeats(String query1, String query2, String query3, String query4, String query5,
+                                                String query6, String query7) {
         try {
             PreparedStatement stations = connection.prepareStatement(query1);
             stations.setString(1, trainID);
@@ -106,7 +109,9 @@ public class BookingRequestHandler extends Handler {
             while(route.next()) {
                 if(sourceStationNumber == -1)
                     sourceStationNumber = route.getInt("Station_No");
-                stationsOnRoute.add(route.getString("Station"));
+                @SuppressWarnings("assignment.type.incompatible") // Station cannot be null. Refer the README.
+                @NonNull String s = route.getString("Station");
+                stationsOnRoute.add(s);
                 query2 = query2 + "?, ";
             }
             query2 = query2.substring(0, query2.length()-2) + ");";
@@ -125,12 +130,14 @@ public class BookingRequestHandler extends Handler {
             coachArrangement.next();
             numCoaches = coachArrangement.getInt(coach + "_Coaches");
             seatsPerCoach = coachArrangement.getInt(coach + "_Seats");
-            notVacant = new boolean[numCoaches*seatsPerCoach + 5];
+            initVacantArray();
             while(occupiedSeats.next()) {
                 int coachNumber = 0, seat = 0;
                 try {
-                    coachNumber = Integer.parseInt(String.valueOf(occupiedSeats.getString("Seat_No").charAt(2)));
-                    seat = Integer.parseInt(occupiedSeats.getString("Seat_No").substring(3));
+                    @SuppressWarnings("assignment.type.incompatible") // Seat_No cannot be null. Refer the README.
+                    @NonNull String s = occupiedSeats.getString("Seat_No");
+                    coachNumber = Integer.parseInt(String.valueOf(s.charAt(2)));
+                    seat = Integer.parseInt(s.substring(3));
                     System.out.println(coachNumber + " " + seat);
                 } catch (NumberFormatException e) {
                     notVacant[0] = true;
@@ -203,12 +210,18 @@ public class BookingRequestHandler extends Handler {
         return null;
     }
 
+    @EnsuresNonNull("notVacant")
+    private void initVacantArray() {
+        notVacant = new boolean[numCoaches*seatsPerCoach + 5];
+    }
+
     int p = 0;
 
     /**
      * Seat distribution logic. Seats are alloted on the basis of age and preference.
      * @return Response to the booking request.
      */
+    @RequiresNonNull("notVacant")
     private BookingResponse allot() {
 
         int[] age = bookingRequest.getAge();
@@ -349,6 +362,7 @@ public class BookingRequestHandler extends Handler {
      * @param b 1 or 2, implies which type of seat is checked first.
      * @return Seat number which was alloted. The number is of the format coach + coachNo + seatNo for eg, SL101.
      */
+    @RequiresNonNull("notVacant")
     private String allot2(int a, int b) {
         // 4 seats
         // 1 2 3 4. odd is lower. even is upper.
@@ -375,6 +389,7 @@ public class BookingRequestHandler extends Handler {
      * @params Order of checking the seat vacancy.
      * @return Alloted seat number.
      */
+    @RequiresNonNull("notVacant")
     private String allot6(int a, int b, int c, int d, int e, int f) {
         // 6 seats.
         // 1 and 5 are lower. 2 and 6 are upper. 3 is side lower. 4 is side upper.
@@ -404,6 +419,7 @@ public class BookingRequestHandler extends Handler {
      * @params Order of checking the seat vacancy.
      * @return Alloted seat number.
      */
+    @RequiresNonNull("notVacant")
     private String allot8(int a, int b, int c, int d, int e, int f, int g, int h) {
         // 8 seats in a compartment.
         // 1 and 6 are lower. 2 and 8 are upper.5 and 7 are middle. 3 is side lower. 4 is side upper.
@@ -435,6 +451,7 @@ public class BookingRequestHandler extends Handler {
      * Allot nearby seats to female passengers if they are travelling alone.
      * @return Response to the booking request.
      */
+    @RequiresNonNull("notVacant")
     private BookingResponse allotSingleFemale() {
         // We will give them what they want, starting from the back of the coach.
         String[] bookingID = new String[1], seat = new String[1];

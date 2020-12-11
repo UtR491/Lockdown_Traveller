@@ -1,3 +1,6 @@
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,21 +45,23 @@ public class MaintainCustomerRequestHandler extends Handler{
      * @param query Query to get all user info.
      * @return Response to maintain customer request.
      */
-    private MaintainCustomerResponse maintainCustomerRequest(String query) {
+    private @Nullable MaintainCustomerResponse maintainCustomerRequest(String query) {
         ArrayList<Customer> customers = new ArrayList<>();
         try {
             PreparedStatement customerQuery = connection.prepareStatement(query);
             ResultSet customerInfo = customerQuery.executeQuery();
             while(customerInfo.next()) {
+                @SuppressWarnings("assignment.type.incompatible") // these columns cannot be null in the table.
+                @NonNull String name = customerInfo.getString("First_Name") + " " +
+                        customerInfo.getString("Last_Name"),
+                        gender = customerInfo.getString("Gender"),
+                        email = customerInfo.getString("Email_ID"),
+                        phone = customerInfo.getString("Phone_No"),
+                        username = customerInfo.getString("Username"),
+                        userId = customerInfo.getString("User_ID");
+
                 customers.add(new Customer(
-                        customerInfo.getString("First_Name") + " " + customerInfo.getString("Last_Name"),
-                        customerInfo.getString("Gender"),
-                        customerInfo.getString("Email_ID"),
-                        customerInfo.getString("Phone_No"),
-                        customerInfo.getString("Username"),
-                        customerInfo.getString("User_ID"),
-                        customerInfo.getInt("Age")
-                ));
+                        name, gender, email, phone, username, userId, customerInfo.getInt("Age")));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

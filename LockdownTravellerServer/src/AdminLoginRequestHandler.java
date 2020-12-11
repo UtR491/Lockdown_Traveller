@@ -1,3 +1,7 @@
+import org.checkerframework.checker.initialization.qual.Initialized;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,14 +46,17 @@ public class AdminLoginRequestHandler extends Handler{
      * @params Queries.
      * @return Response to the admin login query.
      */
-    public AdminLoginResponse adminLoginRequest(String query) {
+    public @Nullable AdminLoginResponse adminLoginRequest(String query) {
         try {
             System.out.println("Prepared statement");
             PreparedStatement validateLogin = connection.prepareStatement(query);
             validateLogin.setString(1, adminLoginRequest.getUsername());
             validateLogin.setString(2, adminLoginRequest.getPassword());
             System.out.println("going to execute");
-            ResultSet adminCredentials = validateLogin.executeQuery();
+            @Initialized @NonNull ResultSet adminCredentials = validateLogin.executeQuery(); // This @NonNull here is
+            // not redundant because without it, there is a dereference.of.nullable warning in the while clause in the
+            // else block below. Same with the @Initialized annotation.
+
             // Check if the result set is empty. If empty send failure as object response.
             if (!adminCredentials.next()) {
                 System.out.println("fail");
@@ -57,7 +64,9 @@ public class AdminLoginRequestHandler extends Handler{
             } else {
                 do {
                     System.out.println("success");
-                    return new AdminLoginResponse("success", adminCredentials.getString("Admin_ID"));
+                    @SuppressWarnings("assignment.type.incompatible") // Admin_ID cannot be null. Refer the README.
+                    @NonNull String s = adminCredentials.getString("Admin_ID");
+                    return new AdminLoginResponse("success", s);
                 } while (adminCredentials.next());
             }
         } catch (SQLException e) {
